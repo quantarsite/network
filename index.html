@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Quantar - The world's first quantum-resistant Layer-1 blockchain protecting $2.5 trillion in cryptocurrency from quantum computer attacks.">
+    <title>Quantar - Quantum-Resistant Blockchain</title>
+    <link rel="icon" type="image/png" href="quantar_favicon.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --cyan: #00D9FF;
+            --purple: #9D4EDD;
+            --dark-bg: #0A0E27;
+            --card-bg: #1A1E3F;
+            --text-primary: #FFFFFF;
+            --text-secondary: #A0AEC0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(26, 30, 63, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            height: 80px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            color: var(--cyan);
+            border-bottom-color: var(--cyan);
+        }
+
+        .hero {
+            margin-top: 110px;
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--cyan);
+            border: 2px solid var(--cyan);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cyan);
+            color: var(--dark-bg);
+        }
+
+        .section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
+            border-color: var(--cyan);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--cyan);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+        }
+
+        .contact-box {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 217, 255, 0.2);
+            border-radius: 12px;
+            padding: 3rem 1.5rem;
+            max-width: 600px;
+            margin: 3rem auto;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .contact-box h3 {
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .email-link {
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 1rem;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        .email-link:hover {
+            color: var(--cyan);
+        }
+
+        footer {
+            background: var(--card-bg);
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(0, 217, 255, 0.1);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .logo img {
+                height: 60px;
+            }
+            .logo-text {
+                font-size: 1.6rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .hero {
+                margin-top: 90px;
+                padding: 4rem 1.5rem;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            .email-link {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="quantar_favicon.png" alt="Quantar Logo">
+                <span class="logo-text">QUANTAR</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>
+                The World's First<br>
+                <span class="gradient-text">Quantum-Resistant</span><br>
+                Blockchain
+            </h1>
+            <p>
+                By 2030, quantum computers will break Bitcoin, Ethereum, and every major blockchain.
+                <strong>$2.5 trillion in cryptocurrency</strong> will be at risk. We're building the safe haven.
+            </p>
+            <div class="cta-buttons">
+                <a href="invest/" class="btn btn-primary">
+                    Investor Inquiries
+                </a>
+                <a href="#team" class="btn btn-secondary">
+                    We're Hiring
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="problem" style="background: linear-gradient(180deg, var(--dark-bg), var(--card-bg));">
+        <div class="container">
+            <h2 class="section-title">The <span class="gradient-text">$2.5 Trillion</span> Problem</h2>
+            <p class="section-subtitle">
+                Quantum computers are advancing rapidly. When they reach sufficient power, 
+                they will break the cryptography securing all existing blockchains.
+            </p>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="stat-number">$2.5T</div>
+                    <div>Cryptocurrency at Risk</div>
+                </div>
+                <div class="card">
+                    <div class="stat-number">2028-30</div>
+                    <div>Threat Timeline</div>
+                </div>
+                <div class="card">
+                    <div class="stat-number">433</div>
+                    <div>IBM Qubits (Today)</div>
+                </div>
+                <div class="card">
+                    <div class="stat-number">100%</div>
+                    <div>Major Chains Vulnerable</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="solution">
+        <div class="container">
+            <h2 class="section-title">The <span class="gradient-text">Quantar</span> Solution</h2>
+            <p class="section-subtitle">
+                Built quantum-resistant from day one. No migration needed. No compromises.
+            </p>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Post-Quantum Cryptography</h3>
+                    <p>CRYSTALS-Dilithium Level 5 signatures. NIST-approved. 256-bit quantum security.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>100,000+ TPS</h3>
+                    <p>128-shard architecture enabling massive horizontal scaling.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>zk-STARK Privacy</h3>
+                    <p>Native privacy layer using quantum-resistant zero-knowledge proofs.</p>
+                </div>
+                <div class="card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Built in Rust</h3>
+                    <p>Memory-safe, high-performance systems programming.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="team" style="background: linear-gradient(180deg, var(--dark-bg), var(--card-bg));">
+        <div class="container">
+            <h2 class="section-title">Building the <span class="gradient-text">Team</span></h2>
+            <div class="grid-4" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="card">
+                    <h3>Jefferson Buiar</h3>
+                    <div style="color: var(--cyan); font-weight: 600; margin-bottom: 1rem;">Founder & CEO</div>
+                    <p>25+ years of technology leadership experience. Rust developer and blockchain architect.</p>
+                </div>
+                <div class="card" style="border: 2px dashed var(--cyan); background: linear-gradient(135deg, rgba(0, 217, 255, 0.1), rgba(157, 78, 221, 0.1));">
+                    <h3 style="color: var(--cyan); font-size: 2rem;">We're Hiring! 🚀</h3>
+                    <p style="margin-bottom: 1.5rem;">Join us in building the future of quantum-safe blockchain.</p>
+                    <div style="text-align: left; margin: 1.5rem 0;">
+                        <div style="margin-bottom: 0.5rem;">→ Co-Founder CTO</div>
+                        <div style="margin-bottom: 0.5rem;">→ Lead Privacy Engineer</div>
+                        <div style="margin-bottom: 0.5rem;">→ Senior Blockchain Engineers</div>
+                        <div>→ Rust Developers</div>
+                    </div>
+                    <a href="mailto:contact@quantarnetwork.com?subject=Career%20Application%20-%20Quantar" class="btn btn-primary" style="margin-top: 1.5rem;">
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact <span class="gradient-text">Quantar</span></h2>
+            <p class="section-subtitle">
+                Get in touch for investment opportunities, partnerships, careers, or general inquiries.
+            </p>
+            
+            <div class="contact-box">
+                <h3>📧 Email Us</h3>
+                <a href="mailto:contact@quantarnetwork.com" class="email-link">
+                    contact@quantarnetwork.com
+                </a>
+                <p style="color: var(--text-secondary); margin-top: 1rem;">
+                    Click to send an email
+                </p>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="invest/" class="btn btn-primary">
+                    Investor Inquiries
+                </a>
+                <a href="mailto:contact@quantarnetwork.com?subject=Partnership%20Inquiry%20-%20Quantar" class="btn btn-secondary">
+                    Partnership Inquiries
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Quantar Network. All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Building the quantum-resistant future of blockchain.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
+        
