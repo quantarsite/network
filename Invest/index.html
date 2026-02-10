@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantar — Invest in Quantum-Resistant Blockchain</title>
+  <meta name="description" content="Quantar is building the world's first Layer-1 blockchain with native post-quantum cryptography. Join our $2.5M seed round.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #050709;
+      --bg-elevated: #0a0e17;
+      --bg-card: #0d1220;
+      --bg-card-hover: #111a2e;
+      --border: #152038;
+      --border-accent: #2563eb;
+      --text-primary: #eaf0fa;
+      --text-secondary: #7b8fad;
+      --text-muted: #3d4f6e;
+      --accent: #3b82f6;
+      --accent-bright: #60a5fa;
+      --accent-dim: #1d4ed8;
+      --accent-glow: rgba(59, 130, 246, 0.12);
+      --green: #22c55e;
+      --green-dim: #16a34a;
+      --green-glow: rgba(34, 197, 94, 0.1);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.08);
+      --red-soft: #ef4444;
+      --font-body: 'Sora', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* --- Ambient Backgrounds --- */
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.025) 1px, transparent 1px);
+      background-size: 72px 72px;
+      pointer-events: none;
+    }
+    .bg-orb {
+      position: fixed; top: -20vh; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(59,130,246,0.08) 0%, rgba(59,130,246,0.02) 40%, transparent 70%);
+      pointer-events: none; z-index: 0; filter: blur(40px);
+    }
+    .bg-orb-green {
+      position: fixed; bottom: -10vh; right: -10vw;
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(34,197,94,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0; filter: blur(60px);
+    }
+
+    .container { max-width: 980px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+    /* --- Animations --- */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .anim-up { animation: fadeUp 0.7s var(--ease-out-expo) both; }
+    .anim-up-d1 { animation: fadeUp 0.7s var(--ease-out-expo) 0.08s both; }
+    .anim-up-d2 { animation: fadeUp 0.7s var(--ease-out-expo) 0.16s both; }
+    .anim-up-d3 { animation: fadeUp 0.7s var(--ease-out-expo) 0.24s both; }
+    .anim-up-d4 { animation: fadeUp 0.7s var(--ease-out-expo) 0.32s both; }
+
+    /* --- Navigation --- */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,7,9,0.82); backdrop-filter: blur(24px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+    }
+    nav {
+      max-width: 980px; margin: 0 auto; padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-mono); font-weight: 700; font-size: 1.2rem;
+      color: var(--text-primary); text-decoration: none; letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none; font-size: 0.82rem;
+      font-weight: 500; letter-spacing: 0.2px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+
+    /* --- Buttons --- */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff; padding: 13px 30px; border-radius: var(--radius-sm);
+      font-family: var(--font-body); font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.25s var(--ease-out-expo);
+      box-shadow: 0 0 24px rgba(59,130,246,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .btn-primary:hover {
+      background: var(--accent-dim); transform: translateY(-2px);
+      box-shadow: 0 0 40px rgba(59,130,246,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--text-primary); padding: 13px 30px;
+      border-radius: var(--radius-sm); font-family: var(--font-body);
+      font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.25s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: var(--accent-glow); }
+    .btn-sm { padding: 9px 22px; font-size: 0.8rem; }
+
+    /* --- Hero --- */
+    .hero { padding: 100px 0 80px; text-align: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--green-glow); border: 1px solid rgba(34,197,94,0.2);
+      padding: 7px 18px; border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600; color: var(--green);
+      letter-spacing: 0.4px; text-transform: uppercase;
+      animation: fadeDown 0.6s var(--ease-out-expo);
+    }
+    .badge::before {
+      content: ''; width: 7px; height: 7px; background: var(--green);
+      border-radius: 50%; animation: pulse 2s infinite;
+      box-shadow: 0 0 8px rgba(34,197,94,0.5);
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.6rem); font-weight: 700; line-height: 1.12;
+      letter-spacing: -2px; margin: 28px 0 22px;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #3b82f6 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p {
+      font-size: 1.05rem; color: var(--text-secondary); max-width: 580px;
+      margin: 0 auto 40px; font-weight: 400; line-height: 1.75;
+    }
+    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* --- Stats Banner --- */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--border); border-radius: var(--radius); overflow: hidden;
+      margin: 64px 0; border: 1px solid var(--border);
+    }
+    .stat {
+      background: var(--bg-elevated); padding: 30px 20px; text-align: center;
+      transition: background 0.3s;
+    }
+    .stat:hover { background: var(--bg-card); }
+    .stat-value {
+      font-family: var(--font-mono); font-size: 1.65rem; font-weight: 700;
+      color: var(--text-primary); letter-spacing: -0.5px;
+    }
+    .stat-value .unit { font-size: 0.85rem; color: var(--accent-bright); font-weight: 500; }
+    .stat-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; letter-spacing: 0.3px; }
+
+    /* --- Sections --- */
+    section { padding: 80px 0; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+      color: var(--accent); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3.5vw, 2.3rem); font-weight: 700;
+      letter-spacing: -1.2px; margin-bottom: 14px; line-height: 1.2;
+    }
+    .section-desc {
+      color: var(--text-secondary); max-width: 580px; margin-bottom: 44px;
+      font-size: 0.98rem; line-height: 1.7;
+    }
+
+    /* --- Cards --- */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 30px 26px;
+      transition: all 0.35s var(--ease-out-expo); position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3), transparent);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .card:hover {
+      border-color: rgba(59,130,246,0.25); background: var(--bg-card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px -20px rgba(59,130,246,0.1);
+    }
+    .card:hover::before { opacity: 1; }
+    .card-icon {
+      font-size: 1.6rem; margin-bottom: 16px;
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      background: var(--accent-glow); border-radius: 12px;
+    }
+    .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .card p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; }
+
+    /* --- Token Grid --- */
+    .token-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .token-item {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px; transition: all 0.3s;
+    }
+    .token-item:hover { border-color: rgba(59,130,246,0.2); transform: translateY(-2px); }
+    .token-item .label {
+      font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 500;
+    }
+    .token-item .value { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; }
+    .token-item .value.accent { color: var(--accent-bright); }
+    .token-item .value.green { color: var(--green); }
+    .token-item .value.gold { color: var(--amber); }
+
+    /* --- Use of Funds --- */
+    .funds-bar-container { margin-top: 36px; }
+    .funds-bar {
+      display: flex; height: 12px; border-radius: 100px; overflow: hidden;
+      background: var(--bg-card); border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .funds-bar div { height: 100%; transition: width 0.6s var(--ease-out-expo); }
+    .funds-bar .team { width: 60%; background: var(--accent); }
+    .funds-bar .dev { width: 20%; background: var(--green); }
+    .funds-bar .ops { width: 10%; background: var(--amber); }
+    .funds-bar .mkt { width: 10%; background: #a78bfa; }
+    .funds-legend { display: flex; gap: 24px; flex-wrap: wrap; }
+    .funds-legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-secondary); }
+    .funds-legend-item .dot { width: 10px; height: 10px; border-radius: 3px; }
+
+    /* --- Roadmap --- */
+    .roadmap { position: relative; padding-left: 36px; }
+    .roadmap::before {
+      content: ''; position: absolute; left: 8px; top: 10px; bottom: 10px;
+      width: 2px; background: linear-gradient(to bottom, var(--accent), var(--border) 70%);
+    }
+    .roadmap-item { position: relative; margin-bottom: 36px; }
+    .roadmap-item::before {
+      content: ''; position: absolute; left: -32px; top: 7px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--accent); border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 12px rgba(59,130,246,0.4);
+    }
+    .roadmap-item.future::before { background: var(--text-muted); box-shadow: none; }
+    .roadmap-phase {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-bright);
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px;
+    }
+    .roadmap-item.future .roadmap-phase { color: var(--text-muted); }
+    .roadmap-item h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .roadmap-item p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* --- Comparison Table --- */
+    .comparison-table {
+      width: 100%; border-collapse: separate; border-spacing: 0;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-top: 32px;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 16px 20px; text-align: left; font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .comparison-table thead th {
+      background: var(--bg-elevated); font-weight: 600; font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary);
+    }
+    .comparison-table thead th:last-child { color: var(--accent-bright); }
+    .comparison-table tbody tr:last-child td { border-bottom: none; }
+    .comparison-table tbody td { color: var(--text-secondary); }
+    .comparison-table tbody td:first-child { color: var(--text-primary); font-weight: 500; }
+    .comparison-table tbody td:last-child { color: var(--green); font-weight: 500; }
+    .tag-danger {
+      display: inline-block; background: rgba(239,68,68,0.1); color: var(--red-soft);
+      padding: 2px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+    }
+    .tag-safe {
+      display: inline-block; background: var(--green-glow); color: var(--green);
+      padding: 2px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+    }
+
+    /* --- CTA --- */
+    .cta-section {
+      text-align: center; padding: 100px 0 80px;
+      border-top: 1px solid var(--border); position: relative;
+    }
+    .cta-section::before {
+      content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+    .cta-section h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700;
+      letter-spacing: -1.2px; margin-bottom: 18px; line-height: 1.2;
+    }
+    .cta-section p { color: var(--text-secondary); max-width: 480px; margin: 0 auto 36px; font-size: 0.98rem; }
+
+    /* --- Footer --- */
+    footer {
+      border-top: 1px solid var(--border); padding: 36px 0;
+      text-align: center; font-size: 0.78rem; color: var(--text-muted);
+    }
+    footer a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: var(--text-primary); }
+    .footer-disclaimer {
+      margin-top: 20px; font-size: 0.7rem; max-width: 600px;
+      margin-left: auto; margin-right: auto; line-height: 1.7; color: var(--text-muted);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .nav-links .hide-mobile { display: none; }
+      .hero { padding: 70px 0 60px; }
+      section { padding: 60px 0; }
+      .comparison-table { font-size: 0.82rem; }
+      .comparison-table th, .comparison-table td { padding: 12px 14px; }
+    }
+    @media (max-width: 480px) {
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .hero h1 { letter-spacing: -1px; }
+      .funds-legend { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orb"></div>
+<div class="bg-orb-green"></div>
+
+<!-- NAV -->
+<header>
+  <nav>
+    <a href="#" class="logo">Quantar<span>.</span></a>
+    <div class="nav-links">
+      <a href="#technology" class="hide-mobile">Technology</a>
+      <a href="#tokenomics" class="hide-mobile">Tokenomics</a>
+      <a href="#roadmap" class="hide-mobile">Roadmap</a>
+      <a href="#contact" class="btn-primary btn-sm">Invest</a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="badge">Seed Round Open</div>
+    <h1 class="anim-up">The Future of Blockchain is<br><span class="gradient">Quantum Resistant</span></h1>
+    <p class="anim-up-d1">Quantar is building the world's first Layer-1 blockchain with native post-quantum cryptography — protecting $2.5 trillion in digital assets before it's too late.</p>
+    <div class="hero-buttons anim-up-d2">
+      <a href="#contact" class="btn-primary">Join the Seed Round →</a>
+      <a href="#technology" class="btn-secondary">Explore the Technology</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats-bar anim-up-d3">
+    <div class="stat">
+      <div class="stat-value">$2.5<span class="unit">M</span></div>
+      <div class="stat-label">Seed Round</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">$1.25</div>
+      <div class="stat-label">Price per QTR Token</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">100K+<span class="unit"> TPS</span></div>
+      <div class="stat-label">Transactions per Second</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">128</div>
+      <div class="stat-label">Shard Architecture</div>
+    </div>
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<section>
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">The Quantum Threat Is Real</h2>
+    <p class="section-desc">Quantum computers capable of breaking current cryptography are projected by 2030. Every major blockchain — Bitcoin, Ethereum, and beyond — is vulnerable.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <h3>$2.5 Trillion at Risk</h3>
+        <p>The total value of digital assets secured by cryptography that will be vulnerable to quantum attacks using Shor's algorithm.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏳</div>
+        <h3>Harvest Now, Decrypt Later</h3>
+        <p>Attackers are already harvesting encrypted data today to decrypt once quantum computers become available.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔓</div>
+        <h3>Current Blockchains Are Exposed</h3>
+        <p>ECDSA and SHA-256, used by Bitcoin and Ethereum, will be broken by sufficiently scaled quantum computing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section style="padding-top: 0;">
+  <div class="container">
+    <div class="section-label">Comparison</div>
+    <h2 class="section-title">Legacy Blockchains vs. Quantar</h2>
+    <p class="section-desc">Existing blockchains face an impossible choice: maintain backward compatibility and die, or break it and destroy trust.</p>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Aspect</th>
+          <th>Bitcoin / Ethereum</th>
+          <th>Quantar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cryptography</td>
+          <td>ECDSA (1980s) <span class="tag-danger">Vulnerable</span></td>
+          <td>Dilithium-5 (NIST 2024) <span class="tag-safe">Secure</span></td>
+        </tr>
+        <tr>
+          <td>Quantum Resistant</td>
+          <td>No</td>
+          <td>Yes — 256-bit quantum security</td>
+        </tr>
+        <tr>
+          <td>Migration Required</td>
+          <td>Complete rebuild ($$$)</td>
+          <td>None — built-in from genesis</td>
+        </tr>
+        <tr>
+          <td>Time to Quantum-Safe</td>
+          <td>10+ years (if ever)</td>
+          <td>Q2 2027 mainnet launch</td>
+        </tr>
+        <tr>
+          <td>Performance</td>
+          <td>7–15 TPS</td>
+          <td>100,000+ TPS (128-shard)</td>
+        </tr>
+        <tr>
+          <td>Finality</td>
+          <td>10–60 minutes</td>
+          <td>5 seconds</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section id="technology">
+  <div class="container">
+    <div class="section-label">Our Solution</div>
+    <h2 class="section-title">Native Post-Quantum Cryptography</h2>
+    <p class="section-desc">Quantar is not a patch — it's a Layer-1 blockchain built from the ground up with the most advanced post-quantum algorithms standardized by NIST.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <h3>CRYSTALS-Dilithium-5</h3>
+        <p>Quantum-resistant digital signatures at the highest NIST security level, ensuring authenticity for every transaction.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔐</div>
+        <h3>CRYSTALS-Kyber-3</h3>
+        <p>Post-quantum key encapsulation for secure node-to-node communication, protecting against quantum interception.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🌲</div>
+        <h3>SPHINCS+</h3>
+        <p>Hash-based signatures as an additional security layer — resilient even against future advances in quantum computing.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <h3>128-Shard Architecture</h3>
+        <p>A 128-shard design achieving 100,000+ TPS without sacrificing quantum security or decentralization.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="tokenomics">
+  <div class="container">
+    <div class="section-label">Tokenomics</div>
+    <h2 class="section-title">QTR Token — Economic Structure</h2>
+    <p class="section-desc">A token model designed for long-term alignment between investors, team, and community.</p>
+    <div class="token-grid">
+      <div class="token-item">
+        <div class="label">Total Supply</div>
+        <div class="value accent">20,000,000 QTR</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Seed Round</div>
+        <div class="value green">10% — 2M QTR</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Seed Price</div>
+        <div class="value gold">$1.25 / QTR</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Seed Raise</div>
+        <div class="value accent">$2,500,000</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Team & Founders</div>
+        <div class="value">15%</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Development & Ecosystem</div>
+        <div class="value">25%</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Staking & Rewards</div>
+        <div class="value">20%</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Foundation & Governance</div>
+        <div class="value">30%</div>
+      </div>
+    </div>
+
+    <!-- Use of Funds -->
+    <div class="funds-bar-container" style="margin-top: 52px;">
+      <h3 style="font-size: 1.05rem; font-weight: 600; margin-bottom: 6px;">Use of Funds</h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 20px;">$2.5M seed allocation — 18-month runway to mainnet</p>
+      <div class="funds-bar">
+        <div class="team"></div>
+        <div class="dev"></div>
+        <div class="ops"></div>
+        <div class="mkt"></div>
+      </div>
+      <div class="funds-legend">
+        <div class="funds-legend-item"><div class="dot" style="background: var(--accent);"></div>Team — 60% ($1.5M)</div>
+        <div class="funds-legend-item"><div class="dot" style="background: var(--green);"></div>Development — 20% ($500K)</div>
+        <div class="funds-legend-item"><div class="dot" style="background: var(--amber);"></div>Operations — 10% ($250K)</div>
+        <div class="funds-legend-item"><div class="dot" style="background: #a78bfa;"></div>Marketing — 10% ($250K)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-label">Roadmap</div>
+    <h2 class="section-title">Path to Launch</h2>
+    <p class="section-desc">Strategic milestones from fundraising to mainnet, with clear technical and business targets.</p>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-phase">Q1 2026 — Current</div>
+        <h4>Seed Round</h4>
+        <p>Raising $2.5M to fund protocol development, core technical team hiring, and security audits.</p>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-phase">Q2–Q3 2026</div>
+        <h4>Team & Prototype</h4>
+        <p>Hire CTO and engineers specialized in post-quantum cryptography. Build functional prototype and private testnet.</p>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-phase">Q4 2026</div>
+        <h4>Public Testnet</h4>
+        <p>Launch public testnet with full CRYSTALS-Dilithium-5, Kyber-3, and SPHINCS+ support. Bug bounty program.</p>
+      </div>
+      <div class="roadmap-item future">
+        <div class="roadmap-phase">Q2 2027</div>
+        <h4>Mainnet & Ecosystem</h4>
+        <p>Mainnet launch, developer tools, SDK release, and ecosystem grants program to drive adoption.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY NOW -->
+<section>
+  <div class="container">
+    <div class="section-label">Opportunity</div>
+    <h2 class="section-title">Why Invest Now?</h2>
+    <p class="section-desc">The window to position before the quantum threat closes is narrowing.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🏁</div>
+        <h3>First-Mover Advantage</h3>
+        <p>No other Layer-1 blockchain has been built from scratch with post-quantum cryptography. Quantar is the pioneer in this market.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>$2.5 Trillion Market</h3>
+        <p>The entire crypto market cap will need to migrate to quantum-safe solutions. Quantar is positioned to capture this demand.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔬</div>
+        <h3>NIST Standards Finalized</h3>
+        <p>The algorithms we use were officially standardized by NIST in 2024, validating our technological approach.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INVESTMENT TERMS -->
+<section>
+  <div class="container">
+    <div class="section-label">Terms</div>
+    <h2 class="section-title">Investment Terms</h2>
+    <p class="section-desc">Structured to align investor interests with long-term project success.</p>
+    <div class="token-grid">
+      <div class="token-item">
+        <div class="label">Pre-Money Valuation</div>
+        <div class="value accent">$25,000,000</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Raising</div>
+        <div class="value green">$2,500,000</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Dilution</div>
+        <div class="value">~9%</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Runway</div>
+        <div class="value gold">18 Months</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Investor Rights</div>
+        <div class="value" style="font-size: 0.85rem;">Pro-rata, Observer Seat, Quarterly Updates</div>
+      </div>
+      <div class="token-item">
+        <div class="label">Series A Target (2027)</div>
+        <div class="value accent">$15M @ $100M val</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section>
+  <div class="container">
+    <div class="section-label">Leadership</div>
+    <h2 class="section-title">Founding Team</h2>
+    <p class="section-desc">Proven technology leadership and long-term vision for digital security.</p>
+    <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+      <div class="card" style="text-align: center;">
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #a78bfa); margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; font-family: var(--font-mono); box-shadow: 0 0 30px rgba(59,130,246,0.2);">J</div>
+        <h3>Jefferson Buiar</h3>
+        <p style="color: var(--accent-bright); font-size: 0.82rem; margin-bottom: 10px; font-weight: 500;">Founder & CEO</p>
+        <p>25+ years of technology leadership. Visionary focused on protecting the blockchain ecosystem against the quantum threat.</p>
+      </div>
+      <div class="card" style="text-align: center;">
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--text-muted), var(--border)); margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--text-secondary);">?</div>
+        <h3>CTO — Recruiting</h3>
+        <p style="color: var(--amber); font-size: 0.82rem; margin-bottom: 10px; font-weight: 500;">Strategic Hire</p>
+        <p>Seeking a technical leader with deep expertise in post-quantum cryptography and distributed systems to lead protocol development.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <h2>Protect the Future.<br>Invest in <span style="color: var(--accent-bright);">Quantar</span>.</h2>
+    <p>The $2.5M seed round is open for strategic investors who understand the urgency of post-quantum security.</p>
+    <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+      <a href="mailto:contact@quantarnetwork.com" class="btn-primary">Talk to the Founder →</a>
+      <a href="./QUANTAR-Investment-Thesis.docx" class="btn-secondary" download>Download Pitch Deck</a>
+    </div>
+    <p style="margin-top: 24px; font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono);">contact@quantarnetwork.com</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="margin-bottom: 10px;">
+      <a href="#" class="logo" style="font-size: 1rem;">Quantar<span style="color: var(--accent);">.</span></a>
+    </p>
+    <p>&copy; 2026 Quantar Network. All rights reserved.</p>
+    <p style="margin-top: 10px;">
+      <a href="#">Whitepaper</a> &nbsp;·&nbsp;
+      <a href="#">GitHub</a> &nbsp;·&nbsp;
+      <a href="#">Twitter</a> &nbsp;·&nbsp;
+      <a href="#">Telegram</a>
+    </p>
+    <p class="footer-disclaimer">
+      This website is for informational purposes only and does not constitute an offer to sell or a solicitation to buy securities. Investment in cryptocurrency and blockchain projects involves significant risk, including the potential loss of all invested capital. This material is intended for qualified investors only. Quantar Network tokens (QTR) have not been registered under any securities laws.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
