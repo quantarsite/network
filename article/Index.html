@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantar Network — A Global Mission to Protect the Future of Blockchain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf9f6;
+      --bg-warm: #f5f0e8;
+      --bg-dark: #0a0c14;
+      --text: #1a1a1a;
+      --text-secondary: #555;
+      --text-muted: #888;
+      --accent: #1a4fd8;
+      --accent-soft: #e8efff;
+      --cyan: #0891b2;
+      --green: #059669;
+      --gold: #b8860b;
+      --border: #e0dcd4;
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: 'DM Sans', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* === HERO === */
+    .hero {
+      background: var(--bg-dark);
+      color: white;
+      padding: 100px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(ellipse, rgba(26,79,216,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 400;
+      line-height: 1.15;
+      max-width: 820px;
+      margin: 0 auto 24px;
+      letter-spacing: -0.5px;
+    }
+    .hero h1 em {
+      color: #60a5fa;
+      font-style: italic;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-top: 48px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-stat {
+      text-align: center;
+    }
+    .hero-stat .number {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #60a5fa;
+      display: block;
+    }
+    .hero-stat .label {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-top: 4px;
+    }
+
+    /* === ARTICLE === */
+    .article {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 24px 80px;
+    }
+    .article p {
+      font-size: 1.05rem;
+      color: #333;
+      margin-bottom: 24px;
+      line-height: 1.85;
+    }
+    .article h2 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text);
+      margin: 56px 0 20px;
+      letter-spacing: -0.3px;
+    }
+    .article h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 36px 0 12px;
+    }
+
+    /* === PULL QUOTE === */
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 20px 0 20px 28px;
+      margin: 40px 0;
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-style: italic;
+      color: var(--accent);
+      line-height: 1.5;
+    }
+
+    /* === GLOBAL MAP SECTION === */
+    .global-section {
+      background: var(--bg-warm);
+      border-radius: 16px;
+      padding: 40px 36px;
+      margin: 48px 0;
+    }
+    .global-section h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin: 0 0 20px;
+      color: var(--text);
+    }
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .country-tag {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .country-tag .flag {
+      font-size: 1.2rem;
+    }
+
+    /* === STATS CARDS === */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 40px 0;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-family: var(--mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-card .desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* === USE OF FUNDS === */
+    .funds-section {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      margin: 40px 0;
+    }
+    .funds-section h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin: 0 0 24px;
+    }
+    .fund-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0ede6;
+    }
+    .fund-item:last-child { border-bottom: none; }
+    .fund-bar {
+      width: 6px;
+      height: 36px;
+      border-radius: 3px;
+    }
+    .fund-info { flex: 1; }
+    .fund-info .fund-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .fund-info .fund-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .fund-pct {
+      font-family: var(--mono);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+    .fund-amt {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-width: 80px;
+      text-align: right;
+    }
+
+    /* === CTA === */
+    .cta-section {
+      background: var(--bg-dark);
+      border-radius: 20px;
+      padding: 56px 36px;
+      text-align: center;
+      margin: 56px 0 20px;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(96,165,250,0.1), transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section h2 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      color: white;
+      margin-bottom: 12px;
+    }
+    .cta-section p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 32px;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.5); }
+
+    .contact-row {
+      margin-top: 28px;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .contact-item {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .contact-item span {
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* === FOOTER === */
+    .footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .disclaimer {
+      max-width: 600px;
+      margin: 12px auto 0;
+      font-size: 0.72rem;
+      color: #bbb;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 72px 20px 60px; }
+      .hero-stats { gap: 28px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .country-grid { grid-template-columns: repeat(2, 1fr); }
+      .global-section, .funds-section { padding: 28px 20px; }
+      .cta-section { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">Quantar Network &mdash; February 2026</div>
+  <h1>A Global Mission to Protect the <em>Future of Blockchain</em></h1>
+  <p class="hero-sub">Over 100 professionals from across the world are coming together to build the first quantum-resistant blockchain. Now we need your support to make it happen.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="number">100+</span><span class="label">Candidates</span></div>
+    <div class="hero-stat"><span class="number">15+</span><span class="label">Countries</span></div>
+    <div class="hero-stat"><span class="number">$2.5M</span><span class="label">Fundraising Goal</span></div>
+    <div class="hero-stat"><span class="number">2027</span><span class="label">Mainnet Target</span></div>
+  </div>
+</header>
+
+<!-- ARTICLE -->
+<article class="article">
+
+  <h2>The Quantum Threat Is Global. So Is Our Response.</h2>
+
+  <p>Quantum computing is no longer a distant possibility &mdash; it is an approaching reality. Major technology companies including Google, IBM, and Microsoft are racing toward quantum supremacy, with functional quantum computers expected by 2030. When they arrive, the cryptographic foundations that protect every blockchain, every cryptocurrency wallet, and every digital transaction will become vulnerable.</p>
+
+  <p>The numbers are staggering: <strong>$2.5 trillion in digital assets</strong> currently rely on cryptographic algorithms &mdash; ECDSA and RSA &mdash; that quantum computers will be able to break. Bitcoin, Ethereum, and every major blockchain face the same existential threat. This is not a problem that can be fixed with a simple software update. It requires a fundamentally new approach to blockchain architecture.</p>
+
+  <p>That is exactly what <strong>Quantar Network</strong> is building.</p>
+
+  <div class="pull-quote">
+    "We are not patching old systems. We are building a new blockchain from the ground up, designed to withstand the quantum era &mdash; with people from every corner of the world."
+    <div style="font-size: 0.85rem; font-style: normal; color: #555; margin-top: 10px; font-family: var(--sans);">&mdash; Jefferson Buiar, Founder & CEO</div>
+  </div>
+
+  <h2>A Truly Global Team</h2>
+
+  <p>What makes Quantar unique is not just its technology &mdash; it is the people behind it. Since announcing the project, <strong>over 100 professionals from more than 15 countries</strong> have applied to join the team. Engineers, cryptographers, community managers, designers, and blockchain specialists from across the globe have expressed interest in contributing to this mission.</p>
+
+  <p>These are not just job applicants. They are people who understand the urgency of the quantum threat and want to be part of the solution. From protocol engineers with zero-knowledge proof expertise to community builders with experience managing million-member Web3 communities, the talent pool reflects the global nature of the problem we are solving.</p>
+
+  <div class="global-section">
+    <h3>Where Our Candidates Come From</h3>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">Professionals from across the world have expressed interest in joining Quantar:</p>
+    <div class="country-grid">
+      <div class="country-tag"><span class="flag">🇺🇸</span> United States</div>
+      <div class="country-tag"><span class="flag">🇧🇷</span> Brazil</div>
+      <div class="country-tag"><span class="flag">🇬🇧</span> United Kingdom</div>
+      <div class="country-tag"><span class="flag">🇮🇳</span> India</div>
+      <div class="country-tag"><span class="flag">🇳🇬</span> Nigeria</div>
+      <div class="country-tag"><span class="flag">🇩🇪</span> Germany</div>
+      <div class="country-tag"><span class="flag">🇰🇷</span> South Korea</div>
+      <div class="country-tag"><span class="flag">🇨🇦</span> Canada</div>
+      <div class="country-tag"><span class="flag">🇸🇬</span> Singapore</div>
+      <div class="country-tag"><span class="flag">🇫🇷</span> France</div>
+      <div class="country-tag"><span class="flag">🇯🇵</span> Japan</div>
+      <div class="country-tag"><span class="flag">🇦🇪</span> UAE</div>
+      <div class="country-tag"><span class="flag">🇵🇹</span> Portugal</div>
+      <div class="country-tag"><span class="flag">🇦🇺</span> Australia</div>
+      <div class="country-tag"><span class="flag">🇮🇱</span> Israel</div>
+      <div class="country-tag"><span class="flag">🌍</span> And more...</div>
+    </div>
+  </div>
+
+  <h2>Why We Need Your Support</h2>
+
+  <p>We have the vision. We have the technical architecture. We have over 100 talented people ready to build. What we need now is the funding to bring it all together.</p>
+
+  <p>Building a Layer-1 blockchain from scratch is one of the most ambitious undertakings in technology. It requires a dedicated team of cryptographers, protocol engineers, security auditors, and community builders working full-time over 18 months. These are world-class professionals who deserve fair compensation for their expertise.</p>
+
+  <p><strong>Quantar is raising $2.5 million</strong> to fund the complete development from seed to mainnet. This is not venture capital in the traditional sense &mdash; this is a community-driven effort to protect the future of digital assets for everyone.</p>
+
+  <div class="stats-row">
+    <div class="stat-card"><span class="val">$2.5M</span><span class="desc">Goal</span></div>
+    <div class="stat-card"><span class="val">18</span><span class="desc">Months to Mainnet</span></div>
+    <div class="stat-card"><span class="val">100K+</span><span class="desc">TPS Target</span></div>
+  </div>
+
+  <div class="funds-section">
+    <h3>How Your Contribution Will Be Used</h3>
+    <div class="fund-item">
+      <div class="fund-bar" style="background: #3b82f6;"></div>
+      <div class="fund-info">
+        <div class="fund-name">Team & Talent</div>
+        <div class="fund-desc">Hiring core team: protocol engineers, cryptographers, security experts, community managers</div>
+      </div>
+      <div class="fund-pct" style="color: #3b82f6;">60%</div>
+      <div class="fund-amt">$1,500,000</div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-bar" style="background: #059669;"></div>
+      <div class="fund-info">
+        <div class="fund-name">Development & Infrastructure</div>
+        <div class="fund-desc">Servers, testnets, security audits, tooling, and open-source development</div>
+      </div>
+      <div class="fund-pct" style="color: #059669;">20%</div>
+      <div class="fund-amt">$500,000</div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-bar" style="background: #b8860b;"></div>
+      <div class="fund-info">
+        <div class="fund-name">Operations & Legal</div>
+        <div class="fund-desc">Legal compliance, regulatory setup, business operations, accounting</div>
+      </div>
+      <div class="fund-pct" style="color: #b8860b;">10%</div>
+      <div class="fund-amt">$250,000</div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-bar" style="background: #7c3aed;"></div>
+      <div class="fund-info">
+        <div class="fund-name">Marketing & Community</div>
+        <div class="fund-desc">Global community building, developer outreach, conferences, and brand awareness</div>
+      </div>
+      <div class="fund-pct" style="color: #7c3aed;">10%</div>
+      <div class="fund-amt">$250,000</div>
+    </div>
+  </div>
+
+  <h2>The Technology Behind Quantar</h2>
+
+  <p>Quantar is not a fork of an existing blockchain, and it is not a layer built on top of another chain. It is a completely new Layer-1 blockchain designed from the genesis block with <strong>post-quantum cryptography</strong>.</p>
+
+  <p>We use three NIST-standardized algorithms that have been rigorously tested and approved by the United States National Institute of Standards and Technology:</p>
+
+  <p><strong>CRYSTALS-Dilithium-5</strong> for digital signatures &mdash; replacing the vulnerable ECDSA used by Bitcoin and Ethereum. <strong>Kyber-3</strong> for key encapsulation &mdash; ensuring secure key exchange that quantum computers cannot intercept. And <strong>SPHINCS+</strong> for hash-based signatures &mdash; providing an additional layer of security based on different mathematical foundations.</p>
+
+  <p>Our <strong>128-shard architecture</strong> targets over <strong>100,000 transactions per second</strong>, combining quantum security with the performance needed for real-world adoption.</p>
+
+  <h2>The Roadmap</h2>
+
+  <p><strong>Q1 2026 (Now)</strong> &mdash; Seed round fundraising. Building investor relations and finalizing the core technical team from our pool of 100+ candidates.</p>
+
+  <p><strong>Q2&ndash;Q3 2026</strong> &mdash; Hire CTO and core engineering team. Build functional prototype and private testnet with full PQC implementation.</p>
+
+  <p><strong>Q4 2026</strong> &mdash; Launch public testnet. Bug bounty program. Third-party security audits.</p>
+
+  <p><strong>Q2 2027</strong> &mdash; Mainnet launch. Developer tools and SDK release. Ecosystem grants program to drive adoption.</p>
+
+  <h2>Every Contribution Matters</h2>
+
+  <p>Whether you are a venture capital fund looking for the next breakthrough infrastructure investment, an angel investor passionate about cybersecurity, or an individual who believes in protecting the future of digital assets &mdash; your contribution directly enables us to hire the talent, build the technology, and launch a blockchain that the entire crypto industry will need.</p>
+
+  <p>The quantum clock is ticking. The talent is ready. The architecture is designed. Now we need the resources to build.</p>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <h2>Support the Quantum-Resistant Future</h2>
+    <p>Help us hire our global team and build the blockchain that will protect $2.5 trillion in digital assets.</p>
+    <div class="cta-buttons">
+      <a href="https://quantarsite.github.io/network/Invest/" class="btn-primary">Invest in Quantar &rarr;</a>
+      <a href="mailto:contact@quantarnetwork.com" class="btn-outline">Contact the Founder</a>
+    </div>
+    <div class="contact-row">
+      <div class="contact-item">Email: <span>contact@quantarnetwork.com</span></div>
+      <div class="contact-item">PayPal: <span>buiarjefferson@gmail.com</span></div>
+    </div>
+  </div>
+
+</article>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>&copy; 2026 Quantar Network. All rights reserved.</p>
+  <p class="disclaimer">This article is for informational purposes only and does not constitute an offer to sell or a solicitation to buy securities. Investment in cryptocurrency and blockchain projects involves significant risk, including the potential loss of all invested capital. Quantar Network tokens (QTR) have not been registered under any securities laws.</p>
+</footer>
+
+</body>
+</html>
