@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash Book — Quantar Network</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-secondary: #111827;
+      --bg-card: #1a2235;
+      --bg-card-hover: #1f2a40;
+      --border: #2a3550;
+      --border-light: #374260;
+      --text-primary: #f0f4fc;
+      --text-secondary: #8a95b0;
+      --text-muted: #5a6580;
+      --accent-green: #00e68a;
+      --accent-green-dim: rgba(0, 230, 138, 0.12);
+      --accent-red: #ff5c72;
+      --accent-red-dim: rgba(255, 92, 114, 0.12);
+      --accent-blue: #4dabf7;
+      --accent-blue-dim: rgba(77, 171, 247, 0.12);
+      --accent-purple: #b197fc;
+      --accent-purple-dim: rgba(177, 151, 252, 0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* === BACKGROUND EFFECTS === */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 20% 20%, rgba(0, 230, 138, 0.04) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 80%, rgba(77, 171, 247, 0.03) 0%, transparent 50%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* === HEADER === */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .header-title h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-title p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent-green-dim);
+      border: 1px solid rgba(0, 230, 138, 0.2);
+      border-radius: 100px;
+      font-size: 13px;
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    .header-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* === SUMMARY CARDS === */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .summary-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card .label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .summary-card .value {
+      font-family: 'Space Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .summary-card .sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .card-income .value { color: var(--accent-green); }
+    .card-expense .value { color: var(--accent-red); }
+    .card-balance .value { color: var(--accent-blue); }
+    .card-docs .value { color: var(--accent-purple); }
+
+    /* === TABS === */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      padding: 10px 24px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover { color: var(--text-primary); }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* === TOOLBAR === */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      min-width: 280px;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus-within { border-color: var(--accent-blue); }
+
+    .search-box svg { color: var(--text-muted); flex-shrink: 0; }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      width: 100%;
+    }
+
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-green), #00cc7a);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover { box-shadow: 0 4px 16px rgba(0, 230, 138, 0.3); transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { border-color: var(--border-light); }
+
+    /* === TABLE === */
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-scroll { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    thead {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 16px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(42, 53, 80, 0.5);
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover td { background: var(--bg-card-hover); }
+
+    .type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .type-income {
+      background: var(--accent-green-dim);
+      color: var(--accent-green);
+    }
+
+    .type-expense {
+      background: var(--accent-red-dim);
+      color: var(--accent-red);
+    }
+
+    .amount-cell {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .amount-positive { color: var(--accent-green); }
+    .amount-negative { color: var(--accent-red); }
+
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .doc-link:hover { color: var(--accent-purple); }
+
+    .no-doc { color: var(--text-muted); font-size: 13px; }
+
+    .date-cell {
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .category-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      background: var(--accent-purple-dim);
+      color: var(--accent-purple);
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* === MODAL === */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      background: transparent;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover { background: var(--bg-card); color: var(--text-primary); }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus { border-color: var(--accent-blue); }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a95b0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+
+    .file-upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .file-upload-zone:hover, .file-upload-zone.drag-over {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-dim);
+    }
+
+    .file-upload-zone svg {
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .file-upload-zone p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .file-upload-zone .highlight {
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .file-upload-zone .file-types {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .file-upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-preview {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-top: 12px;
+    }
+
+    .file-preview .file-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent-blue-dim);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-blue);
+      flex-shrink: 0;
+    }
+
+    .file-preview .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-preview .file-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-preview .file-size {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .file-preview .file-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .file-preview .file-remove:hover { color: var(--accent-red); }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* === EMPTY STATE === */
+    .empty-state {
+      text-align: center;
+      padding: 64px 24px;
+    }
+
+    .empty-state svg { color: var(--text-muted); margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; margin-bottom: 8px; }
+    .empty-state p { color: var(--text-secondary); font-size: 14px; }
+
+    /* === FOOTER === */
+    .page-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .page-footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    /* === ANIMATIONS === */
+    .fade-in {
+      animation: fadeIn 0.5s ease both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .page-wrapper { padding: 24px 16px 60px; }
+      .header-title h1 { font-size: 22px; }
+      .summary-grid { grid-template-columns: 1fr 1fr; }
+      .summary-card .value { font-size: 22px; }
+      .tabs { width: 100%; }
+      .tab-btn { flex: 1; text-align: center; padding: 10px 12px; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .search-box { min-width: unset; }
+      .form-row { grid-template-columns: 1fr; }
+      .modal { padding: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .summary-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Print styles */
+    @media print {
+      body { background: #fff; color: #000; }
+      .btn, .tabs, .toolbar, .modal-overlay, .search-box { display: none !important; }
+      .table-container { border: 1px solid #ccc; }
+      th, td { border: 1px solid #ddd; }
+      .type-badge, .category-tag { border: 1px solid #999; background: transparent; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="header fade-in">
+    <div class="header-left">
+      <div class="logo-icon"><img src="quantar_favicon.png" alt="Quantar Network" /></div>
+      <div class="header-title">
+        <h1>CASH BOOK</h1>
+        <p>Quantar Network — Transparency Ledger</p>
+      </div>
+    </div>
+    <div class="header-badge">Public Record</div>
+  </header>
+
+  <!-- SUMMARY CARDS -->
+  <div class="summary-grid">
+    <div class="summary-card card-income fade-in delay-1">
+      <div class="label">Total Donations</div>
+      <div class="value" id="totalIncome">$0.00</div>
+      <div class="sub" id="incomeCount">0 entries</div>
+    </div>
+    <div class="summary-card card-expense fade-in delay-2">
+      <div class="label">Total Expenses</div>
+      <div class="value" id="totalExpense">$0.00</div>
+      <div class="sub" id="expenseCount">0 entries</div>
+    </div>
+    <div class="summary-card card-balance fade-in delay-3">
+      <div class="label">Balance</div>
+      <div class="value" id="totalBalance">$0.00</div>
+      <div class="sub">Net position</div>
+    </div>
+    <div class="summary-card card-docs fade-in delay-4">
+      <div class="label">Documents</div>
+      <div class="value" id="totalDocs">0</div>
+      <div class="sub">Uploaded receipts</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs fade-in delay-2">
+    <button class="tab-btn active" data-tab="all" onclick="filterTab('all', this)">All</button>
+    <button class="tab-btn" data-tab="income" onclick="filterTab('income', this)">Donations</button>
+    <button class="tab-btn" data-tab="expense" onclick="filterTab('expense', this)">Expenses</button>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar fade-in delay-3">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search entries..." id="searchInput" oninput="filterEntries()" />
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" onclick="exportCSV()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </button>
+      <button class="btn btn-primary" onclick="openModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Entry
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-container fade-in delay-4">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Document</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="entriesBody">
+        </tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <h3>No entries yet</h3>
+      <p>Transactions will be recorded here as they occur.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="page-footer">
+    <p>&copy; 2026 Quantar Network. All transactions are publicly recorded for full transparency.</p>
+    <p>Last updated: <span id="lastUpdated">—</span></p>
+  </footer>
+</div>
+
+<!-- ADD ENTRY MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>New Entry</h2>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <form id="entryForm" onsubmit="addEntry(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" class="form-input" id="entryDate" required />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select class="form-input" id="entryType" required>
+            <option value="income">Donation (Income)</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" class="form-input" id="entryDescription" placeholder="e.g. Seed round contribution from Investor X" required />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-input" id="entryCategory" required>
+            <option value="Donation">Donation</option>
+            <option value="Grant">Grant</option>
+            <option value="Sponsorship">Sponsorship</option>
+            <option value="Token Sale">Token Sale</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Development">Development</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Legal">Legal</option>
+            <option value="Operations">Operations</option>
+            <option value="Team">Team</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount (USD)</label>
+          <input type="number" step="0.01" min="0.01" class="form-input" id="entryAmount" placeholder="0.00" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Supporting Document</label>
+        <div class="file-upload-zone" id="uploadZone">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Drag & drop or <span class="highlight">browse files</span></p>
+          <p class="file-types">PDF, PNG, JPG, DOCX up to 10MB</p>
+          <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.csv" onchange="handleFile(event)" />
+        </div>
+        <div id="filePreviewContainer"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Entry</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ============ DATA STORE ============
+  let entries = [];
+  let currentFilter = 'all';
+  let uploadedFile = null;
+
+  // Detailed financial records shared only with contributing stakeholders
+  const sampleData = [];
+
+  let nextId = 100;
+
+  // ============ INIT ============
+  function init() {
+    entries = [...sampleData];
+    renderEntries();
+    updateSummary();
+    document.getElementById('entryDate').valueAsDate = new Date();
+  }
+
+  // ============ RENDER ============
+  function renderEntries() {
+    const tbody = document.getElementById('entriesBody');
+    const empty = document.getElementById('emptyState');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+
+    let filtered = entries.filter(e => {
+      if (currentFilter === 'income' && e.type !== 'income') return false;
+      if (currentFilter === 'expense' && e.type !== 'expense') return false;
+      if (search && !e.description.toLowerCase().includes(search) && !e.category.toLowerCase().includes(search)) return false;
+      return true;
+    });
+
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(e => `
+      <tr>
+        <td class="date-cell">${formatDate(e.date)}</td>
+        <td>
+          <span class="type-badge ${e.type === 'income' ? 'type-income' : 'type-expense'}">
+            ${e.type === 'income' ? '↑ Income' : '↓ Expense'}
+          </span>
+        </td>
+        <td style="max-width:300px;">${e.description}</td>
+        <td><span class="category-tag">${e.category}</span></td>
+        <td class="amount-cell ${e.type === 'income' ? 'amount-positive' : 'amount-negative'}">
+          ${e.type === 'income' ? '+' : '-'}$${formatNumber(e.amount)}
+        </td>
+        <td>
+          ${e.doc
+            ? `<a href="#" class="doc-link" onclick="viewDoc('${e.doc}');return false;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                ${e.doc}
+              </a>`
+            : `<span class="no-doc">—</span>`
+          }
+        </td>
+        <td>
+          <button class="modal-close" style="width:28px;height:28px;" onclick="deleteEntry(${e.id})" title="Delete">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ============ SUMMARY ============
+  function updateSummary() {
+    const incomes = entries.filter(e => e.type === 'income');
+    const expenses = entries.filter(e => e.type === 'expense');
+    const totalIn = incomes.reduce((s, e) => s + e.amount, 0);
+    const totalOut = expenses.reduce((s, e) => s + e.amount, 0);
+    const docs = entries.filter(e => e.doc).length;
+
+    document.getElementById('totalIncome').textContent = '$' + formatNumber(totalIn);
+    document.getElementById('totalExpense').textContent = '$' + formatNumber(totalOut);
+    document.getElementById('totalBalance').textContent = '$' + formatNumber(totalIn - totalOut);
+    document.getElementById('totalDocs').textContent = docs;
+    document.getElementById('incomeCount').textContent = incomes.length + ' entries';
+    document.getElementById('expenseCount').textContent = expenses.length + ' entries';
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // ============ FILTERS ============
+  function filterTab(tab, btn) {
+    currentFilter = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderEntries();
+  }
+
+  function filterEntries() { renderEntries(); }
+
+  // ============ MODAL ============
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    document.getElementById('entryForm').reset();
+    document.getElementById('entryDate').valueAsDate = new Date();
+    document.getElementById('filePreviewContainer').innerHTML = '';
+    uploadedFile = null;
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  // ============ FILE HANDLING ============
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File too large. Max 10MB allowed.');
+      return;
+    }
+    uploadedFile = file;
+    showFilePreview(file);
+  }
+
+  function showFilePreview(file) {
+    const container = document.getElementById('filePreviewContainer');
+    const sizeKB = (file.size / 1024).toFixed(1);
+    const sizeStr = sizeKB > 1024 ? (sizeKB / 1024).toFixed(1) + ' MB' : sizeKB + ' KB';
+
+    container.innerHTML = `
+      <div class="file-preview">
+        <div class="file-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="file-info">
+          <div class="file-name">${file.name}</div>
+          <div class="file-size">${sizeStr}</div>
+        </div>
+        <button class="file-remove" onclick="removeFile()" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    `;
+  }
+
+  function removeFile() {
+    uploadedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreviewContainer').innerHTML = '';
+  }
+
+  // Drag & drop
+  const uploadZone = document.getElementById('uploadZone');
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+  uploadZone.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      uploadedFile = file;
+      showFilePreview(file);
+    }
+  });
+
+  // ============ ADD ENTRY ============
+  function addEntry(e) {
+    e.preventDefault();
+    const entry = {
+      id: nextId++,
+      date: document.getElementById('entryDate').value,
+      type: document.getElementById('entryType').value,
+      description: document.getElementById('entryDescription').value,
+      category: document.getElementById('entryCategory').value,
+      amount: parseFloat(document.getElementById('entryAmount').value),
+      doc: uploadedFile ? uploadedFile.name : null
+    };
+    entries.push(entry);
+    renderEntries();
+    updateSummary();
+    closeModal();
+  }
+
+  // ============ DELETE ENTRY ============
+  function deleteEntry(id) {
+    if (!confirm('Remove this entry?')) return;
+    entries = entries.filter(e => e.id !== id);
+    renderEntries();
+    updateSummary();
+  }
+
+  // ============ VIEW DOC ============
+  function viewDoc(filename) {
+    alert('Opening document: ' + filename + '\n\nIn production, this would open/download the stored file.');
+  }
+
+  // ============ EXPORT CSV ============
+  function exportCSV() {
+    const headers = ['Date', 'Type', 'Description', 'Category', 'Amount', 'Document'];
+    const rows = entries
+      .sort((a, b) => new Date(a.date) - new Date(b.date))
+      .map(e => [
+        e.date,
+        e.type === 'income' ? 'Donation/Income' : 'Expense',
+        `"${e.description}"`,
+        e.category,
+        (e.type === 'income' ? '' : '-') + e.amount.toFixed(2),
+        e.doc || ''
+      ]);
+
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'quantar_cashbook_' + new Date().toISOString().split('T')[0] + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ============ UTILS ============
+  function formatDate(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  function formatNumber(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  // ============ START ============
+  init();
+</script>
+
+</body>
+</html>
