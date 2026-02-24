@@ -1,1 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantar Network — Global Talent Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050510; font-family: 'Rajdhani', sans-serif; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; padding: 30px 20px; }
+  .poster { width: 920px; max-width: 100%; background: linear-gradient(180deg, #070714 0%, #0A0E1A 30%, #0D1225 70%, #070714 100%); border: 1px solid rgba(0,229,255,0.15); border-radius: 4px; position: relative; overflow: hidden; }
+  .poster::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 600px 400px at 20% 10%, rgba(0,229,255,0.04) 0%, transparent 70%), radial-gradient(ellipse 500px 350px at 80% 90%, rgba(139,92,246,0.04) 0%, transparent 70%); pointer-events: none; }
+  .grid-overlay { position: absolute; inset: 0; background-image: linear-gradient(rgba(0,229,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; }
+  .content { position: relative; z-index: 1; }
+  .top-line { height: 3px; background: linear-gradient(90deg, #00E5FF, #8B5CF6, #EC4899, #8B5CF6, #00E5FF); background-size: 200% 100%; animation: gs 6s linear infinite; }
+  @keyframes gs { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
+  .header { text-align: center; padding: 35px 40px 8px; }
+  .logo-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 8px; }
+  .logo-icon { width: 48px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, #00E5FF, #8B5CF6); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 22px; color: #050510; box-shadow: 0 0 20px rgba(0,229,255,0.25); }
+  .logo-text { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 700; letter-spacing: 8px; color: #fff; }
+  .header h1 { font-family: 'Orbitron', sans-serif; font-size: 30px; font-weight: 800; color: #00E5FF; letter-spacing: 2px; margin-top: 22px; line-height: 1.2; text-shadow: 0 0 30px rgba(0,229,255,0.3); }
+  .header .subtitle { font-size: 16px; color: #9CA3AF; margin-top: 8px; font-weight: 400; letter-spacing: 1px; }
+
+  .compliance-bar { display: flex; justify-content: center; gap: 12px; padding: 18px 30px 10px; flex-wrap: wrap; }
+  .compliance-badge { display: flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 0.5px; }
+  .compliance-badge.fips { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.3); color: #10B981; }
+  .compliance-badge.nist { background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.3); color: #00E5FF; }
+  .compliance-badge.shield { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.3); color: #8B5CF6; }
+  .badge-icon { font-size: 13px; }
+
+  .security-strip { margin: 14px 35px; padding: 16px 22px; background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.15); border-radius: 6px; display: flex; align-items: center; gap: 20px; position: relative; overflow: hidden; }
+  .security-strip::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #10B981; border-radius: 3px 0 0 3px; }
+  .shield-icon { font-size: 36px; line-height: 1; filter: drop-shadow(0 0 8px rgba(16,185,129,0.4)); }
+  .security-info { flex: 1; }
+  .security-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: #10B981; letter-spacing: 2px; text-transform: uppercase; }
+  .security-desc { font-size: 13px; color: #9CA3AF; margin-top: 3px; line-height: 1.4; }
+  .security-desc strong { color: #D1D5DB; }
+  .security-algos { display: flex; gap: 10px; flex-wrap: wrap; }
+  .algo-chip { padding: 5px 10px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; }
+  .algo-chip.d5 { background: rgba(0,229,255,0.1); color: #00E5FF; border: 1px solid rgba(0,229,255,0.25); }
+  .algo-chip.k3 { background: rgba(139,92,246,0.1); color: #8B5CF6; border: 1px solid rgba(139,92,246,0.25); }
+  .algo-chip.sp { background: rgba(236,72,153,0.1); color: #EC4899; border: 1px solid rgba(236,72,153,0.25); }
+
+  .big-number-section { text-align: center; padding: 22px 40px 16px; }
+  .big-number { font-family: 'Orbitron', sans-serif; font-size: 96px; font-weight: 900; background: linear-gradient(135deg, #00E5FF 0%, #8B5CF6 50%, #EC4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; filter: drop-shadow(0 0 40px rgba(0,229,255,0.2)); }
+  .big-label { font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 6px; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; }
+  .big-sublabel { font-size: 15px; color: #6B7280; margin-top: 8px; }
+
+  .sep { height: 1px; margin: 10px 60px; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.2), rgba(139,92,246,0.2), transparent); }
+
+  .departments { padding: 18px 35px 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .dept-card { background: rgba(17,24,39,0.7); border: 1px solid rgba(0,229,255,0.08); border-radius: 6px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; transition: border-color 0.3s, background 0.3s; position: relative; overflow: hidden; }
+  .dept-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 100%; border-radius: 3px 0 0 3px; }
+  .dept-card:hover { border-color: rgba(0,229,255,0.2); background: rgba(17,24,39,0.9); }
+  .dept-card.cyan::before { background: #00E5FF; } .dept-card.purple::before { background: #8B5CF6; } .dept-card.pink::before { background: #EC4899; } .dept-card.green::before { background: #10B981; } .dept-card.orange::before { background: #F59E0B; }
+  .dept-num { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; min-width: 52px; text-align: center; }
+  .dept-card.cyan .dept-num { color: #00E5FF; } .dept-card.purple .dept-num { color: #8B5CF6; } .dept-card.pink .dept-num { color: #EC4899; } .dept-card.green .dept-num { color: #10B981; } .dept-card.orange .dept-num { color: #F59E0B; }
+  .dept-info { flex: 1; }
+  .dept-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .dept-desc { font-size: 12px; color: #6B7280; margin-top: 2px; line-height: 1.3; }
+  .dept-card.full { grid-column: 1 / -1; }
+
+  .metrics-strip { display: flex; justify-content: center; gap: 0; margin: 12px 35px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(0,229,255,0.1); }
+  .metric { flex: 1; text-align: center; padding: 14px 10px; background: rgba(17,24,39,0.6); border-right: 1px solid rgba(0,229,255,0.06); }
+  .metric:last-child { border-right: none; }
+  .metric-value { font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 800; }
+  .metric:nth-child(1) .metric-value { color: #00E5FF; } .metric:nth-child(2) .metric-value { color: #8B5CF6; } .metric:nth-child(3) .metric-value { color: #EC4899; } .metric:nth-child(4) .metric-value { color: #10B981; } .metric:nth-child(5) .metric-value { color: #F59E0B; }
+  .metric-label { font-size: 10px; color: #6B7280; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; font-weight: 600; }
+
+  .process-section { padding: 18px 40px 12px; text-align: center; }
+  .process-title { font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 4px; color: #F59E0B; text-transform: uppercase; margin-bottom: 16px; }
+  .process-steps { display: flex; align-items: center; justify-content: center; }
+  .step { text-align: center; flex: 0 0 auto; }
+  .step-circle { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 16px; margin: 0 auto 6px; }
+  .step:nth-child(1) .step-circle { background: rgba(0,229,255,0.15); color: #00E5FF; border: 1.5px solid #00E5FF; }
+  .step:nth-child(3) .step-circle { background: rgba(139,92,246,0.15); color: #8B5CF6; border: 1.5px solid #8B5CF6; }
+  .step:nth-child(5) .step-circle { background: rgba(236,72,153,0.15); color: #EC4899; border: 1.5px solid #EC4899; }
+  .step:nth-child(7) .step-circle { background: rgba(16,185,129,0.15); color: #10B981; border: 1.5px solid #10B981; }
+  .step-label { font-size: 11px; color: #9CA3AF; font-weight: 600; max-width: 90px; line-height: 1.2; }
+  .step-arrow { color: #374151; font-size: 20px; margin: 0 10px; margin-bottom: 18px; }
+
+  .trust-row { display: flex; justify-content: center; gap: 28px; padding: 8px 40px; flex-wrap: wrap; }
+  .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; letter-spacing: 0.5px; font-weight: 600; }
+  .trust-icon { font-size: 14px; }
+  .trust-item.verified { color: #10B981; } .trust-item.secure { color: #00E5FF; } .trust-item.global { color: #8B5CF6; } .trust-item.open { color: #F59E0B; }
+
+  .urgency-section { margin: 14px 35px 16px; padding: 24px 30px; background: linear-gradient(135deg, rgba(0,229,255,0.06), rgba(139,92,246,0.06), rgba(236,72,153,0.06)); border: 1px solid rgba(0,229,255,0.15); border-radius: 6px; text-align: center; position: relative; }
+  .urgency-section::before { content: ''; position: absolute; top: -1px; left: 30%; right: 30%; height: 2px; background: linear-gradient(90deg, transparent, #00E5FF, #8B5CF6, transparent); border-radius: 2px; }
+  .urgency-quote { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.4; max-width: 680px; margin: 0 auto; }
+  .urgency-quote em { font-style: normal; color: #00E5FF; }
+  .urgency-sub { font-size: 14px; color: #9CA3AF; margin-top: 10px; }
+
+  .global-tag { display: flex; justify-content: center; gap: 30px; padding: 8px 40px 6px; flex-wrap: wrap; }
+  .tag { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6B7280; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+  .tag-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .tag-dot.cyan { background: #00E5FF; box-shadow: 0 0 6px #00E5FF; } .tag-dot.purple { background: #8B5CF6; box-shadow: 0 0 6px #8B5CF6; } .tag-dot.pink { background: #EC4899; box-shadow: 0 0 6px #EC4899; } .tag-dot.green { background: #10B981; box-shadow: 0 0 6px #10B981; }
+
+  .cta { text-align: center; padding: 12px 40px 24px; }
+  .cta-link { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 700; color: #00E5FF; letter-spacing: 2px; text-decoration: none; }
+  .cta-detail { font-size: 13px; color: #6B7280; margin-top: 4px; }
+  .bottom-line { height: 3px; background: linear-gradient(90deg, #00E5FF, #8B5CF6, #EC4899, #8B5CF6, #00E5FF); background-size: 200% 100%; animation: gs 6s linear infinite; }
+
+  @media (max-width: 700px) { .departments { grid-template-columns: 1fr; } .big-number { font-size: 64px; } .header h1 { font-size: 22px; } .poster { border: none; border-radius: 0; } .process-steps { flex-wrap: wrap; gap: 8px; } .step-arrow { display: none; } .metrics-strip { flex-wrap: wrap; } .metric { flex: 0 0 50%; } .compliance-bar { gap: 8px; } .security-strip { flex-direction: column; text-align: center; } .security-algos { justify-content: center; } }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="grid-overlay"></div>
+  <div class="top-line"></div>
+  <div class="content">
+
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo-icon">Q</div>
+        <div class="logo-text">QUANTAR</div>
+      </div>
+      <h1>GLOBAL TALENT PIPELINE</h1>
+      <div class="subtitle">Building the World's First Post-Quantum Blockchain — With the World's Best</div>
+    </div>
+
+    <div class="compliance-bar">
+      <div class="compliance-badge fips"><span class="badge-icon">✓</span> FIPS 204 Compliant</div>
+      <div class="compliance-badge fips"><span class="badge-icon">✓</span> FIPS 203 Compliant</div>
+      <div class="compliance-badge fips"><span class="badge-icon">✓</span> FIPS 205 Compliant</div>
+      <div class="compliance-badge nist"><span class="badge-icon">◆</span> NIST PQC Standardized</div>
+      <div class="compliance-badge shield"><span class="badge-icon">⬡</span> HYDRA-X Dual-Sig</div>
+    </div>
+
+    <div class="security-strip">
+      <div class="shield-icon">🛡️</div>
+      <div class="security-info">
+        <div class="security-title">Post-Quantum Security Architecture</div>
+        <div class="security-desc">Every specialist builds on <strong>NIST-standardized algorithms</strong> — the same cryptographic standards adopted by the U.S. government, military, and critical infrastructure worldwide.</div>
+      </div>
+      <div class="security-algos">
+        <div class="algo-chip d5">Dilithium-5</div>
+        <div class="algo-chip k3">Kyber-3</div>
+        <div class="algo-chip sp">SPHINCS+</div>
+      </div>
+    </div>
+
+    <div class="big-number-section">
+      <div class="big-number">128</div>
+      <div class="big-label">Specialists in Queue Worldwide</div>
+      <div class="big-sublabel">Each one selected for a specific role — technically interviewed before hiring</div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="departments">
+      <div class="dept-card cyan"><div class="dept-num">22</div><div class="dept-info"><div class="dept-title">Rust / Core Protocol Engineers</div><div class="dept-desc">Build the L1 runtime, consensus engine, and node architecture in Rust</div></div></div>
+      <div class="dept-card cyan"><div class="dept-num">15</div><div class="dept-info"><div class="dept-title">Cryptography & PQC Specialists</div><div class="dept-desc">Implement Dilithium-5, Kyber-3, SPHINCS+ and HYDRA-X dual-signature protocol</div></div></div>
+      <div class="dept-card purple"><div class="dept-num">12</div><div class="dept-info"><div class="dept-title">Blockchain Architects</div><div class="dept-desc">Design 128-shard topology, Proof-of-Quantum-Stake, and cross-chain bridges</div></div></div>
+      <div class="dept-card purple"><div class="dept-num">16</div><div class="dept-info"><div class="dept-title">Smart Contract Engineers</div><div class="dept-desc">Build quantum-safe smart contract VM, SDK, and developer tooling</div></div></div>
+      <div class="dept-card pink"><div class="dept-num">12</div><div class="dept-info"><div class="dept-title">Frontend & DApp Developers</div><div class="dept-desc">Wallet UI, block explorer, DApp framework, and developer portal</div></div></div>
+      <div class="dept-card pink"><div class="dept-num">10</div><div class="dept-info"><div class="dept-title">DevOps & Infrastructure</div><div class="dept-desc">Testnet/mainnet deployment, CI/CD pipelines, node monitoring, 99.9% uptime</div></div></div>
+      <div class="dept-card green"><div class="dept-num">9</div><div class="dept-info"><div class="dept-title">Security Auditors & Pentesters</div><div class="dept-desc">Formal verification, adversarial testing, cryptographic audits, bug bounty program</div></div></div>
+      <div class="dept-card green"><div class="dept-num">7</div><div class="dept-info"><div class="dept-title">Research & Academic</div><div class="dept-desc">IEEE/ePrint papers, NIST compliance research, quantum threat modeling</div></div></div>
+      <div class="dept-card orange"><div class="dept-num">10</div><div class="dept-info"><div class="dept-title">Community & Marketing</div><div class="dept-desc">Global community growth, content strategy, social media, PR campaigns</div></div></div>
+      <div class="dept-card orange"><div class="dept-num">8</div><div class="dept-info"><div class="dept-title">Business Development</div><div class="dept-desc">Enterprise partnerships, institutional sales, exchange listings, VC relations</div></div></div>
+      <div class="dept-card cyan full"><div class="dept-num">7</div><div class="dept-info"><div class="dept-title">QA, Testing & Documentation</div><div class="dept-desc">End-to-end testing, benchmark suites, technical documentation, and API reference</div></div></div>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric"><div class="metric-value">128</div><div class="metric-label">Shards</div></div>
+      <div class="metric"><div class="metric-value">100K+</div><div class="metric-label">TPS Target</div></div>
+      <div class="metric"><div class="metric-value">3</div><div class="metric-label">NIST Algorithms</div></div>
+      <div class="metric"><div class="metric-value">L5</div><div class="metric-label">Security Level</div></div>
+      <div class="metric"><div class="metric-value">6</div><div class="metric-label">Continents</div></div>
+    </div>
+
+    <div class="process-section">
+      <div class="process-title">⟡ Rigorous Hiring Process ⟡</div>
+      <div class="process-steps">
+        <div class="step"><div class="step-circle">1</div><div class="step-label">Application & Portfolio Review</div></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-circle">2</div><div class="step-label">Technical Interview</div></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-circle">3</div><div class="step-label">Live Coding / Crypto Challenge</div></div>
+        <div class="step-arrow">→</div>
+        <div class="step"><div class="step-circle">4</div><div class="step-label">Hired & Onboarded</div></div>
+      </div>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="trust-row">
+      <div class="trust-item verified"><span class="trust-icon">✓</span> Every hire technically vetted</div>
+      <div class="trust-item secure"><span class="trust-icon">◆</span> NIST-standardized security</div>
+      <div class="trust-item global"><span class="trust-icon">⬡</span> Remote-first, 6 continents</div>
+      <div class="trust-item open"><span class="trust-icon">⚡</span> Open-source codebase</div>
+    </div>
+
+    <div class="urgency-section">
+      <div class="urgency-quote">128 specialists are ready to build.<br>The architecture is designed. The algorithms are standardized.<br><em>The only missing piece is capital.</em></div>
+      <div class="urgency-sub">The faster we're funded, the faster your investment turns into the most secure blockchain ever built.</div>
+    </div>
+
+    <div class="global-tag">
+      <div class="tag"><div class="tag-dot cyan"></div> Americas</div>
+      <div class="tag"><div class="tag-dot purple"></div> Europe</div>
+      <div class="tag"><div class="tag-dot pink"></div> Asia-Pacific</div>
+      <div class="tag"><div class="tag-dot green"></div> Africa & Middle East</div>
+    </div>
+
+    <div class="cta">
+      <a href="https://www.quantarnetwork.com/invest" class="cta-link">quantarnetwork.com/invest</a>
+      <div class="cta-detail">Seed Round: $2.5M · $1.25/QTR · 20M Supply</div>
+    </div>
+
+  </div>
+  <div class="bottom-line"></div>
+</div>
+</body>
+</html>
