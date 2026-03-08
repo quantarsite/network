@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYDRA-X / ACA-A — Always-Dual Post-Quantum Authentication</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:     #0A0E1A;
+    --panel:  #0F1628;
+    --border: #1A2540;
+    --cyan:   #00E5FF;
+    --purple: #A855F7;
+    --green:  #10B981;
+    --orange: #F59E0B;
+    --red:    #EF4444;
+    --text:   #E2E8F0;
+    --muted:  #FFFFFF;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    min-height: 100vh;
+    padding: 28px 24px;
+    font-weight: 700;
+  }
+
+  /* Header */
+  .header { text-align: center; margin-bottom: 28px; }
+  .header .sub  { font-size: 11px; color: var(--cyan); letter-spacing: 3px; margin-bottom: 6px; }
+  .header h1    { font-size: 22px; font-weight: 700; letter-spacing: 1px; line-height: 1.2; }
+  .header .desc { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+
+  /* Step bar */
+  .steps { display: flex; justify-content: center; gap: 0; margin-bottom: 24px; flex-wrap: wrap; }
+  .step-item { display: flex; align-items: center; }
+  .step-pill {
+    padding: 5px 10px; border-radius: 4px; font-size: 9px; letter-spacing: 1px;
+    border: 1px solid var(--border); color: var(--muted);
+    transition: all 0.4s;
+  }
+  .step-pill.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,229,255,0.08); }
+  .step-line { width: 16px; height: 1px; background: var(--border); transition: all 0.4s; }
+  .step-line.active { background: var(--cyan); }
+
+  /* Main layout */
+  .main { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+
+  /* Panels */
+  .panel {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; background: var(--panel); transition: all 0.5s;
+  }
+  .label { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
+
+  /* TX box */
+  .tx-col { flex: 0 0 160px; min-width: 140px; }
+  .tx-col .panel.active { border-color: var(--text); }
+  .tx-info { font-size: 9px; color: var(--muted); margin-bottom: 6px; }
+  .tx-msg  { font-size: 10px; color: var(--text); }
+  .tx-check { font-size: 9px; color: var(--green); margin-top: 4px; line-height: 1.8; }
+
+  /* Arrow */
+  .arrow { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 4px auto; }
+  .arrow .line { width: 1px; height: 20px; background: var(--muted); margin: 0 auto; }
+  .arrow .lbl  { font-size: 9px; color: var(--muted); }
+  .arrow .ptr  { font-size: 10px; color: var(--muted); }
+
+  /* Center col */
+  .center-col { flex: 1 1 280px; min-width: 260px; }
+
+  /* Baseline */
+  .baseline {
+    border: 2px solid var(--border); border-radius: 10px;
+    padding: 14px; background: var(--panel); transition: all 0.5s; margin-bottom: 0;
+  }
+  .baseline.active { border-color: var(--cyan); background: rgba(0,229,255,0.03); box-shadow: 0 0 20px rgba(0,229,255,0.15); }
+  .baseline-title { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 10px; transition: color 0.4s; }
+  .baseline.active .baseline-title { color: var(--cyan); }
+
+  .sig-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .sig-box {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; background: var(--panel);
+    transition: all 0.5s; min-width: 130px;
+  }
+  .sig-box.active-l { border-color: var(--cyan); background: rgba(0,229,255,0.07); box-shadow: 0 0 14px rgba(0,229,255,0.15); }
+  .sig-box.active-h { border-color: var(--purple); background: rgba(168,85,247,0.07); box-shadow: 0 0 14px rgba(168,85,247,0.15); }
+  .sig-lbl  { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+  .sig-name { font-size: 13px; font-weight: 700; color: var(--muted); font-family: monospace; transition: color 0.5s; }
+  .sig-box.active-l .sig-name { color: var(--cyan); }
+  .sig-box.active-h .sig-name { color: var(--purple); }
+  .sig-fam  { font-size: 9px; color: var(--muted); margin-top: 3px; }
+  .and-sym  { font-size: 18px; color: var(--border); transition: color 0.5s; }
+  .and-sym.active { color: var(--cyan); }
+
+  .base-ok {
+    margin-top: 12px; padding: 6px 10px; border-radius: 6px;
+    background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);
+    font-size: 9px; color: var(--green); text-align: center;
+    opacity: 0; transition: opacity 0.5s;
+  }
+  .base-ok.show { opacity: 1; }
+
+  /* RWPE */
+  .rwpe {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; background: var(--panel);
+    transition: all 0.4s; margin-top: 10px; margin-bottom: 10px;
+  }
+  .rwpe.active { border-color: var(--orange); background: rgba(245,158,11,0.06); }
+  .rwpe-title { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; transition: color 0.4s; }
+  .rwpe.active .rwpe-title { color: var(--orange); }
+
+  .slider-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  #rs-slider { flex: 1; accent-color: var(--orange); }
+  #rs-value  { font-size: 18px; font-weight: 700; min-width: 36px; text-align: center; transition: color 0.3s; }
+
+  .factors { display: flex; gap: 6px; flex-wrap: wrap; }
+  .factor {
+    flex: 1; padding: 4px 6px; border-radius: 4px; min-width: 50px;
+    background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+    text-align: center;
+  }
+  .f-key  { font-size: 11px; color: var(--orange); font-weight: 700; }
+  .f-w    { font-size: 8px; color: var(--muted); }
+  .f-lbl  { font-size: 8px; color: var(--muted); }
+
+  /* Modules */
+  .modules-wrap { transition: opacity 0.5s; opacity: 0.3; }
+  .modules-wrap.active { opacity: 1; }
+  .modules-label { font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 6px; }
+  .modules { display: flex; gap: 8px; flex-wrap: wrap; }
+  .module {
+    border: 1px dashed var(--border); border-radius: 6px;
+    padding: 8px 12px; background: transparent;
+    transition: all 0.4s; flex: 1; min-width: 90px; opacity: 0.3;
+  }
+  .module.on { opacity: 1; }
+  .module.e1.on { border-color: rgba(0,229,255,0.5); background: rgba(0,229,255,0.04); }
+  .module.e2.on { border-color: rgba(168,85,247,0.5); background: rgba(168,85,247,0.04); }
+  .module.e3.on { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.04); }
+  .mod-lbl  { font-size: 10px; font-weight: 700; color: var(--muted); transition: color 0.4s; }
+  .module.e1.on .mod-lbl { color: var(--cyan); }
+  .module.e2.on .mod-lbl { color: var(--purple); }
+  .module.e3.on .mod-lbl { color: var(--orange); }
+  .mod-desc { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+  /* Right col */
+  .right-col { flex: 0 0 160px; min-width: 140px; }
+
+  .tier-box {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; background: var(--panel); margin-bottom: 10px;
+    transition: all 0.4s;
+  }
+  .tier-lbl  { font-size: 9px; color: var(--muted); margin-bottom: 4px; }
+  .tier-name { font-size: 16px; font-weight: 700; transition: color 0.3s; }
+  .tier-rs   { font-size: 9px; color: var(--muted); margin-top: 4px; }
+
+  .verdict {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; background: var(--panel); transition: all 0.5s;
+  }
+  .verdict.active { border-color: var(--green); background: rgba(16,185,129,0.07); box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+  .verdict-lbl { font-size: 9px; color: var(--muted); margin-bottom: 6px; }
+  .verdict-checks { font-size: 9px; color: var(--green); line-height: 1.8; }
+  .verdict-status {
+    margin-top: 8px; font-size: 11px; font-weight: 700;
+    color: var(--muted); transition: color 0.5s;
+  }
+  .verdict.active .verdict-status { color: var(--green); }
+
+  .run-btn {
+    margin-top: 12px; width: 100%; padding: 8px 0;
+    background: rgba(0,229,255,0.1); border: 1px solid var(--cyan);
+    border-radius: 6px; color: var(--cyan);
+    cursor: pointer; font-size: 10px; letter-spacing: 1px;
+    font-family: monospace; transition: all 0.3s;
+  }
+  .run-btn:hover { background: rgba(0,229,255,0.2); }
+  .run-btn:disabled { background: var(--border); border-color: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  /* Theorem bar */
+  .theorem {
+    margin-top: 20px; padding: 10px 16px; border-radius: 8px;
+    border: 1px solid rgba(168,85,247,0.3);
+    background: rgba(168,85,247,0.05);
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .thm-label { font-size: 9px; color: var(--purple); letter-spacing: 2px; }
+  .thm-text  { font-size: 9px; color: var(--muted); }
+
+  .footer { margin-top: 10px; text-align: center; font-size: 8px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="sub">QUANTAR NETWORK</div>
+  <h1>HYDRA-X / ACA-A</h1>
+  <div class="desc">Always-Dual Post-Quantum Authentication</div>
+</div>
+
+<!-- Steps -->
+<div class="steps">
+  <div class="step-item"><div class="step-pill" id="s0">TX Created</div></div>
+  <div class="step-item"><div class="step-line" id="l0"></div></div>
+  <div class="step-item"><div class="step-pill" id="s1">Baseline Signs</div></div>
+  <div class="step-item"><div class="step-line" id="l1"></div></div>
+  <div class="step-item"><div class="step-pill" id="s2">RWPE Scores</div></div>
+  <div class="step-item"><div class="step-line" id="l2"></div></div>
+  <div class="step-item"><div class="step-pill" id="s3">Policy Applies</div></div>
+  <div class="step-item"><div class="step-line" id="l3"></div></div>
+  <div class="step-item"><div class="step-pill" id="s4">Valid(tx)</div></div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- TX Column -->
+  <div class="tx-col">
+    <div class="label">TRANSACTION</div>
+    <div class="panel" id="tx-panel">
+      <div class="tx-info">tx = enc(tx)</div>
+      <div class="tx-msg">m = msg</div>
+      <div class="tx-info" style="margin-top:4px">Guard(tx, S<sub>t</sub>)</div>
+      <div class="tx-check">✓ nonce<br>✓ addr commit<br>✓ encoding</div>
+    </div>
+    <div class="arrow">
+      <div class="line"></div>
+      <div class="lbl">sign(m)</div>
+      <div class="ptr">▼</div>
+    </div>
+  </div>
+
+  <!-- Center Column -->
+  <div class="center-col">
+
+    <!-- Baseline -->
+    <div class="label">BASELINE — ALWAYS ACTIVE</div>
+    <div class="baseline" id="baseline">
+      <div class="baseline-title">ACA-A DUAL SIGNATURE</div>
+      <div class="sig-row">
+        <div class="sig-box" id="sig-l">
+          <div class="sig-lbl">SigL (lattice)</div>
+          <div class="sig-name">ML-DSA-87</div>
+          <div class="sig-fam">FIPS 204 · MLWE/MSIS</div>
+        </div>
+        <div class="and-sym" id="and-sym">∧</div>
+        <div class="sig-box" id="sig-h">
+          <div class="sig-lbl">SigH (hash)</div>
+          <div class="sig-name">SLH-DSA</div>
+          <div class="sig-fam">FIPS 205 · Hash only</div>
+        </div>
+      </div>
+      <div class="base-ok" id="base-ok">
+        BaseOK(tx) := VerL ∧ VerH · PROTOCOL INVARIANT · CANNOT BE REMOVED
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div class="arrow">
+      <div class="line"></div>
+      <div class="lbl">π(S<sub>t</sub>, tx)</div>
+      <div class="ptr">▼</div>
+    </div>
+
+    <!-- RWPE -->
+    <div class="rwpe" id="rwpe">
+      <div class="rwpe-title">RWPE — RISK SCORE</div>
+      <div class="slider-row">
+        <input type="range" min="0" max="100" value="72" id="rs-slider">
+        <div id="rs-value" style="color: var(--orange)">72</div>
+      </div>
+      <div class="factors">
+        <div class="factor"><div class="f-key">V</div><div class="f-w">40%</div><div class="f-lbl">value</div></div>
+        <div class="factor"><div class="f-key">A</div><div class="f-w">20%</div><div class="f-lbl">age</div></div>
+        <div class="factor"><div class="f-key">C</div><div class="f-w">30%</div><div class="f-lbl">contract</div></div>
+        <div class="factor"><div class="f-key">N</div><div class="f-w">10%</div><div class="f-lbl">congestion</div></div>
+      </div>
+    </div>
+
+    <!-- Modules -->
+    <div class="modules-wrap" id="modules-wrap">
+      <div class="modules-label">HARDENING MODULES — π CAN ONLY ADD, NEVER REMOVE BASELINE</div>
+      <div class="modules">
+        <div class="module e1" id="mod-e1">
+          <div class="mod-lbl">E1</div>
+          <div class="mod-desc">FN-DSA / Falcon-1024 NTRU hardness</div>
+        </div>
+        <div class="module e2" id="mod-e2">
+          <div class="mod-lbl">E2</div>
+          <div class="mod-desc">FROST threshold t-of-n approval</div>
+        </div>
+        <div class="module e3" id="mod-e3">
+          <div class="mod-lbl">E3</div>
+          <div class="mod-desc">Wesolowski VDF delay attestation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="right-col">
+    <div class="label">VERDICT</div>
+
+    <div class="tier-box" id="tier-box">
+      <div class="tier-lbl">RISK TIER</div>
+      <div class="tier-name" id="tier-name" style="color: var(--green)">BASELINE</div>
+      <div class="tier-rs">RS = <span id="tier-rs-val">72</span></div>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <div class="verdict-lbl">Valid(tx, S<sub>t</sub>)</div>
+      <div class="verdict-checks">✓ BaseOK<br>✓ HardOK<br>✓ Guard</div>
+      <div class="verdict-status" id="verdict-status">PENDING</div>
+    </div>
+
+    <button class="run-btn" id="run-btn" onclick="simulate()">▶ SIMULATE TX</button>
+  </div>
+</div>
+
+<!-- Theorem bar -->
+<div class="theorem">
+  <div class="thm-label">THEOREM 3</div>
+  <div class="thm-text">Monotonic Policy Soundness · Adv<sub>G</sub>(λ) ≤ ε(λ)</div>
+  <div class="thm-text">·</div>
+  <div class="thm-text">Baseline Inviolability · ML-DSA ∧ SLH-DSA · always enforced at consensus layer</div>
+</div>
+
+<div class="footer">ePrint 2026/108229 · Jefferson Buiar · Quantar Network</div>
+
+<script>
+  const TIERS = [
+    { label: "BASELINE", min: 0,  max: 30,  color: "#10B981", e1: false, e2: false, e3: false },
+    { label: "TIER 1",   min: 30, max: 60,  color: "#00E5FF", e1: true,  e2: false, e3: false },
+    { label: "TIER 2",   min: 60, max: 85,  color: "#F59E0B", e1: true,  e2: true,  e3: false },
+    { label: "TIER 3",   min: 85, max: 101, color: "#EF4444", e1: true,  e2: true,  e3: true  },
+  ];
+
+  function getTier(rs) {
+    return TIERS.find(t => rs >= t.min && rs < t.max) || TIERS[0];
+  }
+
+  function updateTier(rs) {
+    const t = getTier(rs);
+    document.getElementById("rs-value").textContent = rs;
+    document.getElementById("rs-value").style.color = t.color;
+    document.getElementById("tier-name").textContent = t.label;
+    document.getElementById("tier-name").style.color = t.color;
+    document.getElementById("tier-rs-val").textContent = rs;
+    document.getElementById("tier-box").style.borderColor = t.color;
+    document.getElementById("tier-box").style.boxShadow = `0 0 12px ${t.color}40`;
+
+    const e1 = document.getElementById("mod-e1");
+    const e2 = document.getElementById("mod-e2");
+    const e3 = document.getElementById("mod-e3");
+    e1.classList.toggle("on", t.e1);
+    e2.classList.toggle("on", t.e2);
+    e3.classList.toggle("on", t.e3);
+  }
+
+  document.getElementById("rs-slider").addEventListener("input", function() {
+    updateTier(parseInt(this.value));
+  });
+
+  let simTimer = null;
+
+  function simulate() {
+    if (simTimer) return;
+    const btn = document.getElementById("run-btn");
+    btn.disabled = true;
+    btn.textContent = "RUNNING...";
+
+    // Reset
+    [0,1,2,3,4].forEach(i => {
+      document.getElementById("s"+i).classList.remove("active");
+      if (i < 4) document.getElementById("l"+i).classList.remove("active");
+    });
+    document.getElementById("baseline").classList.remove("active");
+    document.getElementById("sig-l").classList.remove("active-l");
+    document.getElementById("sig-h").classList.remove("active-h");
+    document.getElementById("and-sym").classList.remove("active");
+    document.getElementById("base-ok").classList.remove("show");
+    document.getElementById("tx-panel").classList.remove("active");
+    document.getElementById("rwpe").classList.remove("active");
+    document.getElementById("modules-wrap").classList.remove("active");
+    document.getElementById("verdict").classList.remove("active");
+    document.getElementById("verdict-status").textContent = "PENDING";
+
+    const rs = parseInt(document.getElementById("rs-slider").value);
+
+    const actions = [
+      () => {
+        document.getElementById("s0").classList.add("active");
+        document.getElementById("tx-panel").classList.add("active");
+      },
+      () => {
+        document.getElementById("l0").classList.add("active");
+        document.getElementById("s1").classList.add("active");
+        document.getElementById("baseline").classList.add("active");
+        document.getElementById("sig-l").classList.add("active-l");
+        document.getElementById("sig-h").classList.add("active-h");
+        document.getElementById("and-sym").classList.add("active");
+        setTimeout(() => document.getElementById("base-ok").classList.add("show"), 400);
+      },
+      () => {
+        document.getElementById("l1").classList.add("active");
+        document.getElementById("s2").classList.add("active");
+        document.getElementById("rwpe").classList.add("active");
+      },
+      () => {
+        document.getElementById("l2").classList.add("active");
+        document.getElementById("s3").classList.add("active");
+        document.getElementById("modules-wrap").classList.add("active");
+        updateTier(rs);
+      },
+      () => {
+        document.getElementById("l3").classList.add("active");
+        document.getElementById("s4").classList.add("active");
+        document.getElementById("verdict").classList.add("active");
+        document.getElementById("verdict-status").textContent = "ACCEPTED";
+        btn.disabled = false;
+        btn.textContent = "▶ SIMULATE TX";
+        simTimer = null;
+      },
+    ];
+
+    let i = 0;
+    function next() {
+      if (i >= actions.length) return;
+      actions[i]();
+      i++;
+      if (i < actions.length) simTimer = setTimeout(next, 800);
+    }
+    next();
+  }
+
+  // Init
+  updateTier(72);
+</script>
+</body>
+</html>
