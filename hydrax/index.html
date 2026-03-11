@@ -1,1 +1,223 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIDRA-X | Post-Quantum Blockchain Infrastructure</title>
+
+<style>
+:root{
+--bg:#050b18;
+--card:rgba(12,18,38,.75);
+--line:rgba(94,242,255,.18);
+--text:#eaf6ff;
+--muted:#8aa0c6;
+--accent:#5ef2ff;
+--accent2:#7a5cff;
+--radius:26px;
+--glow:0 0 30px rgba(94,242,255,.18);
+--shadow:0 25px 70px rgba(0,0,0,.45);
+--max:1200px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+font-family:Segoe UI,Arial;
+background:
+radial-gradient(circle at 15% 10%,rgba(94,242,255,.08),transparent 30%),
+radial-gradient(circle at 85% 20%,rgba(122,92,255,.10),transparent 35%),
+#050b18;
+color:var(--text);
+}
+
+.container{width:min(calc(100% - 40px),var(--max));margin:auto}
+section{padding:90px 0}
+
+header{
+position:sticky;top:0;z-index:99;
+background:rgba(5,11,24,.85);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(255,255,255,.05)
+}
+
+.nav{
+display:flex;align-items:center;justify-content:space-between;
+min-height:120px;gap:20px
+}
+
+.brand{
+display:flex;align-items:center;gap:18px;
+padding:14px 24px;border-radius:24px;
+background:linear-gradient(135deg,rgba(94,242,255,.12),rgba(122,92,255,.10));
+border:1px solid rgba(94,242,255,.25);
+box-shadow:var(--glow)
+}
+
+.brand img{
+width:90px;height:90px;object-fit:contain;
+filter:drop-shadow(0 0 18px rgba(94,242,255,.4))
+}
+
+.brand-text{display:flex;flex-direction:column}
+.brand-title{
+font-size:2rem;font-weight:900;letter-spacing:.12em
+}
+.brand-sub{font-size:.8rem;color:var(--accent);letter-spacing:.12em}
+
+nav ul{display:flex;gap:22px;list-style:none}
+nav a{color:var(--muted);text-decoration:none}
+nav a:hover{color:var(--text)}
+
+.cta{
+background:linear-gradient(135deg,var(--accent),#bffcff);
+color:#021018;border:none;padding:14px 22px;
+border-radius:18px;font-weight:700;cursor:pointer
+}
+
+.hero{text-align:center;padding-top:60px}
+.hero h1{font-size:clamp(2.6rem,5vw,4.5rem);margin-bottom:20px}
+.hero p{color:var(--muted);max-width:760px;margin:auto}
+
+.transfer-grid{
+display:grid;grid-template-columns:1fr 1fr;gap:24px
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:var(--radius);
+padding:28px;box-shadow:var(--shadow)
+}
+
+.input-group{display:flex;flex-direction:column;margin-bottom:14px}
+.input-group label{font-size:.9rem;color:var(--accent)}
+.input-group input,.input-group select{
+margin-top:6px;padding:14px;border-radius:14px;
+border:1px solid rgba(94,242,255,.2);
+background:#081225;color:var(--text)
+}
+
+.summary-item{
+display:flex;justify-content:space-between;
+padding:14px;border-radius:14px;
+background:#081225;border:1px solid rgba(94,242,255,.15);
+margin-bottom:12px
+}
+
+.tx-status{
+padding:20px;border-radius:18px;margin:18px 0;
+background:linear-gradient(135deg,rgba(94,242,255,.15),rgba(122,92,255,.15));
+border:1px solid rgba(94,242,255,.25)
+}
+
+footer{padding:40px 0;text-align:center;color:var(--muted)}
+
+@media(max-width:900px){
+.transfer-grid{grid-template-columns:1fr}
+.nav{flex-direction:column}
+.brand{justify-content:center}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+<div class="brand">
+<img src="logo-hidra-x.png" alt="HIDRA-X Logo">
+<div class="brand-text">
+<span class="brand-title">HIDRA-X</span>
+<span class="brand-sub">POST-QUANTUM BLOCKCHAIN INFRASTRUCTURE</span>
+</div>
+</div>
+
+<nav>
+<ul>
+<li><a href="#transfer">Transfer</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
+
+<button class="cta">Launch Platform</button>
+</div>
+</header>
+
+<section class="hero">
+<div class="container">
+<h1>Secure Digital Asset Transfer for the Quantum Era</h1>
+<p>
+HIDRA-X is a next-generation blockchain infrastructure concept designed for institutional-grade
+security, post-quantum readiness, and high-trust digital asset operations.
+</p>
+</div>
+</section>
+
+<section id="transfer">
+<div class="container transfer-grid">
+
+<div class="card">
+<h2>Transfer Assets</h2>
+
+<div class="input-group">
+<label>Wallet Address</label>
+<input placeholder="0xA1B2C3D4E5F6">
+</div>
+
+<div class="input-group">
+<label>Asset</label>
+<select><option>HX Token</option><option>Bitcoin</option><option>Ethereum</option></select>
+</div>
+
+<div class="input-group">
+<label>Amount</label>
+<input type="number" placeholder="0.00">
+</div>
+
+<button class="cta" onclick="simulate()">Confirm Transfer</button>
+</div>
+
+<div class="card">
+<h2>Transfer Summary</h2>
+
+<div class="summary-item"><span>Network</span><strong>HIDRA-X Mainnet</strong></div>
+<div class="summary-item"><span>Transaction Fee</span><strong>0.002 HX</strong></div>
+<div class="summary-item"><span>Confirmation Speed</span><strong>~2 Seconds</strong></div>
+
+<div class="tx-status" id="status">
+<strong>Status:</strong><br>Awaiting transaction confirmation...
+</div>
+</div>
+
+</div>
+</section>
+
+<section id="about">
+<div class="container">
+<div class="card">
+<h2>About HIDRA-X</h2>
+<p style="color:var(--muted)">
+HIDRA-X represents a futuristic blockchain infrastructure vision focused on security perception,
+institutional trust, scalability, and strategic digital asset operations.
+Its interface is designed for investor presentations, product demonstrations,
+and ecosystem positioning in the post-quantum technology landscape.
+</p>
+</div>
+</div>
+</section>
+
+<footer>
+HIDRA-X © Next-Generation Blockchain Infrastructure
+</footer>
+
+<script>
+function simulate(){
+document.getElementById("status").innerHTML=
+"<strong>Status:</strong><br>✅ Transaction simulated successfully.";
+}
+</script>
+
+</body>
+</html>
