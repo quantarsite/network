@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HIDRA-X | Quantum-Native Layer-1</title>
+  <meta name="description" content="HIDRA-X is a quantum-native Layer-1 blockchain built for the post-quantum economy." />
+  <style>
+    :root {
+      --card: rgba(8,18,38,.78);
+      --line: rgba(94,242,255,.18);
+      --text: #e9f3ff;
+      --muted: #95a9c7;
+      --primary: #2da7ff;
+      --secondary: #5ef2ff;
+      --accent: #7a5cff;
+      --glow: 0 0 28px rgba(45,167,255,.32);
+      --radius: 24px;
+      --maxw: 1220px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 15%, rgba(45,167,255,.14), transparent 25%),
+        radial-gradient(circle at 88% 8%, rgba(122,92,255,.14), transparent 22%),
+        radial-gradient(circle at 50% 85%, rgba(94,242,255,.08), transparent 28%),
+        linear-gradient(180deg, #02050b 0%, #06101d 50%, #02050b 100%);
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(94,242,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(94,242,255,.045) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: radial-gradient(circle at center, black 32%, transparent 84%);
+      opacity: .55;
+      z-index: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    .container {
+      width: min(var(--maxw), calc(100% - 32px));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      backdrop-filter: blur(16px);
+      background: rgba(2,7,18,.76);
+      border-bottom: 1px solid rgba(94,242,255,.1);
+    }
+    .nav-inner {
+      min-height: 78px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      position: relative;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(45,167,255,.25), rgba(94,242,255,.08));
+      border: 1px solid rgba(94,242,255,.28);
+      box-shadow: var(--glow);
+      overflow: hidden;
+    }
+    .brand-mark::before {
+      content: "";
+      width: 26px;
+      height: 26px;
+      clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+      background: linear-gradient(180deg, #c8f6ff 0%, #5ef2ff 40%, #2da7ff 100%);
+      box-shadow: 0 0 18px rgba(94,242,255,.55);
+    }
+    .brand-text { display: flex; flex-direction: column; line-height: 1; gap: 4px; }
+    .brand-text strong { font-size: 1rem; color: white; }
+    .brand-text span { font-size: .72rem; letter-spacing: .18em; color: var(--secondary); text-transform: uppercase; }
+    .nav-links { display: flex; gap: 22px; color: var(--muted); font-size: .95rem; align-items: center; }
+    .nav-links a:hover { color: white; }
+    .cta {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(94,242,255,.28);
+      background: linear-gradient(135deg, rgba(45,167,255,.24), rgba(122,92,255,.2));
+      color: white; font-weight: 800; box-shadow: var(--glow); transition: .25s ease; cursor: pointer;
+    }
+    .cta:hover { transform: translateY(-2px); border-color: rgba(94,242,255,.48); box-shadow: 0 0 34px rgba(45,167,255,.42); }
+    .cta.secondary { background: transparent; box-shadow: none; }
+    .hero { padding: 86px 0 56px; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 34px; align-items: center; }
+    .eyebrow {
+      display: inline-flex; gap: 10px; align-items: center; padding: 10px 16px;
+      border-radius: 999px; border: 1px solid rgba(94,242,255,.18);
+      background: rgba(7,18,38,.62); color: var(--secondary); font-size: .9rem; letter-spacing: .05em;
+    }
+    h1 { font-size: clamp(2.8rem,7vw,5.8rem); line-height: .94; margin: 18px 0; letter-spacing: -.045em; }
+    .gradient {
+      background: linear-gradient(90deg, #fff 0%, #95ddff 30%, #5ef2ff 64%, #d8d3ff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p { max-width: 700px; color: var(--muted); line-height: 1.75; font-size: 1.08rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 34px; }
+    .metric, .card, .panel, .phase, .investor, .contact-card, .chart-card, .token-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); backdrop-filter: blur(14px);
+    }
+    .metric { padding: 20px; }
+    .metric strong { display: block; font-size: 1.45rem; margin-bottom: 8px; }
+    .metric span { color: var(--muted); line-height: 1.5; font-size: .94rem; }
+    .hero-visual { position: relative; min-height: 560px; display: grid; place-items: center; }
+    .orb {
+      position: absolute; width: 440px; height: 440px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,167,255,.25), rgba(45,167,255,.05) 44%, transparent 72%);
+      filter: blur(8px); animation: pulse 5.5s ease-in-out infinite;
+    }
+    .visual-card {
+      width: min(100%, 500px); aspect-ratio: 1/1; position: relative; overflow: hidden;
+      border-radius: 34px; border: 1px solid rgba(94,242,255,.18);
+      background: linear-gradient(180deg, rgba(10,25,52,.88), rgba(4,11,25,.9)), radial-gradient(circle at top, rgba(94,242,255,.12), transparent 44%);
+      box-shadow: 0 0 60px rgba(45,167,255,.18);
+    }
+    .visual-card::before, .visual-card::after {
+      content: ""; position: absolute; inset: 24px; border-radius: 28px; border: 1px solid rgba(94,242,255,.08); pointer-events: none;
+    }
+    .visual-card::after { inset: 56px; border-style: dashed; opacity: .5; }
+    .center-logo { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+    .rings, .rings2 {
+      position: absolute; width: 320px; height: 150px; border: 1px solid rgba(94,242,255,.18); border-radius: 999px; animation: spin 12s linear infinite;
+    }
+    .rings2 { width: 270px; height: 120px; border-color: rgba(122,92,255,.24); animation-duration: 8s; animation-direction: reverse; transform: rotate(22deg); }
+    .hex {
+      width: 220px; aspect-ratio: 1/1;
+      clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+      background: linear-gradient(180deg, rgba(45,167,255,.36), rgba(94,242,255,.08));
+      border: 1px solid rgba(94,242,255,.28); box-shadow: 0 0 34px rgba(45,167,255,.35), inset 0 0 30px rgba(94,242,255,.08);
+      display: grid; place-items: center; position: relative;
+    }
+    .hex::before { content: "HX"; font-weight: 900; font-size: 4.2rem; letter-spacing: -.08em; color: white; text-shadow: 0 0 16px rgba(94,242,255,.55); }
+    .floating {
+      position: absolute; min-width: 170px; padding: 14px 16px; border-radius: 18px;
+      background: rgba(8,19,40,.84); border: 1px solid rgba(94,242,255,.14); backdrop-filter: blur(12px); box-shadow: var(--glow); animation: floatY 4.6s ease-in-out infinite;
+    }
+    .floating small { display: block; text-transform: uppercase; letter-spacing: .14em; color: var(--secondary); font-size: .72rem; margin-bottom: 6px; }
+    .floating strong { display: block; margin-bottom: 4px; font-size: 1rem; }
+    .floating span { color: var(--muted); line-height: 1.4; font-size: .9rem; }
+    .f1 { top: 26px; right: 14px; animation-delay: .2s; }
+    .f2 { bottom: 88px; left: -10px; animation-delay: .8s; }
+    .f3 { bottom: 18px; right: 40px; animation-delay: 1.3s; }
+    section { padding: 56px 0; position: relative; z-index: 1; }
+    .section-header { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 26px; }
+    .section-header h2 { margin: 0; font-size: clamp(1.95rem,4vw,3.2rem); letter-spacing: -.04em; }
+    .section-header p { margin: 0; max-width: 560px; color: var(--muted); line-height: 1.7; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+    .card { padding: 24px; transition: .25s ease; }
+    .card:hover, .investor:hover, .phase:hover { transform: translateY(-4px); border-color: rgba(94,242,255,.3); }
+    .icon {
+      width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center;
+      background: linear-gradient(145deg, rgba(45,167,255,.22), rgba(122,92,255,.18));
+      border: 1px solid rgba(94,242,255,.18); box-shadow: var(--glow); margin-bottom: 16px; font-size: 1.2rem;
+    }
+    .card h3, .panel h3, .phase h3 { margin: 0 0 10px; }
+    .card p, .panel p { margin: 0; color: var(--muted); line-height: 1.7; font-size: .97rem; }
+    .architecture { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .panel { padding: 28px; min-height: 420px; }
+    .stack { display: grid; gap: 12px; margin-top: 20px; }
+    .layer {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 16px 18px; border-radius: 18px; background: rgba(6,15,31,.84); border: 1px solid rgba(94,242,255,.12);
+    }
+    .layer span { color: var(--muted); font-size: .9rem; text-align: right; }
+    .tokenomics { display: grid; grid-template-columns: 1.08fr .92fr; gap: 18px; }
+    .chart-card, .token-card { padding: 26px; }
+    .bars { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; align-items: end; height: 280px; margin-top: 26px; }
+    .bar-wrap { text-align: center; }
+    .bar {
+      width: 100%; border-radius: 16px 16px 8px 8px;
+      background: linear-gradient(180deg, rgba(94,242,255,.98), rgba(45,167,255,.34));
+      border: 1px solid rgba(94,242,255,.16); box-shadow: 0 0 24px rgba(45,167,255,.24); min-height: 30px; transition: .25s ease; animation: rise 1.1s ease both;
+    }
+    .bar:hover { transform: translateY(-5px); }
+    .bar-wrap span { display: block; margin-top: 10px; color: var(--muted); font-size: .86rem; line-height: 1.35; }
+    .token-list { display: grid; gap: 12px; margin-top: 18px; }
+    .token-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px;
+      padding: 14px 16px; border-radius: 16px; background: rgba(7,17,34,.82); border: 1px solid rgba(94,242,255,.1);
+    }
+    .token-item span { color: var(--muted); }
+    .investors-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
+    .investor { padding: 24px; text-align: center; position: relative; overflow: hidden; }
+    .investor::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(94,242,255,.05), transparent 32%); pointer-events: none; }
+    .investor strong { display: block; font-size: 1.7rem; margin-bottom: 8px; color: white; }
+    .investor span { color: var(--muted); line-height: 1.5; display: block; }
+    .roadmap { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
+    .phase { padding: 22px; position: relative; overflow: hidden; }
+    .phase::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    }
+    .phase small { display: inline-block; margin-bottom: 14px; color: var(--secondary); text-transform: uppercase; letter-spacing: .14em; font-size: .75rem; }
+    .phase ul { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.8; }
+    .contact { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; }
+    .contact-card { padding: 28px; }
+    .contact-form { display: grid; gap: 12px; margin-top: 18px; }
+    .contact-form input, .contact-form textarea {
+      width: 100%; border: 1px solid rgba(94,242,255,.16); background: rgba(4,12,24,.9);
+      color: var(--text); border-radius: 16px; padding: 14px 16px; font: inherit; outline: none;
+    }
+    .contact-form textarea { min-height: 140px; resize: vertical; }
+    footer { padding: 28px 0 60px; color: var(--muted); }
+    .footer-inner {
+      border-top: 1px solid rgba(94,242,255,.12); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s ease, transform .75s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    @keyframes pulse { 0%,100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.06); opacity: 1; } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes rise { from { transform: translateY(18px); opacity: .2; } to { transform: translateY(0); opacity: 1; } }
+    @media (max-width: 1100px) {
+      .hero-grid, .architecture, .tokenomics, .contact { grid-template-columns: 1fr; }
+      .grid-3, .roadmap, .investors-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .hero-visual { min-height: 480px; }
+    }
+    @media (max-width: 760px) {
+      .nav-inner { flex-wrap: wrap; padding: 14px 0; }
+      .nav-links { width: 100%; overflow-x: auto; padding-bottom: 6px; }
+      .hero { padding-top: 54px; }
+      .metrics, .grid-3, .roadmap, .investors-grid { grid-template-columns: 1fr; }
+      .section-header { flex-direction: column; align-items: start; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .cta { width: 100%; }
+      .floating { position: static; margin-top: 12px; }
+      .hero-visual { min-height: unset; }
+      .bars { grid-template-columns: repeat(3, 1fr); height: auto; gap: 12px; }
+      .bar-wrap { margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="#top" class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text">
+          <strong>HIDRA-X</strong>
+          <span>Quantum-native</span>
+        </div>
+      </a>
+      <div class="nav-links">
+        <a href="#technology">Technology</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#tokenomics">Tokenomics</a>
+        <a href="#investors">Investors</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <a class="cta" href="#contact">Request deck</a>
+    </div>
+  </nav>
+
+  <header id="top" class="hero">
+    <div class="container hero-grid">
+      <div class="reveal visible">
+        <div class="eyebrow">⚡ Quantum-Native Layer-1 Blockchain</div>
+        <h1><span class="gradient">HIDRA-X</span><br>built for the post-quantum world</h1>
+        <p>
+          HIDRA-X is a futuristic Layer-1 blockchain designed from day one for post-quantum resilience.
+          A premium infrastructure for digital assets, institutional settlement, sovereign systems and next-generation financial rails.
+        </p>
+        <div class="hero-actions">
+          <a class="cta" href="#technology">Explore technology</a>
+          <a class="cta secondary" href="#tokenomics">View tokenomics</a>
+        </div>
+        <div class="metrics">
+          <div class="metric"><strong>PQC Native</strong><span>Built for long-term cryptographic security without retrofit complexity.</span></div>
+          <div class="metric"><strong>Institutional Ready</strong><span>Governance and infrastructure shaped for governments, banks and strategic partners.</span></div>
+          <div class="metric"><strong>Future-Proof</strong><span>Designed to address risks such as Harvest-Now-Decrypt-Later before they fully materialize.</span></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="orb"></div>
+        <div class="visual-card">
+          <div class="center-logo">
+            <div class="rings"></div>
+            <div class="rings2"></div>
+            <div class="hex"></div>
+          </div>
+          <div class="floating f1"><small>consensus</small><strong>PQ-Proof-of-Stake</strong><span>Deterministic finality for high-confidence execution.</span></div>
+          <div class="floating f2"><small>security</small><strong>Composed Signatures</strong><span>Layered cryptographic authentication for stronger robustness.</span></div>
+          <div class="floating f3"><small>governance</small><strong>Crypto Agility</strong><span>Controlled protocol evolution as the security landscape changes.</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="technology">
+    <div class="container">
+      <div class="section-header reveal">
+        <div><div class="eyebrow">Technology</div><h2>A security stack engineered for the next era</h2></div>
+        <p>HIDRA-X combines post-quantum cryptography, efficient consensus, institutional governance and modular protocol design in a single strategic architecture.</p>
+      </div>
+      <div class="grid-3">
+        <article class="card reveal"><div class="icon">🔐</div><h3>Native Post-Quantum Core</h3><p>The protocol is architected around post-quantum assumptions from inception, reducing long-term migration pressure and structural debt.</p></article>
+        <article class="card reveal"><div class="icon">🛡️</div><h3>Composed Signature Security</h3><p>Transactions are protected through layered cryptographic design to reinforce operational assurance and mathematical resilience.</p></article>
+        <article class="card reveal"><div class="icon">⚙️</div><h3>Scalable Institutional Consensus</h3><p>Proof-of-Stake optimized for performance, lower energy intensity and predictable settlement for enterprise-grade environments.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="container">
+      <div class="section-header reveal">
+        <div><div class="eyebrow">Architecture</div><h2>Protocol layers designed for auditability and scale</h2></div>
+        <p>HIDRA-X uses a modular architecture that improves technical clarity, governance control and integration readiness for developers and institutions.</p>
+      </div>
+      <div class="architecture">
+        <div class="panel reveal">
+          <h3>Protocol stack</h3>
+          <div class="stack">
+            <div class="layer"><strong>Application Layer</strong><span>Wallets, SDKs, institutional services</span></div>
+            <div class="layer"><strong>Smart Contract Layer</strong><span>Deterministic execution and secure logic</span></div>
+            <div class="layer"><strong>Consensus Engine</strong><span>PQ-Proof-of-Stake and fast finality</span></div>
+            <div class="layer"><strong>Cryptography Layer</strong><span>Composed signatures and key lifecycle management</span></div>
+            <div class="layer"><strong>Networking Core</strong><span>P2P propagation, sync and node integrity</span></div>
+          </div>
+        </div>
+        <div class="panel reveal">
+          <h3>Strategic deployment rails</h3>
+          <div class="stack">
+            <div class="layer"><strong>CBDCs</strong><span>Sovereign-ready digital currency infrastructure</span></div>
+            <div class="layer"><strong>Tokenization</strong><span>Real-world assets and institutional issuance</span></div>
+            <div class="layer"><strong>Digital Identity</strong><span>Credentials, trust and verifiable systems</span></div>
+            <div class="layer"><strong>Settlement</strong><span>Cross-border coordination and auditability</span></div>
+            <div class="layer"><strong>Security Backbone</strong><span>Foundational resilience for the quantum transition</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tokenomics">
+    <div class="container">
+      <div class="section-header reveal">
+        <div><div class="eyebrow">Tokenomics</div><h2>Advanced capital structure for strategic investors</h2></div>
+        <p>The HIDRA-X token model is designed to align network security, ecosystem growth, treasury sustainability and long-term market positioning.</p>
+      </div>
+      <div class="tokenomics">
+        <div class="chart-card reveal">
+          <h3>Indicative token allocation</h3>
+          <p style="color: var(--muted); line-height: 1.7; margin: 8px 0 0;">Example strategic allocation for ecosystem acceleration, validator incentives, treasury reserves and partner expansion.</p>
+          <div class="bars">
+            <div class="bar-wrap"><div class="bar" style="height:88%;"></div><span>Ecosystem<br>28%</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:72%;"></div><span>Validator Rewards<br>22%</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:65%;"></div><span>Treasury<br>20%</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:52%;"></div><span>Core Team<br>16%</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:42%;"></div><span>Strategic Partners<br>14%</span></div>
+            <div class="bar-wrap"><div class="bar" style="height:34%;"></div><span>Liquidity Programs<br>10%</span></div>
+          </div>
+        </div>
+        <div class="token-card reveal">
+          <h3>Token utility framework</h3>
+          <div class="token-list">
+            <div class="token-item"><strong>Fees</strong><span>Execution of transactions and smart contracts</span></div>
+            <div class="token-item"><strong>Staking</strong><span>Economic security and validator alignment</span></div>
+            <div class="token-item"><strong>Governance</strong><span>Voting on upgrades and protocol parameters</span></div>
+            <div class="token-item"><strong>Incentives</strong><span>Ecosystem growth and developer activation</span></div>
+            <div class="token-item"><strong>Treasury</strong><span>Strategic reserves for expansion and resilience</span></div>
+          </div>
+          <p style="color: var(--muted); line-height: 1.7; margin-top: 18px;">Supply can follow a declining issuance curve with partial fee burn, balancing early-stage network growth with progressive scarcity over time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="investors">
+    <div class="container">
+      <div class="section-header reveal">
+        <div><div class="eyebrow">Investors</div><h2>A category-defining thesis, not another general-purpose chain</h2></div>
+        <p>HIDRA-X is positioned as premium infrastructure for the post-quantum transition: institutional, sovereign and strategically differentiated from legacy crypto architectures.</p>
+      </div>
+      <div class="investors-grid">
+        <div class="investor reveal"><strong>Layer-1</strong><span>Own protocol layer, own strategic narrative, own economics.</span></div>
+        <div class="investor reveal"><strong>PQ Native</strong><span>Built around future security assumptions instead of reactive retrofits.</span></div>
+        <div class="investor reveal"><strong>Institutional</strong><span>Designed for governments, large allocators and regulated environments.</span></div>
+        <div class="investor reveal"><strong>Expansion-Ready</strong><span>Developer rails, governance agility and market positioning built in.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <div class="container">
+      <div class="section-header reveal">
+        <div><div class="eyebrow">Roadmap</div><h2>Planned evolution from architecture to global adoption</h2></div>
+        <p>Each stage is organized to validate the technical core, strengthen credibility, expand partnerships and prepare for institutional launch.</p>
+      </div>
+      <div class="roadmap">
+        <article class="phase reveal"><small>Phase 01</small><h3>Research</h3><ul><li>Cryptographic modeling</li><li>Formal proofs</li><li>Protocol architecture</li></ul></article>
+        <article class="phase reveal"><small>Phase 02</small><h3>Testnet</h3><ul><li>Public experimental nodes</li><li>Initial SDK and tooling</li><li>Performance validation</li></ul></article>
+        <article class="phase reveal"><small>Phase 03</small><h3>Partnerships</h3><ul><li>External audits</li><li>Institutional development</li><li>Ecosystem integrations</li></ul></article>
+        <article class="phase reveal"><small>Phase 04</small><h3>Mainnet</h3><ul><li>Official launch</li><li>Active governance</li><li>Global expansion program</li></ul></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="contact">
+        <div class="contact-card reveal">
+          <div class="eyebrow">Contact</div>
+          <h2 style="margin:18px 0 12px; font-size: clamp(2rem,4vw,3.1rem); letter-spacing:-.04em;">Bring HIDRA-X to investors, governments and strategic partners</h2>
+          <p style="color: var(--muted); line-height:1.8; max-width: 640px;">This landing page is ready to serve as the institutional foundation of your online presence. You can replace text, add your final logo, connect a live form, embed deck links, videos and technical documents.</p>
+          <div class="hero-actions" style="margin-top:22px;">
+            <a class="cta" href="mailto:contact@hidrax.network">contact@hidrax.network</a>
+            <a class="cta secondary" href="#top">Back to top</a>
+          </div>
+        </div>
+        <div class="contact-card reveal">
+          <h3 style="margin-top:0;">Request presentation</h3>
+          <form class="contact-form" onsubmit="event.preventDefault(); alert('Demo form only. Connect this HTML to a backend or service such as Formspree.');">
+            <input type="text" placeholder="Your name" required />
+            <input type="email" placeholder="Your email" required />
+            <input type="text" placeholder="Company / institution" />
+            <textarea placeholder="Tell us about your interest"></textarea>
+            <button class="cta" type="submit">Send request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-text"><strong>HIDRA-X</strong><span>Quantum-native</span></div>
+      </div>
+      <div>© 2026 HIDRA-X. Quantum-native infrastructure for the next era.</div>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
