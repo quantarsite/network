@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+       <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -836,23 +837,18 @@
 <!-- ─── PUBLICATIONS ─── -->
 <section class="what-section" style="padding-top: 0;">
     <div class="container">
-        <div class="section-label">Peer-Reviewed Research</div>
-        <div class="section-title">Published, verifiable, open.</div>
+        <div class="section-label">Research</div>
+        <div class="section-title">Conference-accepted. Preprint available.</div>
         <ul class="pub-list">
             <li>
                 <div class="pub-venue">SPIQE 2026 · IEEE EuroS&amp;P · Lisbon — Accepted</div>
                 <div class="pub-title">HYDRA-X: AND-Composed Dual Post-Quantum Authentication with Monotonic Policy Soundness</div>
-                <div class="pub-meta">Jefferson Buiar · IACR ePrint 2026/108354 · <a href="https://quantarnetwork.com/hydrax">Full paper</a></div>
+                <div class="pub-meta">Jefferson Buiar</div>
             </li>
             <li>
-                <div class="pub-venue">IACR ePrint</div>
-                <div class="pub-title">Component Binding for Hybrid Signature Combiners</div>
-                <div class="pub-meta">Jefferson Buiar · ePrint 2026/108546 · Introduces the CB-EUF-CMA security experiment</div>
-            </li>
-            <li>
-                <div class="pub-venue">IACR ePrint</div>
+                <div class="pub-venue">IACR ePrint 2026/108089</div>
                 <div class="pub-title">HYDRA-X Companion: Protocol Architecture and Implementation Notes</div>
-                <div class="pub-meta">Jefferson Buiar · ePrint 2026/108089</div>
+                <div class="pub-meta">Jefferson Buiar · <a href="https://eprint.iacr.org/2026/108089" target="_blank">eprint.iacr.org/2026/108089</a></div>
             </li>
         </ul>
     </div>
@@ -942,8 +938,8 @@
                 <div class="roadmap-date">Q1 2026 <span class="status done">✓ IN PROGRESS</span></div>
                 <div class="roadmap-content">
                     <h4>Seed Round &amp; Academic Foundation</h4>
-                    <p>$2.5M seed fundraising. HYDRA-X paper accepted at SPIQE 2026 (IEEE EuroS&amp;P). 
-                    Three ePrint publications. Rust benchmark implementation (hydrax-bench). 
+                    <p>$2.5M seed fundraising. HYDRA-X paper accepted at SPIQE 2026 (IEEE EuroS&amp;P).
+                    Research preprint published. Rust benchmark implementation (hydrax-bench).
                     128 specialists pipeline across 15+ countries.</p>
                 </div>
             </div>
@@ -987,7 +983,7 @@
             <p>$1.25 per QTR · 20M fixed supply · ~9% dilution · 18-month runway to mainnet</p>
             <div class="hero-actions">
                 <a href="https://quantarnetwork.com/invest" class="btn btn-primary">Investment Details →</a>
-                <a href="/cdn-cgi/l/email-protection#3b5854554f5a584f7b4a4e5a554f5a49555e4f4c5449501558545604484e59515e584f066a4e5a554f5a491e090b755e4f4c5449501e090b161e090b72554d5e484f565e554f1e090b72554a4e524942" class="btn btn-outline">Contact Founder</a>
+                <a href="mailto:contact@quantarnetwork.com" class="btn btn-outline">Contact Founder</a>
             </div>
         </div>
     </div>
@@ -1002,4 +998,22 @@
                 <a href="https://quantarnetwork.com/whitepaper">Whitepaper</a>
                 <a href="https://github.com/quantarsite/hydrax-bench">GitHub</a>
                 <a href="https://quantarnetwork.com/professionalteam">Team</a>
-                <a href="/cdn-cgi/l/email-
+                <a href="mailto:contact@quantarnetwork.com">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+
+</body>
+</html>
