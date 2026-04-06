@@ -561,13 +561,13 @@ tbody tr:hover { background: rgba(0,212,255,0.03); }
       <div class="hero-meta-item"><strong>Version</strong>&ensp;v3</div>
       <div class="hero-meta-item"><strong>Date</strong>&ensp;26 March 2026</div>
       <div class="hero-meta-item"><strong>Author</strong>&ensp;Jefferson Buiar</div>
-      <div class="hero-meta-item"><strong>Contact</strong>&ensp;contact@quantarnetwork.com</div>
+      <div class="hero-meta-item"><strong>Contact</strong>&ensp;<a href="mailto:contact@quantarnetwork.com" style="color: var(--cyan-dim); text-decoration: none;">contact@quantarnetwork.com</a></div>
     </div>
   </header>
 
   <!-- ═══ POSITIONING ═══ -->
   <div class="callout animate-in">
-    This whitepaper consolidates practical technical notes on the HYDRA-X dual post-quantum authentication protocol as implemented in Quantar Network. It is designed for public communication, grant applications, partner discussions, and architecture alignment. It is not a journal paper and does not claim a new cryptographic primitive. For formal treatment, see the referenced IACR ePrint publications.
+    This whitepaper consolidates practical technical notes on the HYDRA-X dual post-quantum authentication protocol as implemented in Quantar Network. It is designed for public communication, grant applications, partner discussions, and architecture alignment. It is not a journal paper and does not claim a new cryptographic primitive. For formal treatment, see the selected references in Section 9.
   </div>
 
   <!-- ═══ TABLE OF CONTENTS ═══ -->
@@ -655,7 +655,7 @@ tbody tr:hover { background: rgba(0,212,255,0.03); }
     <span class="section-num">Section 3</span>
     <h2 class="section-title">AND-Composition and Component Binding</h2>
     <p>A naive hybrid signature can be represented as an ordered pair of independently valid signatures. That representation captures conjunctive verification but does not by itself say whether the two components are meant to belong to the same composed signing event. This matters whenever verifiers care about domain, profile, state, or key-pair identity rather than the raw payload alone.</p>
-    <p>HYDRA-X addresses this through AND-composition with explicit component binding. The construction is formalized in our IACR ePrint publication on AND-composed signatures (ePrint 2026/108546), which introduces the <strong>CB-EUF-CMA</strong> (Component-Bound Existential Unforgeability under Chosen Message Attack) security experiment. The core property: a composed signature is valid only when both components authenticate the same bound transcript, and no partial recombination of components from different signing events can produce a valid composed signature.</p>
+    <p>HYDRA-X addresses this through AND-composition with explicit component binding. The construction is formalized in our research on AND-composed signatures, which introduces the <strong>CB-EUF-CMA</strong> (Component-Bound Existential Unforgeability under Chosen Message Attack) security experiment. The core property: a composed signature is valid only when both components authenticate the same bound transcript, and no partial recombination of components from different signing events can produce a valid composed signature.</p>
     <p>Both components sign a shared, deterministic transcript rather than the raw payload alone. The transcript carries the message, the context in which verification is expected to occur, and explicit references that bind the two components together.</p>
 
     <h3>HYDRA-X Binding Transcript</h3>
@@ -822,7 +822,7 @@ tbody tr:hover { background: rgba(0,212,255,0.03); }
     <p>Several open problems remain important for future work: more formal treatment of multi-user hybrid state in decentralized settings, explicit models for delegated recovery authority under post-quantum assumptions, analysis of algorithm agility under long-lived account semantics (particularly as NIST standards evolve), and sharper proof frameworks for component binding across protocol layers.</p>
     <p>For practical engineering, the takeaway remains clear. Hybrid transition should be treated as a disciplined protocol and policy design problem. The more explicitly the system models context, state, and authority, the less likely it is to confuse surface-level dual signing with genuine upgrade security.</p>
     <div class="callout">
-      This document is intended as a technical whitepaper for communication and architecture alignment. It is suitable for public release, partner discussions, and grant-facing materials. It should not be represented as a peer-reviewed academic publication. For formal cryptographic analysis of the AND-composition model and component binding, see the IACR ePrint references below.
+      This document is intended as a technical whitepaper for communication and architecture alignment. It is suitable for public release, partner discussions, and grant-facing materials. It should not be represented as a peer-reviewed academic publication. For formal cryptographic analysis of the AND-composition model and component binding, see the selected references in Section 9.
     </div>
   </section>
 
@@ -833,9 +833,9 @@ tbody tr:hover { background: rgba(0,212,255,0.03); }
     <ul class="ref-list">
       <li><span>National Institute of Standards and Technology (NIST). <em>FIPS 204: Module-Lattice-Based Digital Signature Standard (ML-DSA)</em>. 2024.</span></li>
       <li><span>National Institute of Standards and Technology (NIST). <em>FIPS 205: Stateless Hash-Based Digital Signature Standard (SLH-DSA)</em>. 2024.</span></li>
-      <li><span>Buiar, J. <em>Component Binding for Hybrid Signature Combiners</em>. IACR ePrint 2026/108546. <span class="ref-tag">Quantar</span> — Introduces the CB-EUF-CMA experiment and formal treatment of AND-composed dual signatures with explicit component binding.</span></li>
-      <li><span>Buiar, J. <em>HYDRA-X: AND-Composed Dual Post-Quantum Authentication with Monotonic Policy Soundness</em>. IACR ePrint 2026/108354. <span class="ref-tag">Quantar</span> — Full paper accepted at SPIQE 2026 (co-located with IEEE EuroS&amp;P, Lisbon).</span></li>
-      <li><span>Buiar, J. <em>HYDRA-X Companion: Protocol Architecture and Implementation Notes</em>. IACR ePrint 2026/108089. <span class="ref-tag">Quantar</span></span></li>
+      <li><span>Buiar, J. <em>Component Binding for Hybrid Signature Combiners</em>. Quantar Network Research. <span class="ref-tag">Quantar</span> — Introduces the CB-EUF-CMA experiment and formal treatment of AND-composed dual signatures with explicit component binding.</span></li>
+      <li><span>Buiar, J. <em>HYDRA-X: AND-Composed Dual Post-Quantum Authentication with Monotonic Policy Soundness</em>. Accepted at SPIQE 2026, co-located with IEEE EuroS&amp;P, Lisbon. <span class="ref-tag">Quantar</span></span></li>
+      <li><span>Buiar, J. <em>HYDRA-X Companion: Protocol Architecture and Implementation Notes</em>. Quantar Network Research. <span class="ref-tag">Quantar</span></span></li>
       <li><span>Bindel, H., Brendel, J., Fischlin, M., Goncalves, B., Stebila, D. <em>Hybrid Signatures Revisited</em>.</span></li>
       <li><span>Giacon, F., Heuer, F., Poettering, B. <em>KEM Combiners</em>. PKC 2018.</span></li>
       <li><span>Stebila, D., Mosca, M., Lorch, J. <em>Post-Quantum Key Exchange for the Internet and the TLS Protocol</em>.</span></li>
@@ -857,24 +857,8 @@ tbody tr:hover { background: rgba(0,212,255,0.03); }
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Nav scroll effect
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// Intersection Observer for fade-in
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
-</script>
-
-</body>
-</html>
+  nav.classList.toggle('scrolled', window.scrollY > 
