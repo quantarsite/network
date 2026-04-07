@@ -85,14 +85,14 @@
             background-clip: text;
         }
 
-        .nav-links { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+        .nav-links { display: flex; gap: 2px; align-items: center; flex-wrap: wrap; }
 
         .nav-links a {
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 500;
-            padding: 6px 10px;
+            padding: 6px 7px;
             border-radius: 6px;
             transition: all 0.2s;
         }
@@ -189,13 +189,14 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 28px;
+            padding: 14px 24px;
             border-radius: 10px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.25s;
             font-family: var(--font-display);
+            white-space: nowrap;
         }
 
         .btn-primary {
@@ -625,16 +626,19 @@
                 display: flex !important;
                 flex-direction: column;
                 width: 100%;
-                padding: 12px 0;
+                padding: 12px 16px;
                 gap: 4px;
                 border-top: 1px solid var(--dark-border);
             }
             .nav-links.open a {
-                padding: 10px 0;
+                padding: 10px 4px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .hamburger { display: block !important; }
             .roadmap-item { grid-template-columns: 1fr; gap: 8px; }
-            .hero { padding: 120px 0 60px; }
+            .hero { padding: 160px 0 60px; }
             .strip-grid { grid-template-columns: repeat(2, 1fr); }
             .card-grid { grid-template-columns: 1fr !important; }
             .token-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -644,6 +648,8 @@
             section, .container { overflow-x: hidden; max-width: 100vw; }
             .hero h1 { font-size: 1.8rem; }
             .hero-sub { font-size: 0.95rem; }
+            .hero-actions { flex-direction: column; align-items: center; }
+            .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -656,13 +662,14 @@
         <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
         <div class="nav-links">
             <a href="https://quantarnetwork.com" class="active">Home</a>
-            <a href="https://quantarnetwork.com/invest">Invest</a>
             <a href="https://quantarnetwork.com/article">Article</a>
             <a href="https://quantarnetwork.com/whitepaper">Whitepaper</a>
             <a href="https://quantarnetwork.com/technology">Technology</a>
-            <a href="https://quantarnetwork.com/technology">HYDRA-X</a>
+            <a href="https://quantarnetwork.com/hydrax">HYDRA-X</a>
+            <a href="https://quantarnetwork.com/hydrax-bench">Benchmark</a>
             <a href="https://quantarnetwork.com/professionalteam">Professional Team</a>
             <a href="https://quantarnetwork.com/cashbook">Cash Book</a>
+            <a href="https://quantarnetwork.com/invest">Invest</a>
         </div>
     </div>
 </nav>
@@ -978,7 +985,7 @@
             <p>$1.25 per QTR · 20M fixed supply · 10% dilution · 18-month runway to mainnet</p>
             <div class="hero-actions">
                 <a href="https://quantarnetwork.com/invest" class="btn btn-primary">Investment Details →</a>
-                <a href="mailto:contact@quantarnetwork.com" class="btn btn-outline">Contact Founder</a>
+                <a href="/cdn-cgi/l/email-protection#50333f3e24313324102125313e2431223e3524273f223b7e333f3d" class="btn btn-outline">Contact Founder</a>
             </div>
         </div>
     </div>
@@ -993,14 +1000,10 @@
                 <a href="https://quantarnetwork.com/whitepaper">Whitepaper</a>
                 <a href="https://github.com/quantarsite/hydrax-bench">GitHub</a>
                 <a href="https://quantarnetwork.com/professionalteam">Team</a>
-                <a href="mailto:contact@quantarnetwork.com">Contact</a>
+                <a href="/cdn-cgi/l/email-protection#14777b7a60757760546561757a6075667a7160637b667f3a777b79">Contact</a>
             </div>
         </div>
     </div>
 </footer>
 
-<script>
-    // Smooth scroll for nav links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.prevent
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-deco
