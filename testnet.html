@@ -30,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* Grid background */
   body::before {
     content: '';
     position: fixed;
@@ -43,7 +42,6 @@
     z-index: 0;
   }
 
-  /* Scan line effect */
   body::after {
     content: '';
     position: fixed;
@@ -67,7 +65,6 @@
     padding: 0 20px 60px;
   }
 
-  /* Header */
   header {
     padding: 40px 0 32px;
     border-bottom: 1px solid var(--border);
@@ -79,10 +76,7 @@
     gap: 16px;
   }
 
-  .logo {
-    display: flex;
-    flex-direction: column;
-  }
+  .logo { display: flex; flex-direction: column; }
 
   .logo-top {
     font-family: 'Orbitron', sans-serif;
@@ -138,7 +132,6 @@
     50%       { opacity: 0.4; transform: scale(0.8); }
   }
 
-  /* Stats grid */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -163,10 +156,9 @@
     height: 100%;
   }
 
-  .stat-card.cyan::before  { background: var(--cyan); box-shadow: var(--glow-c); }
+  .stat-card.cyan::before   { background: var(--cyan);   box-shadow: var(--glow-c); }
   .stat-card.purple::before { background: var(--purple); box-shadow: var(--glow-p); }
   .stat-card.green::before  { background: var(--green); }
-
   .stat-card:hover { border-color: var(--cyan); }
 
   .stat-label {
@@ -195,7 +187,6 @@
     word-break: break-all;
   }
 
-  /* Section */
   .section-header {
     display: flex;
     align-items: center;
@@ -217,7 +208,6 @@
     background: linear-gradient(90deg, var(--border), transparent);
   }
 
-  /* Block list */
   .block-list {
     display: flex;
     flex-direction: column;
@@ -248,15 +238,12 @@
     background: rgba(0,245,255,0.03);
   }
 
-  .block-row.new {
-    border-color: rgba(0,245,255,0.5);
-    animation: newBlock 0.5s ease forwards;
-  }
-
   @keyframes newBlock {
     0%   { background: rgba(0,245,255,0.1); border-color: var(--cyan); opacity: 0; transform: translateY(-12px); }
     100% { background: var(--surface); border-color: var(--border); opacity: 1; transform: translateY(0); }
   }
+
+  .block-row.new { animation: newBlock 0.5s ease forwards; }
 
   .block-height {
     font-family: 'Orbitron', sans-serif;
@@ -279,9 +266,7 @@
     line-height: 1.4;
   }
 
-  .block-hash span {
-    color: var(--text);
-  }
+  .block-hash span { color: var(--text); }
 
   .block-tag {
     font-size: 9px;
@@ -292,7 +277,6 @@
     white-space: nowrap;
   }
 
-  /* Node info */
   .node-info {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -310,20 +294,9 @@
   }
 
   .node-row:last-child { border-bottom: none; }
+  .node-key { color: var(--muted); letter-spacing: 2px; white-space: nowrap; }
+  .node-val { color: var(--cyan); text-align: right; word-break: break-all; }
 
-  .node-key {
-    color: var(--muted);
-    letter-spacing: 2px;
-    white-space: nowrap;
-  }
-
-  .node-val {
-    color: var(--cyan);
-    text-align: right;
-    word-break: break-all;
-  }
-
-  /* Loading */
   .loading {
     text-align: center;
     padding: 40px;
@@ -332,16 +305,13 @@
     font-size: 11px;
   }
 
-  .loading span {
-    animation: blink 1s infinite;
-  }
+  .loading span { animation: blink 1s infinite; }
 
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0; }
   }
 
-  /* Error */
   .error {
     background: rgba(255,51,102,0.08);
     border: 1px solid rgba(255,51,102,0.3);
@@ -351,7 +321,6 @@
     letter-spacing: 2px;
   }
 
-  /* Footer */
   footer {
     margin-top: 48px;
     padding-top: 24px;
@@ -372,12 +341,7 @@
   }
 
   footer a:hover { opacity: 0.7; }
-
-  .footer-copy {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-  }
+  .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 2px; }
 
   .hydra-badge {
     font-size: 10px;
@@ -388,9 +352,7 @@
   }
 
   @media (max-width: 600px) {
-    .block-row {
-      grid-template-columns: 80px 1fr;
-    }
+    .block-row { grid-template-columns: 80px 1fr; }
     .block-tag { display: none; }
     .stat-value { font-size: 22px; }
   }
@@ -411,7 +373,6 @@
     </div>
   </header>
 
-  <!-- Stats -->
   <div class="stats">
     <div class="stat-card cyan">
       <div class="stat-label">Latest Block</div>
@@ -430,7 +391,6 @@
     </div>
   </div>
 
-  <!-- Block hash -->
   <div class="stats" style="grid-template-columns:1fr;margin-bottom:32px">
     <div class="stat-card cyan">
       <div class="stat-label">Latest Block Hash</div>
@@ -438,7 +398,6 @@
     </div>
   </div>
 
-  <!-- Block list -->
   <div class="section-header">
     <div class="section-title">Recent Blocks</div>
     <div class="section-line"></div>
@@ -448,7 +407,6 @@
     <div class="loading">FETCHING BLOCKS<span>_</span></div>
   </div>
 
-  <!-- Node info -->
   <div class="node-info" style="margin-top:32px">
     <div class="section-header" style="margin-bottom:12px">
       <div class="section-title">Node Info</div>
@@ -456,7 +414,7 @@
     </div>
     <div class="node-row">
       <span class="node-key">RPC ENDPOINT</span>
-      <span class="node-val">http://testnet.quantarnetwork.com:8545</span>
+      <span class="node-val">https://testnet.quantarnetwork.com</span>
     </div>
     <div class="node-row">
       <span class="node-key">CONSENSUS</span>
@@ -493,14 +451,14 @@
 </div>
 
 <script>
-  const RPC = 'http://testnet.quantarnetwork.com:8545';
+  const RPC = 'https://testnet.quantarnetwork.com';
   let lastHeight = -1;
 
   async function fetchStatus() {
     try {
       const r = await fetch(`${RPC}/status`);
       const d = await r.json();
-      document.getElementById('height').textContent   = d.height.toLocaleString();
+      document.getElementById('height').textContent    = d.height.toLocaleString();
       document.getElementById('node-addr').textContent = d.node_address;
       document.getElementById('chain-id').textContent  = d.chain_id;
       document.getElementById('block-hash').textContent = d.block_hash;
@@ -527,26 +485,21 @@
       list.innerHTML = '<div class="loading">NO BLOCKS YET<span>_</span></div>';
       return;
     }
-
     list.innerHTML = '';
     blocks.forEach((b, i) => {
       const isNew = b.height > lastHeight && lastHeight >= 0;
       const div = document.createElement('div');
       div.className = 'block-row' + (isNew ? ' new' : '');
       div.style.animationDelay = `${i * 0.04}s`;
-
       const shortHash = b.hash
         ? `<span>${b.hash.slice(0,16)}…${b.hash.slice(-8)}</span>`
-        : `<span style="color:var(--muted)">hash not stored in memory</span>`;
-
+        : `<span style="color:var(--muted)">—</span>`;
       div.innerHTML = `
         <div>
           <div class="block-height-label">BLOCK</div>
           <div class="block-height">${b.height.toLocaleString()}</div>
         </div>
-        <div class="block-hash">
-          HASH &nbsp;${shortHash}
-        </div>
+        <div class="block-hash">HASH &nbsp;${shortHash}</div>
         <div class="block-tag">✓ COMMITTED</div>
       `;
       list.appendChild(div);
@@ -556,21 +509,16 @@
   async function update() {
     const height = await fetchStatus();
     const blocks = await fetchBlocks();
-
     if (blocks === null) {
       document.getElementById('block-list').innerHTML =
         '<div class="error">⚠ CANNOT REACH NODE — ' + RPC + '</div>';
       return;
     }
-
     renderBlocks(blocks, height);
     if (height !== null) lastHeight = height;
   }
 
-  // Initial load
   update();
-
-  // Poll every 5 seconds (block time)
   setInterval(update, 5000);
 </script>
 </body>
