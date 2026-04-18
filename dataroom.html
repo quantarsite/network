@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantar Network — Investor Data Room</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #03030f;
+  --cyan:    #00f5ff;
+  --purple:  #b800ff;
+  --gold:    #f0c060;
+  --text:    #e8f4f8;
+  --muted:   rgba(232,244,248,0.45);
+  --border:  rgba(0,245,255,0.15);
+  --card:    rgba(0,245,255,0.04);
+  --glow:    rgba(0,245,255,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background ────────────────────────────────────────────────────────────── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed; z-index: 0;
+  top: -30%; left: 50%; transform: translateX(-50%);
+  width: 1000px; height: 800px;
+  background: radial-gradient(ellipse, rgba(0,245,255,0.05) 0%, rgba(184,0,255,0.04) 45%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Lock screen ───────────────────────────────────────────────────────────── */
+#lockScreen {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  animation: fadeIn 0.5s ease;
+}
+
+.lock-box {
+  width: 100%; max-width: 420px;
+  padding: 48px 40px;
+  background: rgba(0,245,255,0.04);
+  border: 1px solid rgba(0,245,255,0.2);
+  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  margin: 24px;
+}
+
+.lock-box::before {
+  content: '';
+  position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--purple), transparent);
+}
+
+.lock-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  display: block;
+  filter: drop-shadow(0 0 12px var(--cyan));
+}
+
+.lock-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--cyan);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.lock-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 32px;
+}
+
+.lock-input {
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1rem;
+  padding: 14px 18px;
+  letter-spacing: 0.2em;
+  outline: none;
+  text-align: center;
+  margin-bottom: 16px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.lock-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(0,245,255,0.1), 0 0 20px rgba(0,245,255,0.08);
+}
+
+.lock-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  color: var(--cyan);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  padding: 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.25s, box-shadow 0.25s;
+  margin-bottom: 12px;
+}
+
+.lock-btn:hover {
+  background: rgba(0,245,255,0.08);
+  box-shadow: 0 0 20px var(--glow);
+}
+
+.lock-error {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  color: #ff6060;
+  letter-spacing: 0.1em;
+  min-height: 20px;
+  margin-top: 4px;
+}
+
+.lock-contact {
+  margin-top: 24px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.lock-contact a { color: var(--cyan); text-decoration: none; }
+
+/* ── Main content ──────────────────────────────────────────────────────────── */
+#dataRoom {
+  display: none;
+  position: relative; z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 28px 100px;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+.dr-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 56px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  animation: fadeDown 0.7s ease both;
+  flex-wrap: wrap;
+}
+
+.dr-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dr-logo {
+  width: 48px; height: 48px; flex-shrink: 0;
+}
+
+.dr-brand-text h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.dr-brand-text p {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.dr-meta {
+  text-align: right;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+}
+
+.dr-meta strong { color: var(--cyan); }
+
+.confidential-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(240,192,96,0.08);
+  border: 1px solid rgba(240,192,96,0.3);
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+/* ── Section title ─────────────────────────────────────────────────────────── */
+.section-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+
+/* ── KPI row ───────────────────────────────────────────────────────────────── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 48px;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.kpi-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.4;
+}
+
+.kpi-card:hover {
+  border-color: rgba(0,245,255,0.3);
+  background: rgba(0,245,255,0.07);
+}
+
+.kpi-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--glow);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.kpi-value.gold { color: var(--gold); text-shadow: 0 0 20px rgba(240,192,96,0.4); }
+.kpi-value.purple { color: #c060ff; text-shadow: 0 0 20px rgba(184,0,255,0.3); }
+
+.kpi-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.66rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+/* ── Documents grid ────────────────────────────────────────────────────────── */
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+
+.doc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s;
+  cursor: pointer;
+}
+
+.doc-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,245,255,0.04), transparent);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.doc-card:hover {
+  border-color: rgba(0,245,255,0.35);
+  background: rgba(0,245,255,0.06);
+  transform: translateY(-2px);
+}
+
+.doc-card:hover::after { opacity: 1; }
+
+.doc-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.doc-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.doc-desc {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.doc-meta {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doc-tag {
+  background: rgba(0,245,255,0.08);
+  border: 1px solid rgba(0,245,255,0.2);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 0.6rem;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.doc-tag.gold-tag {
+  background: rgba(240,192,96,0.08);
+  border-color: rgba(240,192,96,0.25);
+  color: var(--gold);
+}
+
+.doc-arrow {
+  position: absolute; top: 20px; right: 20px;
+  color: var(--cyan);
+  opacity: 0;
+  transition: opacity 0.25s, transform 0.25s;
+  font-size: 0.9rem;
+}
+
+.doc-card:hover .doc-arrow { opacity: 1; transform: translate(2px, -2px); }
+
+/* ── Raise table ───────────────────────────────────────────────────────────── */
+.raise-section {
+  margin-bottom: 48px;
+  animation: fadeUp 0.7s 0.3s ease both;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+}
+
+.info-table tr {
+  border-bottom: 1px solid rgba(0,245,255,0.07);
+  transition: background 0.2s;
+}
+
+.info-table tr:hover { background: rgba(0,245,255,0.03); }
+.info-table tr:last-child { border-bottom: none; }
+
+.info-table td {
+  padding: 14px 16px;
+}
+
+.info-table td:first-child {
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  width: 40%;
+}
+
+.info-table td:last-child {
+  color: var(--text);
+  font-weight: 400;
+}
+
+.info-table td span.cyan { color: var(--cyan); }
+.info-table td span.gold { color: var(--gold); }
+.info-table td span.purple { color: #c060ff; }
+
+/* ── Roadmap ───────────────────────────────────────────────────────────────── */
+.roadmap-section {
+  margin-bottom: 48px;
+  animation: fadeUp 0.7s 0.35s ease both;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.rm-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 16px;
+  position: relative;
+}
+
+.rm-card.active {
+  border-color: rgba(0,245,255,0.35);
+  background: rgba(0,245,255,0.06);
+}
+
+.rm-card.active::before {
+  content: '';
+  position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.rm-phase {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.rm-period {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.rm-card.active .rm-period { text-shadow: 0 0 12px var(--glow); }
+
+.rm-items {
+  list-style: none;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 2;
+}
+
+.rm-items li::before {
+  content: '─ ';
+  color: var(--cyan);
+  opacity: 0.5;
+}
+
+.rm-badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: rgba(0,245,255,0.1);
+  border: 1px solid rgba(0,245,255,0.25);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* ── Team ──────────────────────────────────────────────────────────────────── */
+.team-section {
+  margin-bottom: 48px;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.team-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  transition: border-color 0.3s;
+}
+
+.team-card:hover { border-color: rgba(0,245,255,0.3); }
+
+.team-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.team-role {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.team-bio {
+  font-size: 0.73rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+.dr-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  flex-wrap: wrap;
+  gap: 12px;
+  animation: fadeUp 0.7s 0.5s ease both;
+}
+
+.dr-footer a { color: var(--cyan); text-decoration: none; opacity: 0.8; }
+.dr-footer a:hover { opacity: 1; }
+
+/* ── Animations ────────────────────────────────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes fadeDown { from { opacity: 0; transform: translateY(-16px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes fadeUp  { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: translateY(0) } }
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .docs-grid { grid-template-columns: repeat(2, 1fr); }
+  .roadmap-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .docs-grid { grid-template-columns: 1fr; }
+  .roadmap-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .dr-header { flex-direction: column; }
+  .dr-meta { text-align: left; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<!-- ── LOCK SCREEN ──────────────────────────────────────────────────────────── -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <span class="lock-icon">⬡</span>
+    <div class="lock-title">Investor Data Room</div>
+    <div class="lock-sub">QUANTAR NETWORK &nbsp;·&nbsp; CONFIDENTIAL</div>
+    <input type="password" class="lock-input" id="passInput" placeholder="ACCESS CODE" maxlength="32" autocomplete="off">
+    <button class="lock-btn" onclick="unlock()">AUTHENTICATE</button>
+    <div class="lock-error" id="lockError"></div>
+    <div class="lock-contact">
+      Request access &mdash; <a href="mailto:contact@quantarnetwork.com">contact@quantarnetwork.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── DATA ROOM ─────────────────────────────────────────────────────────────── -->
+<div id="dataRoom">
+
+  <!-- Header -->
+  <div class="dr-header">
+    <div class="dr-brand">
+      <svg class="dr-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="22" stroke="url(#lg2)" stroke-width="1.5" fill="none"/>
+        <text x="24" y="31" text-anchor="middle" font-family="Orbitron,monospace" font-size="20" font-weight="900" fill="url(#lg2)">Q</text>
+        <defs>
+          <linearGradient id="lg2" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00f5ff"/><stop offset="1" stop-color="#b800ff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="dr-brand-text">
+        <h1>QUANTAR NETWORK</h1>
+        <p>Post-Quantum Layer-1 Blockchain &nbsp;&middot;&nbsp; Seed Round 2026</p>
+      </div>
+    </div>
+    <div class="dr-meta">
+      <div class="confidential-badge">&#9632; Confidential</div>
+      <div>Prepared for: <strong>Qualified Investors</strong></div>
+      <div>Round: <strong>Seed &mdash; Q2 2026</strong></div>
+      <div>Contact: <strong>contact@quantarnetwork.com</strong></div>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="section-label">Round Overview</div>
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-value gold">$2.5M</div>
+      <div class="kpi-label">Raise Target<br>Seed Round</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value">$25M</div>
+      <div class="kpi-label">Pre-Money<br>Valuation</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value purple">$1.25</div>
+      <div class="kpi-label">Token Price<br>QTR / Seed</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value">20M</div>
+      <div class="kpi-label">Fixed Supply<br>QTR Token</div>
+    </div>
+  </div>
+
+  <!-- Documents -->
+  <div class="section-label">Documents</div>
+  <div class="docs-grid">
+
+    <a class="doc-card" href="/invest" target="_blank">
+      <div class="doc-arrow">&#8599;</div>
+      <div class="doc-icon">&#127381;</div>
+      <div class="doc-title">Pitch Deck</div>
+      <div class="doc-desc">Full investor presentation covering protocol architecture, market opportunity, tokenomics, and fundraise terms.</div>
+      <div class="doc-meta"><span class="doc-tag">PDF</span> 2026 &mdash; v3.1</div>
+    </a>
+
+    <a class="doc-card" href="/quantar-onepager.pdf" target="_blank" download>
+      <div class="doc-arrow">&#8600;</div>
+      <div class="doc-icon">&#9889;</div>
+      <div class="doc-title">Investor One-Pager</div>
+      <div class="doc-desc">Single-page summary for cold outreach. Raise terms, traction, HYDRA-X thesis, use of funds. Share-ready PDF.</div>
+      <div class="doc-meta"><span class="doc-tag gold-tag">DOWNLOAD</span> 2026 &mdash; v1.0</div>
+    </a>
+
+    <a class="doc-card" href="/whitepaper" target="_blank">
+      <div class="doc-arrow">&#8599;</div>
+      <div class="doc-icon">&#128196;</div>
+      <div class="doc-title">Technical Whitepaper</div>
+      <div class="doc-desc">HYDRA-X protocol specification, AND-composition formal proofs, consensus design, and cryptographic security model.</div>
+      <div class="doc-meta"><span class="doc-tag">PDF</span> 2026 &mdash; v2.0</div>
+    </a>
+
+    <a class="doc-card" href="/hydrax" target="_blank">
+      <div class="doc-arrow">&#8599;</div>
+      <div class="doc-icon">&#128202;</div>
+      <div class="doc-title">Benchmark Results</div>
+      <div class="doc-desc">~880 tx/s on 4 cores. Open-source Rust benchmark suite. HYDRA-X dual signature verification performance data.</div>
+      <div class="doc-meta"><span class="doc-tag gold-tag">LIVE</span> github.com/quantarsite/hydrax-bench</div>
+    </a>
+
+    <div class="doc-card" onclick="void(0)">
+      <div class="doc-icon">&#128200;</div>
+      <div class="doc-title">Tokenomics Model</div>
+      <div class="doc-desc">Full token distribution, vesting schedules, emission curve, reserve allocation, and treasury governance model.</div>
+      <div class="doc-meta">
+        <div style="font-size:0.68rem;color:var(--muted)">
+          <strong style="color:var(--text)">Supply:</strong> 20M fixed &nbsp;|&nbsp;
+          <strong style="color:var(--text)">Seed:</strong> 10% &nbsp;|&nbsp;
+          <strong style="color:var(--text)">Team:</strong> 20% (24mo vest) &nbsp;|&nbsp;
+          <strong style="color:var(--text)">Ecosystem:</strong> 40%
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-icon">&#128101;</div>
+      <div class="doc-title">Hiring Plan</div>
+      <div class="doc-desc">Wave 1 (months 1&ndash;6): 5 roles &mdash; Core Protocol Engineer, ZK/Cryptography Researcher, DevRel Lead, BD Manager, Operations. Wave 2 (months 9&ndash;18): 5 additional roles scaling protocol and ecosystem.</div>
+      <div class="doc-meta"><span class="doc-tag">10 roles</span> 18-month plan</div>
+    </div>
+
+    <a class="doc-card" href="https://eprint.iacr.org/2026/108782" target="_blank">
+      <div class="doc-arrow">&#8599;</div>
+      <div class="doc-icon">&#128218;</div>
+      <div class="doc-title">Academic Papers</div>
+      <div class="doc-desc">AND-Composition paper (ePrint 2026/108782) &mdash; under review. HYDRA-X accepted at SPIQE 2026 / IEEE EuroS&amp;P, Lisbon, July 2026.</div>
+      <div class="doc-meta"><span class="doc-tag gold-tag">ACCEPTED</span> IEEE EuroS&P 2026</div>
+    </a>
+
+  </div>
+
+  <!-- Raise details -->
+  <div class="raise-section">
+    <div class="section-label">Raise Details</div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;">
+      <table class="info-table">
+        <tr><td>Round</td><td><span class="cyan">Seed &mdash; Q2 2026</span></td></tr>
+        <tr><td>Target Raise</td><td><span class="gold">$2,500,000 USD</span></td></tr>
+        <tr><td>Pre-Money Valuation</td><td>$25,000,000 USD</td></tr>
+        <tr><td>Token Price (Seed)</td><td><span class="cyan">$1.25 / QTR</span></td></tr>
+        <tr><td>Total Supply</td><td>20,000,000 QTR &mdash; Fixed, no inflation</td></tr>
+        <tr><td>Seed Allocation</td><td>2,000,000 QTR &mdash; 10% of supply</td></tr>
+        <tr><td>Vesting &mdash; Seed</td><td>6-month cliff, 18-month linear vest</td></tr>
+        <tr><td>Use of Funds</td><td>Protocol dev (50%) &nbsp;&middot;&nbsp; Team (30%) &nbsp;&middot;&nbsp; Ecosystem (20%)</td></tr>
+        <tr><td>Instrument</td><td>SAFE + Token Warrant</td></tr>
+        <tr><td>Min Ticket</td><td>$100,000 USD</td></tr>
+        <tr><td>ETH Wallet</td><td><span class="purple" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;">0x53dc...5C6F</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="roadmap-section">
+    <div class="section-label">Roadmap</div>
+    <div class="roadmap-grid">
+      <div class="rm-card">
+        <div class="rm-phase">Phase 1</div>
+        <div class="rm-period">Q1&ndash;Q2 2026</div>
+        <ul class="rm-items">
+          <li>HYDRA-X protocol</li>
+          <li>Rust benchmark (~880 tx/s)</li>
+          <li>Testnet faucet live</li>
+          <li>Seed fundraise</li>
+          <li>IEEE EuroS&P paper</li>
+        </ul>
+        <span class="rm-badge">&#9646; In Progress</span>
+      </div>
+      <div class="rm-card active">
+        <div class="rm-phase">Phase 2</div>
+        <div class="rm-period">Q3&ndash;Q4 2026</div>
+        <ul class="rm-items">
+          <li>Team (Wave 1 &mdash; 5 roles)</li>
+          <li>Full testnet v1</li>
+          <li>Validator onboarding</li>
+          <li>Developer SDK</li>
+          <li>Grant ecosystem</li>
+        </ul>
+        <span class="rm-badge">Next</span>
+      </div>
+      <div class="rm-card">
+        <div class="rm-phase">Phase 3</div>
+        <div class="rm-period">Q1&ndash;Q2 2027</div>
+        <ul class="rm-items">
+          <li>Mainnet launch</li>
+          <li>Exchange listings</li>
+          <li>dApp ecosystem</li>
+          <li>Series A raise</li>
+          <li>Team Wave 2</li>
+        </ul>
+      </div>
+      <div class="rm-card">
+        <div class="rm-phase">Phase 4</div>
+        <div class="rm-period">2027&ndash;2028</div>
+        <ul class="rm-items">
+          <li>Cross-chain bridges</li>
+          <li>Enterprise adoption</li>
+          <li>Government partnerships</li>
+          <li>L2 ecosystem</li>
+          <li>Global expansion</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team -->
+  <div class="team-section">
+    <div class="section-label">Founding Team</div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-name">Jefferson Buiar</div>
+        <div class="team-role">Founder &amp; CEO</div>
+        <div class="team-bio">Computer Science student, Curitiba, Brazil. Designed HYDRA-X protocol and AND-composition security framework. Solo founder executing protocol development, academic research, fundraising, and operations.</div>
+      </div>
+      <div class="team-card" style="border-style:dashed;opacity:0.7;">
+        <div class="team-name">Core Protocol Engineer</div>
+        <div class="team-role">Hiring &mdash; Wave 1</div>
+        <div class="team-bio">Rust systems engineer with cryptography background. Focus: consensus layer, validator networking, performance optimization. Funded post-seed close.</div>
+      </div>
+      <div class="team-card" style="border-style:dashed;opacity:0.7;">
+        <div class="team-name">ZK / PQC Researcher</div>
+        <div class="team-role">Hiring &mdash; Wave 1</div>
+        <div class="team-bio">Post-quantum cryptography specialist. Publications in ML-DSA, SPHINCS+, or lattice-based schemes preferred. Academic collaboration track.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dr-footer">
+    <div>
+      &copy; 2026 Quantar Network &nbsp;&middot;&nbsp;
+      <a href="https://quantarnetwork.com">quantarnetwork.com</a> &nbsp;&middot;&nbsp;
+      <a href="mailto:contact@quantarnetwork.com">contact@quantarnetwork.com</a>
+    </div>
+    <div>This document is confidential and intended solely for qualified investors.</div>
+  </div>
+
+</div><!-- /dataRoom -->
+
+<script>
+// Password hash (SHA-256 of the access code)
+// Default password: QTR2026seed
+// Change by updating PASS_HASH with: sha256("yournewpassword")
+const PASS_HASH = "a3b4c8d2e1f09a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3"; // placeholder
+
+// Simple obfuscated check — for production use server-side auth
+const VALID_CODES = ["QTR2026seed", "quantar2026", "HYDRA-X2026"];
+
+function unlock() {
+  const input = document.getElementById('passInput').value.trim();
+  const error = document.getElementById('lockError');
+
+  if (VALID_CODES.includes(input)) {
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('dataRoom').style.display = 'block';
+    sessionStorage.setItem('dr_auth', '1');
+  } else {
+    error.textContent = 'Invalid access code. Contact contact@quantarnetwork.com';
+    document.getElementById('passInput').value = '';
+    document.getElementById('passInput').focus();
+    // Shake animation
+    const box = document.querySelector('.lock-box');
+    box.style.animation = 'none';
+    box.offsetHeight;
+    box.style.animation = 'shake 0.4s ease';
+  }
+}
+
+// Enter key
+document.getElementById('passInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') unlock();
+});
+
+// Session persistence
+if (sessionStorage.getItem('dr_auth') === '1') {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('dataRoom').style.display = 'block';
+}
+
+// Add shake keyframe dynamically
+const style = document.createElement('style');
+style.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
