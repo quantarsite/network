@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Network Monitor — Quantar Network</title>
+  <meta name="description" content="Live post-quantum network health dashboard. Real-time score, transaction monitoring, and security alerts for Quantar Network testnet."/>
+  <link rel="icon" href="Gemini_Generated_Image_ptgsuyptgsuyptgs.webp"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#03030f;
+      --cyan:#00f5ff;
+      --purple:#b800ff;
+      --red:#ff3366;
+      --orange:#ff6600;
+      --yellow:#ffaa00;
+      --green:#44ff88;
+      --white:#ffffff;
+    }
+    body{
+      background:var(--bg);
+      color:#e0e0e0;
+      font-family:'Courier New',monospace;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* NAV */
+    nav{
+      border-bottom:1px solid rgba(0,245,255,0.12);
+      padding:14px 24px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      background:rgba(3,3,15,0.97);
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+    .logo{
+      width:32px;height:32px;border-radius:7px;
+      background:linear-gradient(135deg,var(--cyan),var(--purple));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:900;font-size:15px;color:var(--bg);text-decoration:none;
+    }
+    .nav-title{font-size:13px;font-weight:bold;color:var(--cyan);letter-spacing:2px;}
+    .nav-sub{font-size:9px;color:rgba(0,245,255,0.4);letter-spacing:1px;}
+    .nav-links{margin-left:auto;display:flex;gap:16px;}
+    .nav-links a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:11px;letter-spacing:1px;transition:color 0.2s;}
+    .nav-links a:hover{color:var(--cyan);}
+    .nav-links a.active{color:var(--cyan);}
+    .live-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:var(--cyan);box-shadow:0 0 8px var(--cyan);
+      animation:blink 2s infinite;
+    }
+
+    /* METRICS BAR */
+    .metrics-bar{
+      display:flex;border-bottom:1px solid rgba(0,245,255,0.07);
+      background:rgba(0,245,255,0.02);overflow-x:auto;flex-shrink:0;
+    }
+    .metric{
+      flex:0 0 auto;padding:10px 20px;
+      border-right:1px solid rgba(255,255,255,0.05);
+      text-align:center;min-width:80px;
+    }
+    .metric-value{font-size:18px;font-weight:bold;color:var(--cyan);}
+    .metric-label{font-size:9px;color:var(--cyan);letter-spacing:1px;margin-top:2px;}
+    .metric-sub{font-size:8px;color:rgba(255,255,255,0.3);margin-top:1px;}
+
+    /* MAIN GRID */
+    .main{flex:1;max-width:1100px;margin:0 auto;width:100%;padding:24px 16px;}
+
+    /* SECTION TITLE */
+    .section-title{
+      font-size:10px;color:rgba(0,245,255,0.5);letter-spacing:3px;
+      margin-bottom:14px;display:flex;align-items:center;gap:8px;
+    }
+    .section-title::after{content:'';flex:1;height:1px;background:rgba(0,245,255,0.08);}
+
+    /* GRID LAYOUTS */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+    @media(max-width:600px){
+      .grid-2{grid-template-columns:1fr;}
+      .grid-3{grid-template-columns:1fr 1fr;}
+    }
+
+    /* CARDS */
+    .card{
+      border:1px solid rgba(0,245,255,0.1);border-radius:12px;
+      padding:18px;background:rgba(0,245,255,0.02);
+    }
+    .card-red{border-color:rgba(255,51,102,0.2);background:rgba(255,51,102,0.03);}
+    .card-purple{border-color:rgba(184,0,255,0.2);background:rgba(184,0,255,0.03);}
+    .card-yellow{border-color:rgba(255,170,0,0.2);background:rgba(255,170,0,0.03);}
+    .card-label{font-size:9px;color:rgba(0,245,255,0.6);letter-spacing:2px;margin-bottom:8px;}
+    .card-value{font-size:28px;font-weight:bold;color:var(--cyan);}
+    .card-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;}
+
+    /* GAUGE */
+    .gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:20px;}
+    #gauge-svg{overflow:visible;}
+
+    /* HISTORY CHART */
+    .chart-bars{display:flex;align-items:flex-end;gap:4px;height:60px;padding:0 4px;}
+    .chart-bar{flex:1;border-radius:2px 2px 0 0;min-width:8px;transition:height 0.4s;}
+    .chart-time{font-size:7px;color:rgba(255,255,255,0.3);text-align:center;margin-top:3px;}
+
+    /* TX FEED */
+    .tx-feed{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto;}
+    .tx-item{
+      display:flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:7px;
+      border:1px solid rgba(255,255,255,0.05);
+      background:rgba(255,255,255,0.01);
+      font-size:11px;
+    }
+    .tx-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .tx-id{color:rgba(255,255,255,0.35);font-size:10px;}
+    .tx-addr{color:var(--cyan);}
+    .tx-amount{color:var(--purple);font-weight:bold;margin-left:auto;}
+    .tx-status{font-size:10px;font-weight:bold;letter-spacing:1px;flex-shrink:0;}
+
+    /* ALERTS */
+    .alert-item{
+      padding:10px 14px;border-radius:8px;margin-bottom:8px;
+      border:1px solid rgba(255,170,0,0.2);background:rgba(255,170,0,0.04);
+    }
+    .alert-level{font-size:10px;font-weight:bold;color:var(--yellow);letter-spacing:1px;}
+    .alert-msg{font-size:11px;color:var(--white);margin-top:3px;}
+    .alert-time{font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;}
+    .no-alerts{text-align:center;padding:30px;font-size:12px;color:rgba(255,255,255,0.3);}
+
+    /* NODE STATUS */
+    .node-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .node-key{font-size:11px;color:rgba(255,255,255,0.5);}
+    .node-val{font-size:11px;color:var(--white);font-weight:bold;text-align:right;word-break:break-all;max-width:60%;}
+
+    /* ERROR BAR */
+    .error-bar{
+      background:rgba(255,51,102,0.08);border-bottom:1px solid rgba(255,51,102,0.2);
+      padding:8px 16px;font-size:11px;color:var(--red);display:none;
+    }
+
+    /* FOOTER */
+    footer{
+      border-top:1px solid rgba(0,245,255,0.06);
+      padding:14px 24px;display:flex;align-items:center;gap:8px;
+      background:rgba(3,3,15,0.97);font-size:10px;
+    }
+    .footer-status{color:var(--cyan);}
+    .footer-links{margin-left:auto;display:flex;gap:16px;}
+    .footer-links a{color:rgba(255,255,255,0.3);text-decoration:none;font-size:10px;}
+    .footer-links a:hover{color:var(--cyan);}
+
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+    ::-webkit-scrollbar{width:3px;height:3px;}
+    ::-webkit-scrollbar-thumb{background:rgba(0,245,255,0.15);border-radius:2px;}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="/">Q</a>
+  <div>
+    <div class="nav-title">NETWORK MONITOR</div>
+    <div class="nav-sub">LIVE · HYDRA-X · FIPS 204/205</div>
+  </div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/testnet">Testnet</a>
+    <a href="/technology">Technology</a>
+    <a href="/monitor" class="active">Monitor</a>
+  </div>
+  <div class="live-dot" style="margin-left:12px;"></div>
+  <span id="last-update" style="font-size:9px;color:rgba(0,245,255,0.4);margin-left:4px;">connecting...</span>
+</nav>
+
+<!-- ERROR BAR -->
+<div class="error-bar" id="error-bar">⚠️ <span id="error-msg"></span></div>
+
+<!-- METRICS BAR -->
+<div class="metrics-bar" id="metrics-bar">
+  <div class="metric"><div class="metric-value" id="m-score" style="color:var(--cyan)">—</div><div class="metric-label" style="color:var(--cyan)">SCORE</div><div class="metric-sub" id="m-label">—</div></div>
+  <div class="metric"><div class="metric-value" id="m-total">—</div><div class="metric-label">TOTAL TX</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--cyan)" id="m-pass">—</div><div class="metric-label" style="color:var(--cyan)">PASS</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--red)" id="m-reject">—</div><div class="metric-label" style="color:var(--red)">REJECT</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--cyan)" id="m-qtr">—</div><div class="metric-label" style="color:var(--cyan)">QTR</div><div class="metric-sub">processed</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--purple)" id="m-fees">—</div><div class="metric-label" style="color:var(--purple)">FEES</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--yellow)" id="m-block">—</div><div class="metric-label" style="color:var(--yellow)">BLOCK</div><div class="metric-sub">height</div></div>
+  <div class="metric"><div class="metric-value" style="color:var(--red)" id="m-threats">—</div><div class="metric-label" style="color:var(--red)">THREATS</div></div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ROW 1: Gauge + Stats -->
+  <div class="grid-2" style="margin-bottom:24px;">
+
+    <!-- Gauge -->
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;">
+      <div class="section-title" style="width:100%">NETWORK HEALTH SCORE</div>
+      <div class="gauge-wrap">
+        <svg id="gauge-svg" width="200" height="150" viewBox="0 0 180 140">
+          <path id="gauge-bg" d="" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="14" stroke-linecap="round"/>
+          <path id="gauge-arc" d="" fill="none" stroke-width="14" stroke-linecap="round" style="transition:all 0.6s;"/>
+          <text id="gauge-score" x="90" y="82" text-anchor="middle" fill="#00f5ff" font-size="32" font-weight="bold" font-family="monospace">—</text>
+          <text id="gauge-label" x="90" y="104" text-anchor="middle" fill="#00f5ff" font-size="11" font-family="monospace" letter-spacing="2">—</text>
+          <text x="90" y="122" text-anchor="middle" fill="#00f5ff" font-size="9" font-family="monospace">NETWORK HEALTH</text>
+        </svg>
+      </div>
+      <!-- mini stats -->
+      <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+        <div style="text-align:center;padding:8px;border:1px solid rgba(0,245,255,0.1);border-radius:8px;">
+          <div style="font-size:16px;font-weight:bold;color:var(--cyan)" id="s-passrate">—</div>
+          <div style="font-size:9px;color:var(--cyan)">PASS RATE</div>
+        </div>
+        <div style="text-align:center;padding:8px;border:1px solid rgba(255,51,102,0.15);border-radius:8px;">
+          <div style="font-size:16px;font-weight:bold;color:var(--red)" id="s-threatrate">—</div>
+          <div style="font-size:9px;color:var(--red)">THREAT RATE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History chart + node -->
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <div class="section-title">SCORE HISTORY</div>
+        <div class="chart-bars" id="chart-bars"></div>
+      </div>
+      <div class="card card-yellow">
+        <div class="section-title" style="color:rgba(255,170,0,0.6);">NODE STATUS</div>
+        <div id="node-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Sub-metrics -->
+  <div class="section-title">SECURITY METRICS</div>
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="card">
+      <div class="card-label">QTR PROCESSED</div>
+      <div class="card-value" id="c-qtr">—</div>
+      <div class="card-sub">total volume</div>
+    </div>
+    <div class="card card-red">
+      <div class="card-label" style="color:rgba(255,51,102,0.6)">QTR BLOCKED</div>
+      <div class="card-value" style="color:var(--red)" id="c-blocked">—</div>
+      <div class="card-sub">rejected transactions</div>
+    </div>
+    <div class="card card-purple">
+      <div class="card-label" style="color:rgba(184,0,255,0.6)">FEES COLLECTED</div>
+      <div class="card-value" style="color:var(--purple)" id="c-fees">—</div>
+      <div class="card-sub">QTR protocol fees</div>
+    </div>
+    <div class="card card-red">
+      <div class="card-label" style="color:rgba(255,51,102,0.6)">THREATS BLOCKED</div>
+      <div class="card-value" style="color:var(--red)" id="c-threats">—</div>
+      <div class="card-sub">ECDSA / AND-bypass attempts</div>
+    </div>
+    <div class="card card-red">
+      <div class="card-label" style="color:rgba(255,51,102,0.6)">HNDL ATTEMPTS</div>
+      <div class="card-value" style="color:var(--red)" id="c-hndl">—</div>
+      <div class="card-sub">harvest now decrypt later</div>
+    </div>
+    <div class="card">
+      <div class="card-label">UPTIME</div>
+      <div class="card-value" id="c-uptime">—</div>
+      <div class="card-sub">seconds online</div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Rule violations + Alerts -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title">RULE VIOLATIONS</div>
+      <div id="rule-violations">
+        <div style="text-align:center;padding:20px;font-size:12px;color:rgba(255,255,255,0.3);">Nenhuma violação detectada ✓</div>
+      </div>
+    </div>
+    <div class="card card-yellow">
+      <div class="section-title" style="color:rgba(255,170,0,0.6)">SECURITY ALERTS</div>
+      <div id="alerts-container">
+        <div class="no-alerts">Sistema saudável — sem alertas ✓</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="live-dot"></div>
+  <span class="footer-status" id="footer-status">Connecting to Quantar Network...</span>
+  <div class="footer-links">
+    <a href="https://testnet.quantarnetwork.com/status" target="_blank">RPC</a>
+    <a href="http://monitor.quantarnetwork.com/health" target="_blank">Monitor API</a>
+    <a href="/whitepaper">Whitepaper</a>
+    <a href="mailto:contact@quantarnetwork.com">contact@quantarnetwork.com</a>
+  </div>
+</footer>
+
+<script>
+const MONITOR = 'http://monitor.quantarnetwork.com';
+const NODE    = 'https://testnet.quantarnetwork.com';
+const history_data = [];
+
+function healthColor(s) {
+  if (s >= 90) return '#00f5ff';
+  if (s >= 75) return '#44ff88';
+  if (s >= 55) return '#ffaa00';
+  if (s >= 35) return '#ff6600';
+  return '#ff3366';
+}
+function healthLabel(s) {
+  if (s >= 90) return 'EXCELLENT';
+  if (s >= 75) return 'GOOD';
+  if (s >= 55) return 'MODERATE';
+  if (s >= 35) return 'WARNING';
+  return 'CRITICAL';
+}
+
+// Gauge arc math
+function arcPath(cx, cy, r, startDeg, endDeg) {
+  const toRad = d => d * Math.PI / 180;
+  const s = { x: cx + r*Math.cos(toRad(startDeg)), y: cy + r*Math.sin(toRad(startDeg)) };
+  const e = { x: cx + r*Math.cos(toRad(endDeg)),   y: cy + r*Math.sin(toRad(endDeg)) };
+  const large = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+  return `M${s.x},${s.y} A${r},${r} 0 ${large},1 ${e.x},${e.y}`;
+}
+
+const START = -210, TOTAL = 240, R = 72, CX = 90, CY = 90;
+document.getElementById('gauge-bg').setAttribute('d', arcPath(CX, CY, R, START, START+TOTAL));
+
+function updateGauge(score) {
+  const color = healthColor(score);
+  const angle = START + TOTAL * (score/100);
+  const arc = document.getElementById('gauge-arc');
+  arc.setAttribute('d', arcPath(CX, CY, R, START, angle));
+  arc.setAttribute('stroke', color);
+  arc.style.filter = `drop-shadow(0 0 6px ${color}80)`;
+  document.getElementById('gauge-score').textContent = score;
+  document.getElementById('gauge-score').setAttribute('fill', color);
+  document.getElementById('gauge-label').textContent = healthLabel(score);
+  document.getElementById('gauge-label').setAttribute('fill', color);
+  document.querySelectorAll('#gauge-svg text')[2].setAttribute('fill', color);
+}
+
+function updateChart() {
+  const bars = document.getElementById('chart-bars');
+  if (!history_data.length) return;
+  bars.innerHTML = history_data.map(h => {
+    const color = healthColor(h.score);
+    const pct = (h.score/100)*56;
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div class="chart-bar" style="width:100%;height:${pct}px;background:${color};box-shadow:0 0 4px ${color}60;"></div>
+      <div class="chart-time">${h.time}</div>
+    </div>`;
+  }).join('');
+}
+
+function setError(msg) {
+  const bar = document.getElementById('error-bar');
+  if (msg) { bar.style.display='block'; document.getElementById('error-msg').textContent = msg; }
+  else { bar.style.display='none'; }
+}
+
+async function fetchAll() {
+  try {
+    const [h, s, a, n] = await Promise.all([
+      fetch(`${MONITOR}/health`).then(r=>r.json()),
+      fetch(`${MONITOR}/stats`).then(r=>r.json()),
+      fetch(`${MONITOR}/alerts`).then(r=>r.json()),
+      fetch(`${NODE}/status`).then(r=>r.json()),
+    ]);
+
+    setError(null);
+    const now = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    document.getElementById('last-update').textContent = now;
+    document.getElementById('footer-status').textContent = `LIVE · monitor.quantarnetwork.com · ${now}`;
+
+    // Gauge
+    updateGauge(h.score);
+
+    // Metrics bar
+    document.getElementById('m-score').textContent = h.score;
+    document.getElementById('m-score').style.color = healthColor(h.score);
+    document.getElementById('m-label').textContent = healthLabel(h.score);
+    document.getElementById('m-total').textContent = h.total_tx;
+    document.getElementById('m-pass').textContent = s.passed;
+    document.getElementById('m-reject').textContent = s.rejected;
+    document.getElementById('m-qtr').textContent = parseFloat(h.qtr_processed).toFixed(0);
+    document.getElementById('m-fees').textContent = parseFloat(h.qtr_fees).toFixed(2);
+    document.getElementById('m-block').textContent = n.height;
+    document.getElementById('m-threats').textContent = s.threats;
+
+    // Sub-metrics
+    document.getElementById('s-passrate').textContent = h.pass_rate + '%';
+    document.getElementById('s-threatrate').textContent = h.threat_rate + '%';
+    document.getElementById('c-qtr').textContent = parseFloat(s.qtr_processed).toFixed(2);
+    document.getElementById('c-blocked').textContent = parseFloat(s.qtr_blocked).toFixed(2);
+    document.getElementById('c-fees').textContent = parseFloat(s.qtr_fees).toFixed(4);
+    document.getElementById('c-threats').textContent = s.threats;
+    document.getElementById('c-hndl').textContent = s.hndl;
+    document.getElementById('c-uptime').textContent = s.last_updated ? Math.floor((Date.now() - s.last_updated)/1000) + 's' : '—';
+
+    // Node status
+    document.getElementById('node-rows').innerHTML = [
+      { k:'Chain ID',   v: n.chain_id },
+      { k:'Height',     v: n.height },
+      { k:'Address',    v: n.node_address },
+      { k:'Version',    v: n.version },
+    ].map(r => `<div class="node-row"><span class="node-key">${r.k}</span><span class="node-val">${r.v}</span></div>`).join('');
+
+    // Rule violations
+    const rv = s.rule_violations || {};
+    const rvKeys = Object.keys(rv);
+    document.getElementById('rule-violations').innerHTML = rvKeys.length === 0
+      ? '<div style="text-align:center;padding:20px;font-size:12px;color:rgba(255,255,255,0.3);">Nenhuma violação ✓</div>'
+      : rvKeys.map(k => `
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+          <span style="font-size:11px;color:#ffffff;">${k}</span>
+          <span style="font-size:11px;font-weight:bold;color:var(--red);">${rv[k]}</span>
+        </div>`).join('');
+
+    // Alerts
+    const alertsArr = Array.isArray(a) ? a : [];
+    document.getElementById('alerts-container').innerHTML = alertsArr.length === 0
+      ? '<div class="no-alerts">Sistema saudável — sem alertas ✓</div>'
+      : alertsArr.slice(0,5).map(al => {
+          const c = al.level === 'RECOVERY' ? 'var(--cyan)' : al.level === 'CRITICAL' ? 'var(--red)' : 'var(--yellow)';
+          return `<div class="alert-item" style="border-color:${c}33;background:${c}08;">
+            <div class="alert-level" style="color:${c};">${al.level}</div>
+            <div class="alert-msg">${al.message}</div>
+            <div class="alert-time">${new Date(al.timestamp).toLocaleTimeString('pt-BR')}</div>
+          </div>`;
+        }).join('');
+
+    // History
+    history_data.push({ time: now, score: h.score });
+    if (history_data.length > 14) history_data.shift();
+    updateChart();
+
+  } catch(e) {
+    setError('Cannot reach monitor.quantarnetwork.com — ' + e.message);
+  }
+}
+
+fetchAll();
+setInterval(fetchAll, 5000);
+</script>
+</body>
+</html>
