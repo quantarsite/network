@@ -122,10 +122,10 @@ footer a:hover{opacity:1}
     <div class="faucet-box">
       <div>
         <div class="faucet-title">Get Testnet QTR</div>
-        <div class="faucet-desc">Request free testnet tokens to interact with the Quantar network. One claim per wallet per 24 hours. Supports Ethereum-style, Solana, Bitcoin, and native QTR addresses.</div>
+        <div class="faucet-desc">Request free testnet tokens to interact with the Quantar network. One claim per wallet per 6 hours. Supports Ethereum-style, Solana, Bitcoin, and native QTR addresses.</div>
         <div class="faucet-meta">
-          <div class="faucet-meta-item"><strong id="faucetAmount">100</strong>QTR per claim</div>
-          <div class="faucet-meta-item"><strong>24h</strong>Cooldown</div>
+          <div class="faucet-meta-item"><strong id="faucetAmount">500</strong>QTR per claim</div>
+          <div class="faucet-meta-item"><strong>6h</strong>Cooldown</div>
           <div class="faucet-meta-item"><strong id="faucetClaims">&#8212;</strong>Total claims</div>
           <div class="faucet-meta-item"><strong>Rust</strong>Axum + Redis</div>
         </div>
@@ -146,7 +146,7 @@ footer a:hover{opacity:1}
   </footer>
 </div>
 <script>
-async function loadStats(){try{const r=await fetch('https://faucet.quantarnetwork.com/api/status');const d=await r.json();if(d.online){document.getElementById('netStatus').textContent='ONLINE';document.getElementById('netStatus').className='stat-value green';document.getElementById('totalClaims').textContent=d.total_claims?.toLocaleString()??'0';document.getElementById('faucetAmount').textContent=d.claim_amount??'100';document.getElementById('faucetClaims').textContent=d.total_claims?.toLocaleString()??'0'}}catch{document.getElementById('netStatus').textContent='CHECKING'}}
+async function loadStats(){try{const r=await fetch('https://faucet.quantarnetwork.com/api/status');const d=await r.json();if(d.online){document.getElementById('netStatus').textContent='ONLINE';document.getElementById('netStatus').className='stat-value green';document.getElementById('totalClaims').textContent=d.total_claims?.toLocaleString()??'0';document.getElementById('faucetClaims').textContent=d.total_claims?.toLocaleString()??'0'}}catch{document.getElementById('netStatus').textContent='CHECKING'}}
 loadStats();setInterval(loadStats,60000);
 </script>
 </body>
