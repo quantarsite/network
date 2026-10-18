@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cash Book — Quantar Network</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cyan: #00E5FF;
+      --purple: #8B5CF6;
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --surface2: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(0,229,255,0.2);
+      --text: #e8e8f0;
+      --muted: #888899;
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      background: rgba(10,10,15,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      font-size: 0.75rem;
+      font-family: var(--mono);
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* PAGE WRAPPER */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 8rem 2rem 6rem;
+    }
+
+    /* HEADER */
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.8rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+    }
+    .page-badge::before {
+      content: '🔒';
+      font-size: 0.7rem;
+    }
+    .page-title {
+      font-family: var(--mono);
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .page-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 3.5rem;
+    }
+
+    /* SECTION HEADER */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ACCOUNT BLOCK */
+    .account-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .account-block:hover { border-color: var(--border-hover); }
+
+    .account-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.1rem 1.5rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+    }
+    .account-header-left {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .account-icon {
+      font-size: 1rem;
+    }
+    .account-name {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.04em;
+    }
+    .account-tag {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    .account-rows { }
+    .account-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.85rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .account-row:last-child { border-bottom: none; }
+    .row-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .row-value {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+    .row-value.highlight { color: var(--cyan); }
+    .row-value.mono-address {
+      font-size: 0.75rem;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    /* COPY BUTTON */
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      margin-left: 0.75rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .copy-btn:hover { color: var(--cyan); border-color: rgba(0,229,255,0.3); }
+    .copy-btn.copied { color: #4ade80; border-color: rgba(74,222,128,0.3); }
+
+    .row-value-wrap {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: wrap;
+    }
+
+    /* CRYPTO GRID */
+    .crypto-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 4rem;
+    }
+    .crypto-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .crypto-card:hover { border-color: var(--border-hover); }
+    .crypto-card-header {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .crypto-symbol {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      background: rgba(0,229,255,0.08);
+      border: 1px solid rgba(0,229,255,0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+    .crypto-name {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .crypto-address {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    .crypto-copy {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.65rem;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      width: 100%;
+      justify-content: center;
+    }
+    .crypto-copy:hover { color: var(--cyan); border-color: rgba(0,229,255,0.3); }
+    .crypto-copy.copied { color: #4ade80; border-color: rgba(74,222,128,0.3); }
+
+    /* ACCOUNT HOLDER */
+    .holder-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .holder-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .holder-name {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      color: var(--cyan);
+      font-weight: 700;
+    }
+    .holder-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 3rem 0;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-left {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .footer-right {
+      display: flex; gap: 2rem;
+    }
+    .footer-right a {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .footer-right a:hover { color: var(--cyan); }
+
+    /* RESPONSIVE */
+    @media (max-width: 680px) {
+      nav { padding: 1rem 1.25rem; }
+      .nav-links { display: none; }
+      .account-row { grid-template-columns: 1fr; gap: 0.3rem; }
+      .crypto-grid { grid-template-columns: 1fr; }
+      .holder-block { flex-direction: column; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<!-- QN-NAV START -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  .qn-nav{position:fixed;top:0;left:0;right:0;z-index:2000;background:rgba(6,8,15,.88);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid #161d2e;font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.4;box-sizing:border-box}
+  .qn-nav *,.qn-nav *::before,.qn-nav *::after{box-sizing:border-box}
+  .qn-nav .qn-inner{max-width:1240px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .qn-nav a.qn-logo{font-weight:700;font-size:18px;letter-spacing:-.02em;color:#f0f2f5;text-decoration:none;white-space:nowrap;padding:0;margin:0;background:none;border:0}
+  .qn-nav a.qn-logo span{background:linear-gradient(135deg,#00e5ff,#b24bf3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .qn-nav .qn-links{display:flex;align-items:center;gap:2px;margin:0;padding:0}
+  .qn-nav a.qn-link{display:block;color:#8b93a3;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 9px;border-radius:6px;border:0;background:none;white-space:nowrap;transition:color .2s,background .2s}
+  .qn-nav a.qn-link:hover{color:#f0f2f5;background:rgba(255,255,255,.06)}
+  .qn-nav a.qn-link[aria-current="page"]{color:#00e5ff}
+  .qn-nav a.qn-cta{margin-left:8px;color:#06080f;background:linear-gradient(135deg,#00e5ff,#b24bf3);font-weight:700}
+  .qn-nav a.qn-cta:hover{color:#06080f;opacity:.9;background:linear-gradient(135deg,#00e5ff,#b24bf3)}
+  .qn-nav a.qn-cta[aria-current="page"]{color:#06080f}
+  .qn-nav button.qn-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;margin:0 -8px 0 0;padding:0;background:none;border:0;border-radius:8px;color:#f0f2f5;font-size:24px;line-height:1;cursor:pointer;font-family:inherit}
+  .qn-nav button.qn-toggle:focus-visible,.qn-nav a.qn-link:focus-visible{outline:2px solid #00e5ff;outline-offset:2px}
+  .qn-nav-spacer{height:64px}
+  @media (max-width:1100px){
+    .qn-nav button.qn-toggle{display:flex}
+    .qn-nav .qn-links{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 12px 16px;background:rgba(6,8,15,.98);border-bottom:1px solid #161d2e;max-height:calc(100vh - 64px);overflow-y:auto}
+    .qn-nav.qn-open .qn-links{display:flex}
+    .qn-nav a.qn-link{font-size:16px;padding:13px 12px}
+    .qn-nav a.qn-cta{margin:8px 0 0;text-align:center}
+  }
+</style>
+<div class="qn-nav" role="navigation" aria-label="Main">
+  <div class="qn-inner">
+    <a class="qn-logo" href="/"><span>Quantar</span> Network</a>
+    <button class="qn-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="qn-links">&#9776;</button>
+    <div class="qn-links" id="qn-links">
+        <a class="qn-link" href="/">Home</a>
+        <a class="qn-link" href="/technology">Technology</a>
+        <a class="qn-link" href="/hydrax">HYDRA-X</a>
+        <a class="qn-link" href="/benchmark">Benchmark</a>
+        <a class="qn-link" href="/whitepaper">Whitepaper</a>
+        <a class="qn-link" href="/article">Article</a>
+        <a class="qn-link" href="/testnet">Testnet</a>
+        <a class="qn-link" href="/monitor">Monitor</a>
+        <a class="qn-link" href="/professionalteam">Team</a>
+        <a class="qn-link" href="/cashbook" aria-current="page">Cash Book</a>
+        <a class="qn-link qn-cta" href="/invest">Invest</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var nav = document.querySelector('.qn-nav');
+  if (!nav) return;
+  var btn = nav.querySelector('.qn-toggle');
+  function set(open) {
+    nav.classList.toggle('qn-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  }
+  btn.addEventListener('click', function () { set(!nav.classList.contains('qn-open')); });
+  nav.querySelectorAll('.qn-link').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  document.addEventListener('click', function (e) { if (!nav.contains(e.target)) set(false); });
+})();
+</script>
+<!-- QN-NAV END -->
+
+
+
+  <style>
+    #lockScreen{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:40px 16px}
+    #lockScreen .lock-box{width:100%;max-width:420px;text-align:center;border:1px solid rgba(0,229,255,.18);background:rgba(255,255,255,.02);border-radius:10px;padding:40px 28px}
+    #lockScreen .lock-title{font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#f0f2f5;margin-bottom:6px}
+    #lockScreen .lock-sub{font-size:11px;letter-spacing:.18em;color:#6b7280;margin-bottom:28px}
+    #lockScreen .lock-input{width:100%;padding:13px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.25);border-radius:6px;color:#f0f2f5;font-size:15px;letter-spacing:.08em;text-align:center;font-family:inherit}
+    #lockScreen .lock-input:focus{outline:none;border-color:#00e5ff}
+    #lockScreen .lock-btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:6px;background:linear-gradient(135deg,#00e5ff,#b24bf3);color:#06080f;font-weight:700;letter-spacing:.14em;cursor:pointer;font-family:inherit}
+    #lockScreen .lock-btn:disabled{opacity:.6;cursor:wait}
+    #lockScreen .lock-error{min-height:18px;margin-top:12px;font-size:12px;color:#ff3366}
+    #lockScreen .lock-contact{margin-top:18px;font-size:12px;color:#6b7280}
+    #lockScreen .lock-contact a{color:#00e5ff;text-decoration:none}
+    #dataRoom{display:none}
+  </style>
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-title">Cash Book</div>
+      <div class="lock-sub">QUANTAR NETWORK · INVESTORS ONLY</div>
+      <input type="password" class="lock-input" id="passInput" placeholder="ACCESS CODE" maxlength="64" autocomplete="off" aria-label="Access code">
+      <button class="lock-btn" type="button" onclick="unlock()">UNLOCK</button>
+      <div class="lock-error" id="lockError" role="alert"></div>
+      <div class="lock-contact">Same access code as the Investor Data Room. Request access at <a href="mailto:contact@quantarnetwork.com">contact@quantarnetwork.com</a></div>
+    </div>
+  </div>
+  <div id="dataRoom"><!--DATAROOM_PAYLOAD--></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">© 2026 Quantar Network · contact@quantarnetwork.com</div>
+    <div class="footer-right">
+      <a href="/invest">Invest</a>
+      <a href="/whitepaper">Whitepaper</a>
+      <a href="/testnet">Testnet</a>
+    </div>
+  </footer>
+
+  <script>
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const original = btn.textContent;
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+  </script>
+
+<!--DATAROOM_SCRIPT-->
+</body>
+</html>
