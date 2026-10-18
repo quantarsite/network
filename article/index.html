@@ -487,15 +487,15 @@
 
   <p>Quantar is not a fork of an existing blockchain, and it is not a layer built on top of another chain. It is a completely new Layer-1 blockchain designed from the genesis block with <strong>post-quantum cryptography</strong>.</p>
 
-  <p>We use three NIST-standardized algorithms that have been rigorously tested and approved by the United States National Institute of Standards and Technology:</p>
+  <p>We use two NIST-standardized signature algorithms that have been rigorously tested and approved by the United States National Institute of Standards and Technology:</p>
 
-  <p><strong>CRYSTALS-Dilithium-5</strong> for digital signatures &mdash; replacing the vulnerable ECDSA used by Bitcoin and Ethereum. <strong>Kyber-3</strong> for key encapsulation &mdash; ensuring secure key exchange that quantum computers cannot intercept. And <strong>SPHINCS+</strong> for hash-based signatures &mdash; providing an additional layer of security based on different mathematical foundations.</p>
+  <p><strong>ML-DSA-87</strong> (FIPS 204, the standardized form of CRYSTALS-Dilithium) for lattice-based signatures &mdash; replacing the ECDSA used by Bitcoin and Ethereum, which a large quantum computer could break. And <strong>SLH-DSA</strong> (FIPS 205, the standardized form of SPHINCS+) for hash-based signatures &mdash; built on entirely different mathematical foundations. Every transaction must carry a valid signature from both.</p>
 
   <p>Our <strong>128-shard architecture</strong> targets over <strong>100,000 transactions per second</strong>, combining quantum security with the performance needed for real-world adoption.</p>
 
   <h2>The Roadmap</h2>
 
-  <p><strong>Q1 2026 (Completed)</strong> &mdash; Seed round fundraising. HYDRA-X paper accepted at SPIQE 2026 (IEEE EuroS&amp;P). AND-Composition paper submitted to IACR ePrint. Testnet V1 launched with public faucet live at faucet.quantarnetwork.com.</p>
+  <p><strong>Q1 2026 (Completed)</strong> &mdash; Seed round opened. HYDRA-X paper accepted at SPIQE 2026 (IEEE EuroS&amp;P). AND-Composition paper submitted to IACR ePrint. Public testnet launched with faucet live at faucet.quantarnetwork.com.</p>
 
   <p><strong>Q2&ndash;Q3 2026 (In Progress)</strong> &mdash; Core engineering team formation. Consensus engine development with full HYDRA-X enforcement. Testnet expansion with dual PQC transaction processing. Preparation for third-party cryptographic audit.</p>
 

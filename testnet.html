@@ -92,29 +92,30 @@ footer a:hover{opacity:1}
 </nav>
 <div class="page">
   <div class="hero">
-    <div class="hero-badge"><div class="pulse"></div>Testnet v1 &mdash; Online</div>
+    <div class="hero-badge"><div class="pulse"></div>Testnet v2 &mdash; Online</div>
     <h1>Quantar Testnet</h1>
     <p>The first public blockchain enforcing dual post-quantum signatures at the consensus layer from genesis. No ECDSA. No migration path. Quantum-resistant by architecture.</p>
     <div class="hero-actions">
       <a class="btn-primary" href="https://faucet.quantarnetwork.com" target="_blank">Get Testnet QTR</a>
       <a class="btn-secondary" href="/whitepaper" target="_blank">Read Whitepaper</a>
-      <a class="btn-secondary" href="https://github.com/quantarsite/hydrax-bench" target="_blank">View Benchmark</a>
+      <a class="btn-secondary" href="https://github.com/quantarsite/quantar-testnet/releases/latest" target="_blank">Download Wallet</a>
+      <a class="btn-secondary" href="https://github.com/quantarsite/quantar-testnet" target="_blank">Source Code</a>
     </div>
   </div>
   <div class="section-label">Network Status</div>
   <div class="status-grid">
     <div class="stat-card"><div class="stat-value green" id="netStatus">ONLINE</div><div class="stat-label">Network Status</div></div>
     <div class="stat-card"><div class="stat-value" id="totalClaims">&#8212;</div><div class="stat-label">Faucet Claims</div></div>
-    <div class="stat-card"><div class="stat-value gold">880</div><div class="stat-label">tx/s Benchmark<br>4 cores Rust</div></div>
-    <div class="stat-card"><div class="stat-value purple">HYDRA-X</div><div class="stat-label">Signature Scheme<br>ML-DSA-87 + SPHINCS+</div></div>
+    <div class="stat-card"><div class="stat-value gold">5 s</div><div class="stat-label">Block Interval<br>0.01 QTR fee, burned</div></div>
+    <div class="stat-card"><div class="stat-value purple">HYDRA-X</div><div class="stat-label">Signature Scheme<br>ML-DSA-87 + SLH-DSA</div></div>
   </div>
   <div class="section-label">Protocol Architecture</div>
   <div class="protocol-grid">
-    <div class="proto-card"><span class="proto-icon">&#128274;</span><div class="proto-title">AND-Composition</div><div class="proto-desc">Every transaction requires two independent post-quantum signatures simultaneously. Breaking Quantar requires defeating both ML-DSA-87 and SPHINCS+ at the same time.</div><span class="proto-tag">EUF-CMA Proven</span></div>
+    <div class="proto-card"><span class="proto-icon">&#128274;</span><div class="proto-title">AND-Composition</div><div class="proto-desc">Every transaction requires two independent post-quantum signatures simultaneously. Forging a Quantar transaction requires breaking both ML-DSA-87 and SLH-DSA at the same time.</div><span class="proto-tag">EUF-CMA Proven</span></div>
     <div class="proto-card"><span class="proto-icon">&#9883;</span><div class="proto-title">ML-DSA-87</div><div class="proto-desc">Module Learning With Errors based signature scheme. NIST FIPS 204 standard. Security relies on the hardness of lattice problems, resistant to quantum attacks.</div><span class="proto-tag">FIPS 204</span></div>
-    <div class="proto-card"><span class="proto-icon">&#127795;</span><div class="proto-title">SPHINCS+</div><div class="proto-desc">Hash-based signature scheme with minimal security assumptions. NIST FIPS 205 standard. Security relies solely on hash function collision resistance.</div><span class="proto-tag">FIPS 205</span></div>
+    <div class="proto-card"><span class="proto-icon">&#127795;</span><div class="proto-title">SLH-DSA</div><div class="proto-desc">Hash-based signature scheme (standardized SPHINCS+), parameter set SLH-DSA-SHA2-256s. NIST FIPS 205 standard. Security relies only on properties of the underlying hash functions.</div><span class="proto-tag">FIPS 205</span></div>
     <div class="proto-card"><span class="proto-icon">&#9654;</span><div class="proto-title">Genesis Enforcement</div><div class="proto-desc">HYDRA-X is enforced at the consensus layer from block zero. No ECDSA fallback in the codebase. Quantum resistance is a protocol invariant.</div><span class="proto-tag">No ECDSA</span></div>
-    <div class="proto-card"><span class="proto-icon">&#128202;</span><div class="proto-title">Performance</div><div class="proto-desc">Open-source Rust benchmark achieving ~880 transactions per second on 4 cores. Dual-signature verification overhead is measurable and documented publicly.</div><span class="proto-tag">Open Benchmark</span></div>
+    <div class="proto-card"><span class="proto-icon">&#128202;</span><div class="proto-title">Performance</div><div class="proto-desc">Verifying both signatures takes about 0.92 ms per transaction on one CPU core (~1,080 per second per core). That is signature verification only, not network throughput. The testnet currently runs a single node producing a block every 5 seconds.</div><span class="proto-tag">Open Source</span></div>
     <div class="proto-card"><span class="proto-icon">&#128218;</span><div class="proto-title">Academic Validation</div><div class="proto-desc">HYDRA-X accepted at SPIQE 2026 / IEEE EuroS&amp;P, Lisbon, July 2026. AND-Composition paper under review at IACR ePrint (2026/108782).</div><span class="proto-tag">IEEE EuroS&amp;P 2026</span></div>
   </div>
   <div class="faucet-section">
@@ -122,12 +123,12 @@ footer a:hover{opacity:1}
     <div class="faucet-box">
       <div>
         <div class="faucet-title">Get Testnet QTR</div>
-        <div class="faucet-desc">Request free testnet tokens to interact with the Quantar network. One claim per wallet per 6 hours. Supports Ethereum-style, Solana, Bitcoin, and native QTR addresses.</div>
+        <div class="faucet-desc">Request free testnet tokens to interact with the Quantar network. One claim per hour, per wallet and per IP. Native QTR addresses only (64 hex characters), created with the qtrc-wallet.</div>
         <div class="faucet-meta">
-          <div class="faucet-meta-item"><strong id="faucetAmount">500</strong>QTR per claim</div>
-          <div class="faucet-meta-item"><strong>6h</strong>Cooldown</div>
+          <div class="faucet-meta-item"><strong id="faucetAmount">50</strong>QTR per claim</div>
+          <div class="faucet-meta-item"><strong>1h</strong>Cooldown</div>
           <div class="faucet-meta-item"><strong id="faucetClaims">&#8212;</strong>Total claims</div>
-          <div class="faucet-meta-item"><strong>Rust</strong>Axum + Redis</div>
+          <div class="faucet-meta-item"><strong>Rust</strong>Axum</div>
         </div>
       </div>
       <a class="btn-primary" href="https://faucet.quantarnetwork.com" target="_blank" style="white-space:nowrap;">Open Faucet &#8599;</a>
@@ -135,7 +136,7 @@ footer a:hover{opacity:1}
   </div>
   <div class="section-label">Developer Resources</div>
   <div class="resources-grid">
-    <a class="resource-card" href="https://github.com/quantarsite/hydrax-bench" target="_blank"><div class="resource-icon">&#128202;</div><div><div class="resource-title">Benchmark Suite</div><div class="resource-desc">Open-source Rust implementation of HYDRA-X signature verification. Reproducible results on commodity hardware. ~880 tx/s on 4 cores.</div><span class="resource-link">github.com/quantarsite/hydrax-bench &#8599;</span></div></a>
+    <a class="resource-card" href="https://github.com/quantarsite/quantar-testnet" target="_blank"><div class="resource-icon">&#128202;</div><div><div class="resource-title">Node, Wallet &amp; Faucet Source</div><div class="resource-desc">Open-source Rust code of the testnet node, the qtrc-wallet command-line wallet and the faucet. Wallet binaries for Linux, Windows and macOS in Releases.</div><span class="resource-link">github.com/quantarsite/quantar-testnet &#8599;</span></div></a>
     <a class="resource-card" href="/whitepaper" target="_blank"><div class="resource-icon">&#128196;</div><div><div class="resource-title">Technical Whitepaper</div><div class="resource-desc">Full protocol specification including HYDRA-X design, AND-composition formal proofs, consensus architecture, and cryptographic security model.</div><span class="resource-link">quantarnetwork.com/whitepaper &#8599;</span></div></a>
     <a class="resource-card" href="https://eprint.iacr.org/2026/108782" target="_blank"><div class="resource-icon">&#128221;</div><div><div class="resource-title">AND-Composition Paper</div><div class="resource-desc">Formal security proof of AND-composed signature schemes under EUF-CMA. Tight security reduction with post-quantum instantiation. IACR ePrint 2026/108782.</div><span class="resource-link">eprint.iacr.org/2026/108782 &#8599;</span></div></a>
     <a class="resource-card" href="/hydrax" target="_blank"><div class="resource-icon">&#9889;</div><div><div class="resource-title">HYDRA-X Protocol</div><div class="resource-desc">Deep dive into the HYDRA-X construction. Accepted at SPIQE 2026 / IEEE EuroS&amp;P, Lisbon, July 2026.</div><span class="resource-link">quantarnetwork.com/hydrax &#8599;</span></div></a>

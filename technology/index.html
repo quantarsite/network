@@ -416,8 +416,8 @@ footer .sep{margin:0 12px;opacity:.3}
     <span class="c">HYDRA-X Verification Rule</span><br>
     <span class="g">Ver_L</span>(pk_L, tx, σ_L) = 1 &nbsp;<span class="y">AND</span>&nbsp; <span class="g">Ver_H</span>(pk_H, tx, σ_H) = 1<br>
     <span class="dim">
-      Ver_L = ML-DSA-87 / Dilithium-5 &nbsp;(NIST FIPS 204 · Lattice / Module-LWE)&nbsp;&nbsp;|&nbsp;&nbsp;
-      Ver_H = SPHINCS+-SHAKE-256f &nbsp;(NIST FIPS 205 · Hash-based / stateless)
+      Ver_L = ML-DSA-87 &nbsp;(NIST FIPS 204 · Lattice / Module-LWE)&nbsp;&nbsp;|&nbsp;&nbsp;
+      Ver_H = SLH-DSA-SHA2-256s &nbsp;(NIST FIPS 205 · Hash-based / stateless)
     </span>
   </div>
   <p class="formula-note">A transaction is valid only if both schemes verify independently. An attacker must break two mathematically unrelated paradigms simultaneously.</p>
@@ -457,19 +457,19 @@ footer .sep{margin:0 12px;opacity:.3}
         <div class="card">
           <div class="card-label">Scheme A — Lattice (Primary)</div>
           <div class="card-val">
-            <code>ML-DSA-87</code> · Dilithium-5<br>
+            <code>ML-DSA-87</code><br>
             NIST FIPS 204<br>
-            Sign: 154 µs · Verify: <span class="ok">74 µs</span><br>
+            Sign: 149 µs · Verify: <span class="ok">70 µs</span><br>
             Sig: 4,627 B · PK: 2,592 B
           </div>
         </div>
         <div class="card">
           <div class="card-label">Scheme B — Hash-based (Secondary)</div>
           <div class="card-val">
-            <code>SPHINCS+-SHAKE-256f</code><br>
+            <code>SLH-DSA-SHA2-256s</code><br>
             NIST FIPS 205<br>
-            Sign: 93 ms · Verify: <span class="ok">4,467 µs</span><br>
-            Sig: 49,856 B · PK: 64 B
+            Sign: ~609 ms · Verify: <span class="ok">823 µs</span><br>
+            Sig: 29,792 B · PK: 64 B
           </div>
         </div>
         <div class="card">
@@ -593,30 +593,30 @@ footer .sep{margin:0 12px;opacity:.3}
       </div>
       <div class="layer-body">
         <div class="card">
-          <div class="card-label">Batch Verification</div>
+          <div class="card-label">Parallel Verification (planned)</div>
           <div class="card-val">
-            Validator nodes verify <code>n</code> dual-signatures in batch — amortizes SPHINCS+ overhead across all block transactions.
+            Transactions in a block are independent, so validators can verify them across all CPU cores. The current testnet node verifies them one by one.
           </div>
         </div>
         <div class="card">
           <div class="card-label">Throughput Model</div>
           <div class="card-val">
-            Verify: <span class="ok">4,546 µs</span> per tx<br>
-            1 core: ~220 tx/s<br>
-            4 cores: ~880 tx/s<br>
-            Batch mode: significantly higher
+            Verify: <span class="ok">~922 µs</span> per tx<br>
+            1 core: ~1,080 tx/s<br>
+            Signature verification only,<br>
+            not network throughput
           </div>
         </div>
         <div class="card">
-          <div class="card-label">Signature Bundle</div>
+          <div class="card-label">Signature Bundle (research)</div>
           <div class="card-val">
-            Block header carries aggregated proof of all transaction signatures — reduces per-transaction overhead at full-node validation.
+            Research direction: a block-level proof covering all transaction signatures to reduce full-node validation cost. Not implemented today; every signature is verified individually.
           </div>
         </div>
         <div class="card">
           <div class="card-label">Trade-off</div>
           <div class="card-val">
-            Sig size: <span class="warn">54,483 B</span> per tx (dominated by SPHINCS+: 49,856 B).<br>
+            Sig size: <span class="warn">34,419 B</span> per tx (dominated by SLH-DSA: 29,792 B).<br>
             Cost accepted for permanent dual-paradigm security.
           </div>
         </div>
@@ -647,7 +647,7 @@ footer .sep{margin:0 12px;opacity:.3}
         <div class="card">
           <div class="card-label">Upgrade Path</div>
           <div class="card-val">
-            If <span class="warn">Dilithium</span> is weakened:<br>
+            If <span class="warn">ML-DSA</span> is weakened:<br>
             Governance vote → new <code>SchemeID(L')</code> deployed → migration window → old scheme deprecated.
           </div>
         </div>
@@ -655,8 +655,7 @@ footer .sep{margin:0 12px;opacity:.3}
           <div class="card-label">Active Schemes</div>
           <div class="card-val">
             <span class="ok">ML-DSA-87</span> (active)<br>
-            <span class="ok">SPHINCS+-256f</span> (active)<br>
-            <span class="warn">Falcon-1024</span> (standby)<br>
+            <span class="ok">SLH-DSA-SHA2-256s</span> (active)<br>
             Future NIST schemes: plug-in ready
           </div>
         </div>
@@ -682,7 +681,7 @@ footer .sep{margin:0 12px;opacity:.3}
       <span class="dim">
         Hybrid-game proof sequence G0→G5 · QROM extension (Zhandry 2012) · EUF-qCMA reduction<br>
         Full proofs available in the IEEE-format paper: <a href="/article" style="color:var(--cyan)">quantarnetwork.com/article</a><br>
-        Reproducible benchmarks: <a href="https://github.com/quantarsite/hydrax-bench" target="_blank" style="color:var(--cyan)">github.com/quantarsite/hydrax-bench</a>
+        Source code: <a href="https://github.com/quantarsite/quantar-testnet" target="_blank" style="color:var(--cyan)">github.com/quantarsite/quantar-testnet</a>
       </span>
     </div>
   </div>
@@ -706,42 +705,33 @@ footer .sep{margin:0 12px;opacity:.3}
     </thead>
     <tbody>
       <tr>
-        <td>ML-DSA-87 / Dilithium-5 (NIST FIPS 204)</td>
+        <td>ML-DSA-87 (FIPS 204)</td>
         <td>4,627</td>
-        <td>154.4</td>
-        <td>[140.4–169.6]</td>
-        <td>74.2</td>
-        <td>[72.5–75.9]</td>
+        <td>149.4</td>
+        <td>[143.7–155.1]</td>
+        <td>69.5</td>
+        <td>[69.2–69.9]</td>
       </tr>
       <tr>
-        <td>Falcon-1024 (NIST FIPS 206)</td>
-        <td>1,274</td>
-        <td>486.4</td>
-        <td>[477.2–497.2]</td>
-        <td>86.9</td>
-        <td>[85.5–88.4]</td>
-      </tr>
-      <tr>
-        <td>SPHINCS+-SHAKE-256f (NIST FIPS 205)</td>
-        <td>49,856</td>
-        <td>93,418</td>
-        <td>[92,857–94,127]</td>
-        <td>4,467</td>
-        <td>[4,411–4,538]</td>
+        <td>SLH-DSA-SHA2-256s (FIPS 205)</td>
+        <td>29,792</td>
+        <td>608,788</td>
+        <td>[600,020–617,556]</td>
+        <td>823.1</td>
+        <td>[818.9–827.3]</td>
       </tr>
       <tr class="hydra">
-        <td>HYDRA-X (Dilithium-5 + SPHINCS+ dual)</td>
-        <td>54,483</td>
-        <td>93,373</td>
-        <td>[92,389–94,287]</td>
-        <td>4,546</td>
-        <td>[4,481–4,621]</td>
+        <td>HYDRA-X (ML-DSA-87 + SLH-DSA, both verified)</td>
+        <td>34,419</td>
+        <td>604,517</td>
+        <td>[593,167–615,867]</td>
+        <td>921.9</td>
+        <td>[915.1–928.7]</td>
       </tr>
     </tbody>
   </table>
   <p style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray)">
-    Raw CSV: <a href="https://github.com/quantarsite/hydrax-bench/blob/main/data/benchmark_results.csv" target="_blank" style="color:var(--cyan)">github.com/quantarsite/hydrax-bench</a>
-    &nbsp;·&nbsp; HYDRA-X verify (4,546 µs) is faster than Ethereum ECDSA validation (~10,000 µs/round). Production-viable.
+    Measured on one Intel Xeon core @ 2.1 GHz, Linux x86_64, Rust release build, with the exact libraries the testnet runs (pqcrypto-mldsa for ML-DSA-87, fips205 for SLH-DSA-SHA2-256s). Mean and normal-approximation 95% CI of the mean; n = 1,000 signs / 5,000 verifies (ML-DSA), 30 signs / 2,000 verifies (SLH-DSA and HYDRA-X). Signing is done once by the sender's wallet; verification is what every node repeats. These are signature-verification figures, not network throughput.
   </p>
 </div>
 
