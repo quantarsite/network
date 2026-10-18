@@ -14,17 +14,14 @@
       --text:#e0e0e0; --muted:rgba(255,255,255,0.45);
     }
     body{background:var(--bg);color:var(--text);font-family:'Courier New',monospace;min-height:100vh;display:flex;flex-direction:column}
-    nav{border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:12px;background:rgba(3,3,15,0.97);position:sticky;top:0;z-index:10;flex-wrap:wrap}
-    .logo{width:32px;height:32px;border-radius:7px;background:linear-gradient(135deg,var(--cyan),var(--purple));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:var(--bg);text-decoration:none}
-    .nav-title{font-size:13px;font-weight:bold;color:var(--cyan);letter-spacing:2px}
-    .nav-sub{font-size:9px;color:rgba(0,245,255,0.4);letter-spacing:1px}
-    .nav-links{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap}
-    .nav-links a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:11px;letter-spacing:1px}
-    .nav-links a:hover,.nav-links a.active{color:var(--cyan)}
     .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}
     .dot.on{background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 2s infinite}
     .dot.off{background:var(--red);box-shadow:0 0 8px var(--red)}
     @keyframes blink{50%{opacity:.35}}
+    .mon-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .mon-title{font-size:15px;font-weight:bold;color:var(--cyan);letter-spacing:2px}
+    .mon-sub{font-size:10px;color:rgba(0,245,255,0.45);letter-spacing:1px;margin-top:4px}
+    .mon-live{display:flex;align-items:center;gap:8px;font-size:10px;color:rgba(0,245,255,0.5)}
     main{width:100%;max-width:1100px;margin:0 auto;padding:28px 16px 60px;flex:1}
     .banner{display:none;border:1px solid rgba(255,51,102,.35);background:rgba(255,51,102,.08);color:var(--red);padding:12px 16px;border-radius:6px;font-size:12px;margin-bottom:20px}
     .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
@@ -44,27 +41,85 @@
     .note{font-size:11px;color:var(--muted);line-height:1.7;margin-top:24px}
     .note a,.panel a{color:var(--cyan);text-decoration:none}
     footer{border-top:1px solid var(--line);padding:16px 24px;font-size:10px;color:var(--muted);letter-spacing:1px}
-    @media (max-width:520px){nav{padding:12px 16px}.nav-links{margin-left:0;width:100%}.metric .v{font-size:22px}}
+    @media (max-width:520px){.metric .v{font-size:22px}}
   </style>
 </head>
 <body>
-<nav>
-  <a class="logo" href="/">Q</a>
-  <div>
-    <div class="nav-title">NETWORK MONITOR</div>
-    <div class="nav-sub">PUBLIC TESTNET · HYDRA-X · FIPS 204/205</div>
+<!-- QN-NAV START -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  .qn-nav{position:fixed;top:0;left:0;right:0;z-index:2000;background:rgba(6,8,15,.88);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid #161d2e;font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.4;box-sizing:border-box}
+  .qn-nav *,.qn-nav *::before,.qn-nav *::after{box-sizing:border-box}
+  .qn-nav .qn-inner{max-width:1240px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .qn-nav a.qn-logo{font-weight:700;font-size:18px;letter-spacing:-.02em;color:#f0f2f5;text-decoration:none;white-space:nowrap;padding:0;margin:0;background:none;border:0}
+  .qn-nav a.qn-logo span{background:linear-gradient(135deg,#00e5ff,#b24bf3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .qn-nav .qn-links{display:flex;align-items:center;gap:2px;margin:0;padding:0}
+  .qn-nav a.qn-link{display:block;color:#8b93a3;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 9px;border-radius:6px;border:0;background:none;white-space:nowrap;transition:color .2s,background .2s}
+  .qn-nav a.qn-link:hover{color:#f0f2f5;background:rgba(255,255,255,.06)}
+  .qn-nav a.qn-link[aria-current="page"]{color:#00e5ff}
+  .qn-nav a.qn-cta{margin-left:8px;color:#06080f;background:linear-gradient(135deg,#00e5ff,#b24bf3);font-weight:700}
+  .qn-nav a.qn-cta:hover{color:#06080f;opacity:.9;background:linear-gradient(135deg,#00e5ff,#b24bf3)}
+  .qn-nav a.qn-cta[aria-current="page"]{color:#06080f}
+  .qn-nav button.qn-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;margin:0 -8px 0 0;padding:0;background:none;border:0;border-radius:8px;color:#f0f2f5;font-size:24px;line-height:1;cursor:pointer;font-family:inherit}
+  .qn-nav button.qn-toggle:focus-visible,.qn-nav a.qn-link:focus-visible{outline:2px solid #00e5ff;outline-offset:2px}
+  .qn-nav-spacer{height:64px}
+  @media (max-width:1100px){
+    .qn-nav button.qn-toggle{display:flex}
+    .qn-nav .qn-links{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 12px 16px;background:rgba(6,8,15,.98);border-bottom:1px solid #161d2e;max-height:calc(100vh - 64px);overflow-y:auto}
+    .qn-nav.qn-open .qn-links{display:flex}
+    .qn-nav a.qn-link{font-size:16px;padding:13px 12px}
+    .qn-nav a.qn-cta{margin:8px 0 0;text-align:center}
+  }
+</style>
+<div class="qn-nav" role="navigation" aria-label="Main">
+  <div class="qn-inner">
+    <a class="qn-logo" href="/"><span>Quantar</span> Network</a>
+    <button class="qn-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="qn-links">&#9776;</button>
+    <div class="qn-links" id="qn-links">
+        <a class="qn-link" href="/">Home</a>
+        <a class="qn-link" href="/technology">Technology</a>
+        <a class="qn-link" href="/hydrax">HYDRA-X</a>
+        <a class="qn-link" href="/benchmark">Benchmark</a>
+        <a class="qn-link" href="/whitepaper">Whitepaper</a>
+        <a class="qn-link" href="/article">Article</a>
+        <a class="qn-link" href="/testnet">Testnet</a>
+        <a class="qn-link" href="/monitor" aria-current="page">Monitor</a>
+        <a class="qn-link" href="/professionalteam">Team</a>
+        <a class="qn-link" href="/cashbook">Cash Book</a>
+        <a class="qn-link qn-cta" href="/invest">Invest</a>
+    </div>
   </div>
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/testnet">Testnet</a>
-    <a href="/technology">Technology</a>
-    <a href="/monitor" class="active">Monitor</a>
-  </div>
-  <div class="dot" id="dot"></div>
-  <span id="updated" style="font-size:9px;color:rgba(0,245,255,0.4)">connecting...</span>
-</nav>
+</div>
+<div class="qn-nav-spacer" aria-hidden="true"></div>
+<script>
+(function () {
+  var nav = document.querySelector('.qn-nav');
+  if (!nav) return;
+  var btn = nav.querySelector('.qn-toggle');
+  function set(open) {
+    nav.classList.toggle('qn-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  }
+  btn.addEventListener('click', function () { set(!nav.classList.contains('qn-open')); });
+  nav.querySelectorAll('.qn-link').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  document.addEventListener('click', function (e) { if (!nav.contains(e.target)) set(false); });
+})();
+</script>
+<!-- QN-NAV END -->
+
 
 <main>
+  <div class="mon-head">
+    <div>
+      <div class="mon-title">NETWORK MONITOR</div>
+      <div class="mon-sub">PUBLIC TESTNET · HYDRA-X · FIPS 204/205</div>
+    </div>
+    <div class="mon-live"><div class="dot" id="dot"></div><span id="updated">connecting...</span></div>
+  </div>
   <div class="banner" id="banner"></div>
 
   <div class="metrics">
