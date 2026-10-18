@@ -384,21 +384,73 @@ footer .sep{margin:0 12px;opacity:.3}
 </style>
 </head>
 <body>
-
-<!-- NAV -->
-<nav>
-  <a href="/" class="nav-brand">
-    <div class="dot"></div>
-    QUANTAR <span>NETWORK</span>
-  </a>
-  <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/technology" class="active">Technology</a>
-    <a href="/article">Research</a>
-    <a href="/cash-book">Transparency</a>
-    <a href="/invest" class="nav-invest">Invest</a>
+<!-- QN-NAV START -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  .qn-nav{position:fixed;top:0;left:0;right:0;z-index:2000;background:rgba(6,8,15,.88);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid #161d2e;font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.4;box-sizing:border-box}
+  .qn-nav *,.qn-nav *::before,.qn-nav *::after{box-sizing:border-box}
+  .qn-nav .qn-inner{max-width:1240px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .qn-nav a.qn-logo{font-weight:700;font-size:18px;letter-spacing:-.02em;color:#f0f2f5;text-decoration:none;white-space:nowrap;padding:0;margin:0;background:none;border:0}
+  .qn-nav a.qn-logo span{background:linear-gradient(135deg,#00e5ff,#b24bf3);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .qn-nav .qn-links{display:flex;align-items:center;gap:2px;margin:0;padding:0}
+  .qn-nav a.qn-link{display:block;color:#8b93a3;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0;text-transform:none;padding:7px 9px;border-radius:6px;border:0;background:none;white-space:nowrap;transition:color .2s,background .2s}
+  .qn-nav a.qn-link:hover{color:#f0f2f5;background:rgba(255,255,255,.06)}
+  .qn-nav a.qn-link[aria-current="page"]{color:#00e5ff}
+  .qn-nav a.qn-cta{margin-left:8px;color:#06080f;background:linear-gradient(135deg,#00e5ff,#b24bf3);font-weight:700}
+  .qn-nav a.qn-cta:hover{color:#06080f;opacity:.9;background:linear-gradient(135deg,#00e5ff,#b24bf3)}
+  .qn-nav a.qn-cta[aria-current="page"]{color:#06080f}
+  .qn-nav button.qn-toggle{display:none;align-items:center;justify-content:center;width:44px;height:44px;margin:0 -8px 0 0;padding:0;background:none;border:0;border-radius:8px;color:#f0f2f5;font-size:24px;line-height:1;cursor:pointer;font-family:inherit}
+  .qn-nav button.qn-toggle:focus-visible,.qn-nav a.qn-link:focus-visible{outline:2px solid #00e5ff;outline-offset:2px}
+  .qn-nav-spacer{height:64px}
+  @media (max-width:1100px){
+    .qn-nav button.qn-toggle{display:flex}
+    .qn-nav .qn-links{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;padding:8px 12px 16px;background:rgba(6,8,15,.98);border-bottom:1px solid #161d2e;max-height:calc(100vh - 64px);overflow-y:auto}
+    .qn-nav.qn-open .qn-links{display:flex}
+    .qn-nav a.qn-link{font-size:16px;padding:13px 12px}
+    .qn-nav a.qn-cta{margin:8px 0 0;text-align:center}
+  }
+</style>
+<div class="qn-nav" role="navigation" aria-label="Main">
+  <div class="qn-inner">
+    <a class="qn-logo" href="/"><span>Quantar</span> Network</a>
+    <button class="qn-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="qn-links">&#9776;</button>
+    <div class="qn-links" id="qn-links">
+        <a class="qn-link" href="/">Home</a>
+        <a class="qn-link" href="/technology" aria-current="page">Technology</a>
+        <a class="qn-link" href="/hydrax">HYDRA-X</a>
+        <a class="qn-link" href="/benchmark">Benchmark</a>
+        <a class="qn-link" href="/whitepaper">Whitepaper</a>
+        <a class="qn-link" href="/article">Article</a>
+        <a class="qn-link" href="/testnet">Testnet</a>
+        <a class="qn-link" href="/monitor">Monitor</a>
+        <a class="qn-link" href="/professionalteam">Team</a>
+        <a class="qn-link" href="/cashbook">Cash Book</a>
+        <a class="qn-link qn-cta" href="/invest">Invest</a>
+    </div>
   </div>
-</nav>
+</div>
+<div class="qn-nav-spacer" aria-hidden="true"></div>
+<script>
+(function () {
+  var nav = document.querySelector('.qn-nav');
+  if (!nav) return;
+  var btn = nav.querySelector('.qn-toggle');
+  function set(open) {
+    nav.classList.toggle('qn-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  }
+  btn.addEventListener('click', function () { set(!nav.classList.contains('qn-open')); });
+  nav.querySelectorAll('.qn-link').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+  document.addEventListener('click', function (e) { if (!nav.contains(e.target)) set(false); });
+})();
+</script>
+<!-- QN-NAV END -->
+
+
 
 <!-- HERO -->
 <div class="hero">
@@ -690,6 +742,7 @@ footer .sep{margin:0 12px;opacity:.3}
 <div class="section bench-section">
   <div class="section-title">Real <span>Benchmark</span> Data</div>
   <div class="section-sub">Rust release build · opt-level=3 · LTO=true · x86_64 Linux · 100 iterations · Bootstrap 95% CI (2,000 resamples)</div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
   <table class="bench-table">
     <thead>
       <tr>
@@ -728,6 +781,7 @@ footer .sep{margin:0 12px;opacity:.3}
       </tr>
     </tbody>
   </table>
+  </div>
   <p style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gray)">
     Measured on one Intel Xeon core @ 2.1 GHz, Linux x86_64, Rust release build, with the exact libraries the testnet runs (pqcrypto-mldsa for ML-DSA-87, fips205 for SLH-DSA-SHA2-256s). Mean and normal-approximation 95% CI of the mean; n = 1,000 signs / 5,000 verifies (ML-DSA), 30 signs / 2,000 verifies (SLH-DSA and HYDRA-X). Signing is done once by the sender's wallet; verification is what every node repeats. These are signature-verification figures, not network throughput.
   </p>
@@ -807,7 +861,7 @@ footer .sep{margin:0 12px;opacity:.3}
   <span class="sep">|</span>
   <a href="/invest">Invest</a>
   <span class="sep">|</span>
-  <a href="/cash-book">Transparency</a>
+  <a href="/cashbook">Transparency</a>
   <span class="sep">|</span>
   <a href="https://github.com/quantarsite" target="_blank">GitHub</a>
   <span class="sep">|</span>
