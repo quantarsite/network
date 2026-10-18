@@ -434,7 +434,7 @@ footer .sep{margin:0 12px;opacity:.3}
     <div class="fa">→</div>
     <div class="fn active">HYDRA-X Validate</div>
     <div class="fa">→</div>
-    <div class="fn active">L1 AND L2 AND L3</div>
+    <div class="fn active">L1 AND L2</div>
     <div class="fa">→</div>
     <div class="fn">Block Finalized</div>
   </div>
@@ -484,7 +484,7 @@ footer .sep{margin:0 12px;opacity:.3}
           <div class="card-label">Security Guarantee</div>
           <div class="card-val">
             Attacker must break <span class="ok">both</span> independent paradigms simultaneously.<br><br>
-            Lattice (LWE hardness) and hash-based (SHA3 collision) — <span class="hi">mathematically unrelated</span>.
+            Lattice (Module-LWE hardness) and hash-based (SHA-2 hash function security) — <span class="hi">mathematically unrelated</span>.
           </div>
         </div>
       </div>
@@ -507,29 +507,28 @@ footer .sep{margin:0 12px;opacity:.3}
         <div class="card">
           <div class="card-label">Address Construction</div>
           <div class="card-val">
-            <code>addr = SHA3-256(</code><br>
-            <code>&nbsp;&nbsp;SHA256(pk_L) ‖</code><br>
-            <code>&nbsp;&nbsp;SHA256(pk_H) ‖ salt)</code>
+            <code>addr = BLAKE3-256(</code><br>
+            <code>&nbsp;&nbsp;pk_L ‖ pk_H)</code><br>
+            Live on the testnet today.
           </div>
         </div>
         <div class="card">
           <div class="card-label">Privacy Model</div>
           <div class="card-val">
-            <span class="ok">pk_L</span> and <span class="ok">pk_H</span> revealed <strong>only at spend-time</strong>.<br><br>
-            Eliminates the harvest-and-decrypt window. Quantum adversary cannot target keys before spend.
+            <span class="ok">pk_L</span> and <span class="ok">pk_H</span> are revealed <strong>only with the first outgoing transaction</strong>.<br><br>
+            An address that only receives exposes nothing but a hash of its keys.
           </div>
         </div>
         <div class="card">
           <div class="card-label">Quantum Security</div>
           <div class="card-val">
-            SHA3-256 under Grover's algorithm → <span class="ok">128-bit quantum security</span>.<br>
-            Above NIST Level 5 minimum threshold.
+            A 256-bit hash under Grover's algorithm → <span class="ok">128-bit quantum preimage security</span>.
           </div>
         </div>
         <div class="card">
           <div class="card-label">Binding Property</div>
           <div class="card-val">
-            Commitment is <span class="ok">computationally binding</span> — changing keys after commit requires breaking SHA3 preimage resistance.
+            Commitment is <span class="ok">computationally binding</span> — changing keys behind an address requires a second preimage of BLAKE3.
           </div>
         </div>
       </div>
@@ -544,16 +543,15 @@ footer .sep{margin:0 12px;opacity:.3}
         <span class="layer-icon">⏱</span>
         <div class="layer-info">
           <div class="layer-name">Temporal Expiration Engine</div>
-          <div class="layer-desc">Mandatory key TTL enforced at consensus level — not optional</div>
+          <div class="layer-desc">Mandatory key TTL at consensus level. Planned for mainnet, not active on the current testnet</div>
         </div>
-        <span class="layer-tag">ENFORCED</span>
+        <span class="layer-tag">PLANNED</span>
       </div>
       <div class="layer-body">
         <div class="card">
           <div class="card-label">TTL Mechanism</div>
           <div class="card-val">
-            Each keypair carries a <code>block_expiry</code> on-chain.<br>
-            Protocol <strong>rejects</strong> signatures past TTL. No exceptions.
+            Design: each keypair carries a <code>block_expiry</code> on-chain and the protocol <strong>rejects</strong> signatures past it.
           </div>
         </div>
         <div class="card">
@@ -566,7 +564,7 @@ footer .sep{margin:0 12px;opacity:.3}
           <div class="card-label">Migration Transaction</div>
           <div class="card-val">
             <code>MigrateKey(old_pk, new_pk, σ)</code><br>
-            Signed by both old keypairs. Atomic renewal — no double-spend window.
+            Design: signed by both old keypairs, atomic renewal with no double-spend window.
           </div>
         </div>
         <div class="card">
