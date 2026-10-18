@@ -106,7 +106,7 @@ footer a:hover{opacity:1}
   <div class="status-grid">
     <div class="stat-card"><div class="stat-value green" id="netStatus">ONLINE</div><div class="stat-label">Network Status</div></div>
     <div class="stat-card"><div class="stat-value" id="totalClaims">&#8212;</div><div class="stat-label">Faucet Claims</div></div>
-    <div class="stat-card"><div class="stat-value gold">5 s</div><div class="stat-label">Block Interval<br>0.01 QTR fee, burned</div></div>
+    <div class="stat-card"><div class="stat-value gold" id="blockHeight">&#8212;</div><div class="stat-label">Block Height<br>0.01 QTR fee, burned</div></div>
     <div class="stat-card"><div class="stat-value purple">HYDRA-X</div><div class="stat-label">Signature Scheme<br>ML-DSA-87 + SLH-DSA</div></div>
   </div>
   <div class="section-label">Protocol Architecture</div>
@@ -115,7 +115,7 @@ footer a:hover{opacity:1}
     <div class="proto-card"><span class="proto-icon">&#9883;</span><div class="proto-title">ML-DSA-87</div><div class="proto-desc">Module Learning With Errors based signature scheme. NIST FIPS 204 standard. Security relies on the hardness of lattice problems, resistant to quantum attacks.</div><span class="proto-tag">FIPS 204</span></div>
     <div class="proto-card"><span class="proto-icon">&#127795;</span><div class="proto-title">SLH-DSA</div><div class="proto-desc">Hash-based signature scheme (standardized SPHINCS+), parameter set SLH-DSA-SHA2-256s. NIST FIPS 205 standard. Security relies only on properties of the underlying hash functions.</div><span class="proto-tag">FIPS 205</span></div>
     <div class="proto-card"><span class="proto-icon">&#9654;</span><div class="proto-title">Genesis Enforcement</div><div class="proto-desc">HYDRA-X is enforced at the consensus layer from block zero. No ECDSA fallback in the codebase. Quantum resistance is a protocol invariant.</div><span class="proto-tag">No ECDSA</span></div>
-    <div class="proto-card"><span class="proto-icon">&#128202;</span><div class="proto-title">Performance</div><div class="proto-desc">Verifying both signatures takes about 0.92 ms per transaction on one CPU core (~1,080 per second per core). That is signature verification only, not network throughput. The testnet currently runs a single node producing a block every 5 seconds.</div><span class="proto-tag">Open Source</span></div>
+    <div class="proto-card"><span class="proto-icon">&#128202;</span><div class="proto-title">Performance</div><div class="proto-desc">Verifying both signatures takes about 0.92 ms per transaction on one CPU core (~1,080 per second per core). That is signature verification only, not network throughput. The testnet currently runs a single node that checks for transactions every 5 seconds and only produces a block when there are any.</div><span class="proto-tag">Open Source</span></div>
     <div class="proto-card"><span class="proto-icon">&#128218;</span><div class="proto-title">Academic Validation</div><div class="proto-desc">HYDRA-X accepted at SPIQE 2026 / IEEE EuroS&amp;P, Lisbon, July 2026. AND-Composition paper under review at IACR ePrint (2026/108782).</div><span class="proto-tag">IEEE EuroS&amp;P 2026</span></div>
   </div>
   <div class="faucet-section">
@@ -147,6 +147,7 @@ footer a:hover{opacity:1}
   </footer>
 </div>
 <script>
+async function loadHeight(){try{const r=await fetch('https://testnet.quantarnetwork.com/rpc/status');const d=await r.json();document.getElementById('blockHeight').textContent=d.height.toLocaleString()}catch{}}loadHeight();setInterval(loadHeight,15000);
 async function loadStats(){try{const r=await fetch('https://faucet.quantarnetwork.com/api/status');const d=await r.json();if(d.online){document.getElementById('netStatus').textContent='ONLINE';document.getElementById('netStatus').className='stat-value green';document.getElementById('totalClaims').textContent=d.total_claims?.toLocaleString()??'0';document.getElementById('faucetClaims').textContent=d.total_claims?.toLocaleString()??'0'}}catch{document.getElementById('netStatus').textContent='CHECKING'}}
 loadStats();setInterval(loadStats,60000);
 </script>

@@ -806,22 +806,22 @@
                 <div>
                     <div class="layer-tag">Key Commitment Layer</div>
                     <div class="layer-title">Quantum-Safe Address Derivation</div>
-                    <div class="layer-desc">Public keys hidden until spend-time. Eliminates the harvest-and-decrypt window before a key is ever revealed.</div>
+                    <div class="layer-desc">Public keys stay hidden behind a hash until the address sends its first transaction. Live on the testnet today.</div>
                 </div>
                 <div class="layer-detail">
                     <span class="detail-label">Address Construction</span>
-                    <code>addr = SHA3-256(SHA256(pk_L) ‖ SHA256(pk_H) ‖ salt)</code>
+                    <code>addr = BLAKE3-256(pk_L ‖ pk_H)</code>
                     <span class="detail-label">Security</span>
-                    SHA3-256 under Grover's algorithm → 128-bit quantum security. Above NIST Level 5 minimum.
+                    A 256-bit hash under Grover's algorithm → 128-bit quantum preimage security.
                 </div>
             </div>
 
             <div class="layer-item">
-                <div class="layer-id"><span class="num">L3</span>⏱ ENFORCED</div>
+                <div class="layer-id"><span class="num">L3</span>⏱ PLANNED</div>
                 <div>
                     <div class="layer-tag">Temporal Expiration Engine</div>
                     <div class="layer-title">Mandatory Key TTL</div>
-                    <div class="layer-desc">Enforced at consensus level — not optional. The protocol rejects signatures past TTL. No exceptions, no developer discipline required.</div>
+                    <div class="layer-desc">Planned for mainnet, not active on the current testnet. Designed to be enforced at consensus level: the protocol rejects signatures past TTL, with no reliance on developer discipline.</div>
                 </div>
                 <div class="layer-detail">
                     <span class="detail-label">TTL Mechanism</span>
