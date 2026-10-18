@@ -383,19 +383,19 @@
     <h1>Dual Post-Quantum<br>Signature Throughput</h1>
     <p class="subtitle">
       Real-world performance of the <strong>HYDRA-X AND-composition protocol</strong> —
-      ML-DSA-87 and SPHINCS+ running simultaneously at the consensus layer.
+      ML-DSA-87 and SLH-DSA-SHA2-256s, both required on every transaction at the consensus layer.
       No fallback. No classical path.
     </p>
   </div>
 
   <!-- HERO METRIC -->
   <div class="hero-metric">
-    <div class="big-num">880</div>
+    <div class="big-num">~1,080</div>
     <div class="big-unit">tx/s</div>
     <div class="big-label">
-      <span>4 CPU cores</span>
-      Dual-signature AND-composition<br>
-      Average across 10 runs · Rust implementation
+      <span>1 CPU core</span>
+      Dual-signature verification only, not network throughput<br>
+      Mean of 2,000 runs · Rust · libraries the testnet runs
     </div>
   </div>
 
@@ -405,19 +405,13 @@
     <div class="bar-row">
       <div class="bar-label">1 core</div>
       <div class="bar-track">
-        <div class="bar-fill hydra" style="width:27%">237 tx/s</div>
+        <div class="bar-fill hydra" style="width:54%">~1,080 tx/s</div>
       </div>
     </div>
     <div class="bar-row">
       <div class="bar-label">2 cores</div>
       <div class="bar-track">
-        <div class="bar-fill hydra" style="width:53%">465 tx/s</div>
-      </div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">4 cores</div>
-      <div class="bar-track">
-        <div class="bar-fill hydra" style="width:100%">880 tx/s</div>
+        <div class="bar-fill hydra" style="width:100%">~2,000 tx/s</div>
       </div>
     </div>
   </div>
@@ -428,24 +422,24 @@
     <div class="bar-row">
       <div class="bar-label">ML-DSA-87</div>
       <div class="bar-track">
-        <div class="bar-fill ml" style="width:88%">~2,400 verif/s (1 core)</div>
+        <div class="bar-fill ml" style="width:100%">~14,400 verif/s (1 core)</div>
       </div>
     </div>
     <div class="bar-row">
-      <div class="bar-label">SPHINCS+</div>
+      <div class="bar-label">SLH-DSA</div>
       <div class="bar-track">
-        <div class="bar-fill sphincs" style="width:30%">~520 verif/s (1 core)</div>
+        <div class="bar-fill sphincs" style="width:9%;min-width:130px;white-space:nowrap">~1,210 verif/s</div>
       </div>
     </div>
     <div class="bar-row">
-      <div class="bar-label">ECDSA (ref)</div>
+      <div class="bar-label">HYDRA-X</div>
       <div class="bar-track">
-        <div class="bar-fill ecdsa" style="width:100%">~14,000 verif/s (1 core)</div>
+        <div class="bar-fill hydra" style="width:8%;min-width:130px;white-space:nowrap">~1,080 tx/s</div>
       </div>
     </div>
   </div>
   <p style="font-size:12px;color:var(--muted);margin-top:10px;">
-    HYDRA-X throughput is bounded by SPHINCS+, the slower component. AND-composition requires both to succeed — no quantum-vulnerable path exists.
+    HYDRA-X verification is bounded by SLH-DSA, the slower component (~823 µs of the ~922 µs per transaction). AND-composition requires both to succeed, so there is no quantum-vulnerable path.
   </p>
 
   <!-- KEY STATS -->
@@ -463,8 +457,8 @@
     </div>
     <div class="stat">
       <div class="stat-label">Signature B</div>
-      <div class="stat-value">SPHINCS+</div>
-      <div class="stat-note">FIPS 205 · hash-based stateless</div>
+      <div class="stat-value">SLH-DSA</div>
+      <div class="stat-note">FIPS 205 · SHA2-256s · hash-based stateless</div>
     </div>
     <div class="stat">
       <div class="stat-label">Security Level</div>
@@ -472,13 +466,13 @@
       <div class="stat-note">Highest NIST PQC tier</div>
     </div>
     <div class="stat">
-      <div class="stat-label">Peak Throughput</div>
-      <div class="stat-value">880 tx/s</div>
-      <div class="stat-note">4 cores, local, no network</div>
+      <div class="stat-label">Verification Throughput</div>
+      <div class="stat-value">~1,080 tx/s</div>
+      <div class="stat-note">Per core, local, no network</div>
     </div>
     <div class="stat">
       <div class="stat-label">Avg Latency</div>
-      <div class="stat-value">~1.1 ms</div>
+      <div class="stat-value">~0.92 ms</div>
       <div class="stat-note">Per dual-signature verification</div>
     </div>
   </div>
@@ -495,19 +489,19 @@
     <tbody>
       <tr>
         <td>Benchmark type</td>
-        <td>Signature verification throughput — parallel transaction processing, simulating consensus-layer load without network overhead.</td>
+        <td>Signature verification cost per transaction, measured locally without network overhead. The 2-core figure runs one verifier per thread.</td>
       </tr>
       <tr>
         <td>AND-composition</td>
-        <td>Each transaction requires a valid ML-DSA-87 signature AND a valid SPHINCS+ signature. Both are verified sequentially per transaction; transactions are distributed across threads.</td>
+        <td>Each transaction requires a valid ML-DSA-87 signature AND a valid SLH-DSA signature. Both are verified sequentially per transaction.</td>
       </tr>
       <tr>
         <td>Sample size</td>
-        <td>10 independent runs per configuration. Results averaged. Outliers (±2σ) excluded.</td>
+        <td>5,000 ML-DSA verifications and 2,000 SLH-DSA and HYDRA-X verifications, after warm-up. Mean with normal-approximation 95% CI; no outliers removed.</td>
       </tr>
       <tr>
         <td>Parallelism</td>
-        <td>Rayon thread pool (Rust). Each core processes an independent transaction batch. No shared mutable state between threads.</td>
+        <td>Single thread for the per-core figures. The current testnet node verifies transactions one by one; parallel verification is planned.</td>
       </tr>
       <tr>
         <td>Keys</td>
@@ -515,7 +509,7 @@
       </tr>
       <tr>
         <td>Implementation</td>
-        <td>Rust. <code style="font-family:var(--mono);font-size:11px;color:var(--cyan);">pqcrypto-dilithium</code> for ML-DSA-87 · <code style="font-family:var(--mono);font-size:11px;color:var(--purple);">pqcrypto-sphincsplus</code> for SPHINCS+.</td>
+        <td>Rust. <code style="font-family:var(--mono);font-size:11px;color:var(--cyan);">pqcrypto-mldsa</code> for ML-DSA-87 · <code style="font-family:var(--mono);font-size:11px;color:var(--purple);">fips205</code> for SLH-DSA-SHA2-256s, the same crates the testnet node uses.</td>
       </tr>
     </tbody>
   </table>
@@ -524,10 +518,10 @@
   <div class="section-title">Test Environment</div>
   <div class="env-grid">
     <div class="env-item"><div class="env-key">Language</div><div class="env-val">Rust (stable)</div></div>
-    <div class="env-item"><div class="env-key">CPU Cores (benchmark)</div><div class="env-val">4</div></div>
+    <div class="env-item"><div class="env-key">CPU</div><div class="env-val">Intel Xeon @ 2.1 GHz · 1 and 2 cores</div></div>
     <div class="env-item"><div class="env-key">OS</div><div class="env-val">Linux x86_64</div></div>
     <div class="env-item"><div class="env-key">Opt level</div><div class="env-val">release · --opt-level=3</div></div>
-    <div class="env-item"><div class="env-key">PQC libraries</div><div class="env-val">pqcrypto-dilithium · pqcrypto-sphincsplus</div></div>
+    <div class="env-item"><div class="env-key">PQC libraries</div><div class="env-val">pqcrypto-mldsa · fips205</div></div>
   </div>
 
   <!-- FOOTER -->

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HYDRA-X Protocol — Quantar Network</title>
-    <meta name="description" content="HYDRA-X: AND-Composed dual post-quantum authentication protocol. ML-DSA-87 + SLH-DSA enforced at the consensus layer from genesis. FIPS 204 & 205 compliant.">
+    <meta name="description" content="HYDRA-X: AND-Composed dual post-quantum authentication protocol. ML-DSA-87 + SLH-DSA enforced at the consensus layer from genesis. Implements FIPS 204 and FIPS 205.">
     <link rel="icon" type="image/png" href="quantar_favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -742,8 +742,8 @@
             <div class="rule-label">HYDRA-X Verification Rule</div>
             Ver_L(pk_L, tx, σ_L) = 1 &nbsp;&nbsp;<span style="color:var(--white)">AND</span>&nbsp;&nbsp; Ver_H(pk_H, tx, σ_H) = 1<br>
             <span style="color:var(--text-muted); font-size:0.78rem;">
-                Ver_L = ML-DSA-87 / Dilithium-5 &nbsp;·&nbsp; NIST FIPS 204 &nbsp;·&nbsp; Lattice / Module-LWE<br>
-                Ver_H = SLH-DSA-SHAKE-256f &nbsp;·&nbsp; NIST FIPS 205 &nbsp;·&nbsp; Hash-based / Stateless
+                Ver_L = ML-DSA-87 &nbsp;·&nbsp; NIST FIPS 204 &nbsp;·&nbsp; Lattice / Module-LWE<br>
+                Ver_H = SLH-DSA-SHA2-256s &nbsp;·&nbsp; NIST FIPS 205 &nbsp;·&nbsp; Hash-based / Stateless
             </span>
         </div>
 
@@ -764,9 +764,9 @@
                     <td>Primary — compact, fast</td>
                 </tr>
                 <tr>
-                    <td>SLH-DSA-SHAKE-256f</td>
+                    <td>SLH-DSA-SHA2-256s</td>
                     <td>FIPS 205 <span class="tag tag-purple">NIST L5</span></td>
-                    <td>Hash function security (SHA3)</td>
+                    <td>Hash function security (SHA-2)</td>
                     <td>Secondary — conservative, minimal assumptions</td>
                 </tr>
             </tbody>
@@ -795,9 +795,9 @@
                 </div>
                 <div class="layer-detail">
                     <span class="detail-label">Scheme A — Lattice (Primary)</span>
-                    <code>ML-DSA-87</code> · NIST FIPS 204<br>Sign: 154 µs · Verify: 74 µs · Sig: 4,627 B
+                    <code>ML-DSA-87</code> · NIST FIPS 204<br>Sign: 149 µs · Verify: 70 µs · Sig: 4,627 B
                     <span class="detail-label">Scheme B — Hash-based (Secondary)</span>
-                    <code>SLH-DSA-SHAKE-256f</code> · NIST FIPS 205<br>Sign: 93 ms · Verify: 4,467 µs · Sig: 49,856 B
+                    <code>SLH-DSA-SHA2-256s</code> · NIST FIPS 205<br>Sign: ~609 ms · Verify: 823 µs · Sig: 29,792 B
                 </div>
             </div>
 
@@ -835,14 +835,14 @@
                 <div class="layer-id"><span class="num">L4</span>⚛ PERFORMANCE</div>
                 <div>
                     <div class="layer-tag">Multi-Primitive Aggregation</div>
-                    <div class="layer-title">Batch Verification</div>
-                    <div class="layer-desc">Validator nodes verify n dual-signatures in batch, amortizing SPHINCS+ overhead across all block transactions.</div>
+                    <div class="layer-title">Parallel Verification (planned)</div>
+                    <div class="layer-desc">Transactions in a block are independent, so validators can spread verification across CPU cores. The current testnet node verifies them one by one.</div>
                 </div>
                 <div class="layer-detail">
                     <span class="detail-label">Throughput</span>
-                    1 core: ~220 tx/s · 4 cores: ~880 tx/s · Batch mode: significantly higher
+                    ~922 µs per transaction · ~1,080 tx/s per core · signature verification only, not network throughput
                     <span class="detail-label">Signature Size</span>
-                    54,483 B per tx (ML-DSA ~4.6 KB + SLH-DSA ~49 KB). Accepted trade-off for permanent dual-paradigm security.
+                    34,419 B per tx (ML-DSA 4.6 KB + SLH-DSA 29.8 KB). Accepted trade-off for permanent dual-paradigm security.
                 </div>
             </div>
 
@@ -855,7 +855,7 @@
                 </div>
                 <div class="layer-detail">
                     <span class="detail-label">Active Schemes</span>
-                    ML-DSA-87 (active) · SPHINCS+-256f (active) · Falcon-1024 (standby)
+                    ML-DSA-87 (active) · SLH-DSA-SHA2-256s (active)
                     <span class="detail-label">Upgrade Path</span>
                     <code>SchemeID(L)</code> and <code>SchemeID(H)</code> stored on-chain, decoupled from consensus logic.
                 </div>
@@ -872,30 +872,30 @@
         <div class="section-title">Real numbers. Commodity hardware. Full dual verification.</div>
         <p class="section-text">
             Reference implementation in Rust ·
-            <a href="https://github.com/quantarsite/hydrax-bench" style="color:var(--cyan); text-decoration:none;">github.com/quantarsite/hydrax-bench</a>
-            · x86_64 Linux · opt-level=3 · LTO=true · 100 iterations · Bootstrap 95% CI
+            <a href="https://github.com/quantarsite/quantar-testnet" style="color:var(--cyan); text-decoration:none;">github.com/quantarsite/quantar-testnet</a>
+            · one Intel Xeon core @ 2.1 GHz · x86_64 Linux · release build · 95% CI of the mean
         </p>
 
         <div class="bench-grid">
             <div class="bench-item">
-                <div class="num">~880</div>
-                <div class="unit">tx/s</div>
-                <div class="desc">Full dual HYDRA-X verification on 4 cores</div>
+                <div class="num">~1,080</div>
+                <div class="unit">tx/s per core</div>
+                <div class="desc">Full dual HYDRA-X signature verification (~0.92 ms per transaction)</div>
             </div>
             <div class="bench-item">
-                <div class="num">~0.25</div>
+                <div class="num">~0.15</div>
                 <div class="unit">ms</div>
                 <div class="desc">ML-DSA-87 signing time per transaction (1 core)</div>
             </div>
             <div class="bench-item">
-                <div class="num">~12.5</div>
-                <div class="unit">ms</div>
-                <div class="desc">SLH-DSA signing time per transaction (1 core)</div>
+                <div class="num">~0.6</div>
+                <div class="unit">s</div>
+                <div class="desc">SLH-DSA-SHA2-256s signing time per transaction (1 core, done once by the wallet)</div>
             </div>
             <div class="bench-item">
-                <div class="num">~50</div>
+                <div class="num">~34</div>
                 <div class="unit">KB</div>
-                <div class="desc">Composed signature (ML-DSA ~4.6 KB + SLH-DSA ~49 KB)</div>
+                <div class="desc">Composed signature (ML-DSA 4.6 KB + SLH-DSA 29.8 KB)</div>
             </div>
         </div>
 
@@ -912,42 +912,33 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>ML-DSA-87 / Dilithium-5 (FIPS 204)</td>
-                    <td>4,627</td>
-                    <td>154.4</td>
-                    <td>[140.4–169.6]</td>
-                    <td>74.2</td>
-                    <td>[72.5–75.9]</td>
+                  <td>ML-DSA-87 (FIPS 204)</td>
+                  <td>4,627</td>
+                  <td>149.4</td>
+                  <td>[143.7–155.1]</td>
+                  <td>69.5</td>
+                  <td>[69.2–69.9]</td>
                 </tr>
                 <tr>
-                    <td>Falcon-1024 (FIPS 206)</td>
-                    <td>1,274</td>
-                    <td>486.4</td>
-                    <td>[477.2–497.2]</td>
-                    <td>86.9</td>
-                    <td>[85.5–88.4]</td>
-                </tr>
-                <tr>
-                    <td>SPHINCS+-SHAKE-256f (FIPS 205)</td>
-                    <td>49,856</td>
-                    <td>93,418</td>
-                    <td>[92,857–94,127]</td>
-                    <td>4,467</td>
-                    <td>[4,411–4,538]</td>
+                  <td>SLH-DSA-SHA2-256s (FIPS 205)</td>
+                  <td>29,792</td>
+                  <td>608,788</td>
+                  <td>[600,020–617,556]</td>
+                  <td>823.1</td>
+                  <td>[818.9–827.3]</td>
                 </tr>
                 <tr class="highlight">
-                    <td>HYDRA-X (Dilithium-5 + SPHINCS+ dual)</td>
-                    <td>54,483</td>
-                    <td>93,373</td>
-                    <td>[92,389–94,287]</td>
-                    <td>4,546</td>
-                    <td>[4,481–4,621]</td>
+                  <td>HYDRA-X (ML-DSA-87 + SLH-DSA, both verified)</td>
+                  <td>34,419</td>
+                  <td>604,517</td>
+                  <td>[593,167–615,867]</td>
+                  <td>921.9</td>
+                  <td>[915.1–928.7]</td>
                 </tr>
             </tbody>
         </table>
         <p style="font-size:0.82rem; color:var(--text-muted); margin-top:12px;">
-            HYDRA-X verify (4,546 µs) is faster than Ethereum ECDSA validation (~10,000 µs/round). Production-viable.
-            Raw CSV: <a href="https://github.com/quantarsite/hydrax-bench/blob/main/data/benchmark_results.csv" style="color:var(--cyan); text-decoration:none;">github.com/quantarsite/hydrax-bench</a>
+            Measured on one Intel Xeon core @ 2.1 GHz, Linux x86_64, Rust release build, with the exact libraries the testnet runs (pqcrypto-mldsa for ML-DSA-87, fips205 for SLH-DSA-SHA2-256s). Mean and normal-approximation 95% CI of the mean; n = 1,000 signs / 5,000 verifies (ML-DSA), 30 signs / 2,000 verifies (SLH-DSA and HYDRA-X). Signing is done once by the sender's wallet; verification is what every node repeats. These are signature-verification figures, not network throughput.
         </p>
     </div>
 </section>
@@ -1008,7 +999,7 @@
             <div class="footer-left">© 2026 Quantar Network. All rights reserved.</div>
             <div class="footer-links">
                 <a href="https://quantarnetwork.com/whitepaper">Whitepaper</a>
-                <a href="https://github.com/quantarsite/hydrax-bench">GitHub</a>
+                <a href="https://github.com/quantarsite/quantar-testnet">GitHub</a>
                 <a href="https://quantarnetwork.com/professionalteam">Team</a>
                 <a href="mailto:contact@quantarnetwork.com">Contact</a>
             </div>
