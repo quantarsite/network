@@ -412,178 +412,31 @@
 
 
 
-  <div class="page">
-
-    <!-- HEADER -->
-    <div class="page-badge">Confidential · Authorized Access Only</div>
-    <h1 class="page-title">Cash Book</h1>
-    <p class="page-sub">
-      Banking coordinates and cryptocurrency addresses for Quantar Network seed round transfers.
-      This page is intended for confirmed investors only.
-      For questions, contact <a href="mailto:contact@quantarnetwork.com" style="color:var(--cyan);text-decoration:none;">contact@quantarnetwork.com</a>.
-    </p>
-
-    <!-- ACCOUNT HOLDER -->
-    <div class="holder-block">
-      <div>
-        <div class="holder-label">Account Holder</div>
-        <div class="holder-name">JEFFERSON DENIZ BUIAR</div>
-      </div>
-      <div class="holder-note">
-        All wire transfers must reference <strong style="color:var(--text);">Quantar Network — Seed Round</strong>
-        in the payment memo / reference field.
-      </div>
+  <style>
+    #lockScreen{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:40px 16px}
+    #lockScreen .lock-box{width:100%;max-width:420px;text-align:center;border:1px solid rgba(0,229,255,.18);background:rgba(255,255,255,.02);border-radius:10px;padding:40px 28px}
+    #lockScreen .lock-title{font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:#f0f2f5;margin-bottom:6px}
+    #lockScreen .lock-sub{font-size:11px;letter-spacing:.18em;color:#6b7280;margin-bottom:28px}
+    #lockScreen .lock-input{width:100%;padding:13px 14px;background:rgba(0,0,0,.35);border:1px solid rgba(0,229,255,.25);border-radius:6px;color:#f0f2f5;font-size:15px;letter-spacing:.08em;text-align:center;font-family:inherit}
+    #lockScreen .lock-input:focus{outline:none;border-color:#00e5ff}
+    #lockScreen .lock-btn{margin-top:14px;width:100%;padding:13px;border:0;border-radius:6px;background:linear-gradient(135deg,#00e5ff,#b24bf3);color:#06080f;font-weight:700;letter-spacing:.14em;cursor:pointer;font-family:inherit}
+    #lockScreen .lock-btn:disabled{opacity:.6;cursor:wait}
+    #lockScreen .lock-error{min-height:18px;margin-top:12px;font-size:12px;color:#ff3366}
+    #lockScreen .lock-contact{margin-top:18px;font-size:12px;color:#6b7280}
+    #lockScreen .lock-contact a{color:#00e5ff;text-decoration:none}
+    #dataRoom{display:none}
+  </style>
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-title">Cash Book</div>
+      <div class="lock-sub">QUANTAR NETWORK · INVESTORS ONLY</div>
+      <input type="password" class="lock-input" id="passInput" placeholder="ACCESS CODE" maxlength="64" autocomplete="off" aria-label="Access code">
+      <button class="lock-btn" type="button" onclick="unlock()">UNLOCK</button>
+      <div class="lock-error" id="lockError" role="alert"></div>
+      <div class="lock-contact">Same access code as the Investor Data Room. Request access at <a href="mailto:contact@quantarnetwork.com">contact@quantarnetwork.com</a></div>
     </div>
-
-    <!-- FIAT ACCOUNTS -->
-    <div class="section-label">Fiat Wire Transfer</div>
-
-    <!-- USD -->
-    <div class="account-block">
-      <div class="account-header">
-        <div class="account-header-left">
-          <span class="account-icon">🇺🇸</span>
-          <span class="account-name">USD Account</span>
-        </div>
-        <span class="account-tag">USD</span>
-      </div>
-      <div class="account-rows">
-        <div class="account-row">
-          <span class="row-label">Bank</span>
-          <span class="row-value">Banco C6 S.A. Cayman Branch</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">SWIFT / BIC</span>
-          <div class="row-value-wrap">
-            <span class="row-value highlight">CSIXKYKY</span>
-            <button class="copy-btn" onclick="copyText('CSIXKYKY', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Account Number</span>
-          <div class="row-value-wrap">
-            <span class="row-value">1015712933</span>
-            <button class="copy-btn" onclick="copyText('1015712933', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Account Holder</span>
-          <span class="row-value">JEFFERSON DENIZ BUIAR</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary Bank</span>
-          <span class="row-value">JPMorgan Chase Bank NA</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary SWIFT</span>
-          <div class="row-value-wrap">
-            <span class="row-value highlight">CHASUS33</span>
-            <button class="copy-btn" onclick="copyText('CHASUS33', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary Location</span>
-          <span class="row-value">New York, USA</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- EUR -->
-    <div class="account-block" style="margin-bottom:3.5rem;">
-      <div class="account-header">
-        <div class="account-header-left">
-          <span class="account-icon">🇪🇺</span>
-          <span class="account-name">EUR Account</span>
-        </div>
-        <span class="account-tag">EUR</span>
-      </div>
-      <div class="account-rows">
-        <div class="account-row">
-          <span class="row-label">Bank</span>
-          <span class="row-value">Banco C6 S.A. Cayman Branch</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">SWIFT / BIC</span>
-          <div class="row-value-wrap">
-            <span class="row-value highlight">CSIXKYKY</span>
-            <button class="copy-btn" onclick="copyText('CSIXKYKY', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Account Number</span>
-          <div class="row-value-wrap">
-            <span class="row-value">1015712941</span>
-            <button class="copy-btn" onclick="copyText('1015712941', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Account Holder</span>
-          <span class="row-value">JEFFERSON DENIZ BUIAR</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary Bank</span>
-          <span class="row-value">JP Morgan SE</span>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary SWIFT</span>
-          <div class="row-value-wrap">
-            <span class="row-value highlight">CHASDEFX</span>
-            <button class="copy-btn" onclick="copyText('CHASDEFX', this)">Copy</button>
-          </div>
-        </div>
-        <div class="account-row">
-          <span class="row-label">Intermediary Location</span>
-          <span class="row-value">Frankfurt, Germany</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CRYPTO -->
-    <div class="section-label">Cryptocurrency Addresses</div>
-    <div class="crypto-grid">
-
-      <!-- ETH -->
-      <div class="crypto-card">
-        <div class="crypto-card-header">
-          <span class="crypto-symbol">ETH</span>
-          <span class="crypto-name">Ethereum</span>
-        </div>
-        <div class="crypto-address">0xFE2e62b551C276F016663eF43f870cA9329c9E2d</div>
-        <button class="crypto-copy" onclick="copyText('0xFE2e62b551C276F016663eF43f870cA9329c9E2d', this)">Copy Address</button>
-      </div>
-
-      <!-- BTC -->
-      <div class="crypto-card">
-        <div class="crypto-card-header">
-          <span class="crypto-symbol">BTC</span>
-          <span class="crypto-name">Bitcoin</span>
-        </div>
-        <div class="crypto-address">bc1qhnvnknwt49x9c4740lg56yrgglj20c0d0y6yfu</div>
-        <button class="crypto-copy" onclick="copyText('bc1qhnvnknwt49x9c4740lg56yrgglj20c0d0y6yfu', this)">Copy Address</button>
-      </div>
-
-      <!-- SOL -->
-      <div class="crypto-card">
-        <div class="crypto-card-header">
-          <span class="crypto-symbol">SOL</span>
-          <span class="crypto-name">Solana</span>
-        </div>
-        <div class="crypto-address">4C58vXBVCB8uAv6sLUSy54KM77VMcjU9EWt3vmCknmYN</div>
-        <button class="crypto-copy" onclick="copyText('4C58vXBVCB8uAv6sLUSy54KM77VMcjU9EWt3vmCknmYN', this)">Copy Address</button>
-      </div>
-
-    </div>
-
-    <div class="divider"></div>
-
-    <p style="font-size:0.8rem; color:var(--muted); line-height:1.7;">
-      After completing a transfer, please send confirmation to
-      <a href="mailto:contact@quantarnetwork.com" style="color:var(--cyan);text-decoration:none;">contact@quantarnetwork.com</a>
-      with your name, amount, and transaction hash or reference number.
-      Token allocation will be confirmed within 48 hours of cleared funds.
-    </p>
-
   </div>
+  <div id="dataRoom"></div>
 
   <!-- FOOTER -->
   <footer>
@@ -609,5 +462,76 @@
     }
   </script>
 
+<script id="drPayload" type="application/json">{"v":1,"iter":600000,"salt":"itdEzN+xVXACXXJFwJXNvQ==","iv":"/fkB4f7Pyx99naNW","ct":"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"}</script>
+<script>
+// Decifra o dataroom no navegador. A senha nunca sai do aparelho de quem digita.
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const payload = JSON.parse($('drPayload').textContent);
+  const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const KEY_STORE = 'dr_key_v' + payload.v + '_' + payload.salt;
+
+  async function deriveRaw(password) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
+    return new Uint8Array(await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', hash: 'SHA-256', salt: unb64(payload.salt), iterations: payload.iter }, base, 256));
+  }
+
+  async function open(raw) {
+    const key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(payload.iv) }, key, unb64(payload.ct));
+    const data = JSON.parse(new TextDecoder().decode(plain));
+    const room = $('dataRoom');
+    room.innerHTML = data.html;
+    room.querySelectorAll('a[href$=".pdf"]').forEach((a) => {
+      const name = a.getAttribute('href').split('/').pop();
+      if (!data.pdfs[name]) return;
+      const url = URL.createObjectURL(new Blob([unb64(data.pdfs[name])], { type: 'application/pdf' }));
+      a.href = url;
+      a.setAttribute('download', name);
+      a.removeAttribute('onclick');
+    });
+    $('lockScreen').style.display = 'none';
+    room.style.display = 'block';
+  }
+
+  async function unlock() {
+    const input = $('passInput');
+    const error = $('lockError');
+    const btn = document.querySelector('.lock-btn');
+    error.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'VERIFYING...';
+    try {
+      const raw = await deriveRaw(input.value.trim());
+      await open(raw);
+      try { sessionStorage.setItem(KEY_STORE, btoa(String.fromCharCode(...raw))); } catch (e) {}
+    } catch (e) {
+      error.textContent = 'Invalid access code. Contact contact@quantarnetwork.com';
+      input.value = '';
+      input.focus();
+      const box = document.querySelector('.lock-box');
+      box.style.animation = 'none';
+      box.offsetHeight;
+      box.style.animation = 'shake 0.4s ease';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'AUTHENTICATE';
+    }
+  }
+
+  window.unlock = unlock;
+  $('passInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+
+  try {
+    const saved = sessionStorage.getItem(KEY_STORE);
+    if (saved) open(unb64(saved)).catch(() => { try { sessionStorage.removeItem(KEY_STORE); } catch (e) {} });
+  } catch (e) {}
+
+  const style = document.createElement('style');
+  style.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }';
+  document.head.appendChild(style);
+})();
+</script>
 </body>
 </html>

@@ -41,6 +41,7 @@ PAGES = {
     "invest/index.html": ("invest", False),
     "dataroom.html": ("invest", True),
     "tools/dataroom/template.html": ("invest", True),
+    "tools/dataroom/cashbook.template.html": ("cashbook", False),
 }
 
 START, END = "<!-- QN-NAV START -->", "<!-- QN-NAV END -->"
